@@ -8,7 +8,7 @@ __pycache__/
 .env
 
 # Third-party code and large data (re-fetch with scripts/setup.sh)
-external/
+third_party/
 data/**/*.parquet
 data/**/*.csv
 data/**/*.feather

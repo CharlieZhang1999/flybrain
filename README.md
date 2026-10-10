@@ -21,15 +21,16 @@ cp .env.example .env           # add your neuPrint token (and later the OpenAI k
 ## Layout
 
 ```
-sim/        NumPy LIF (FlyWire + MaleCNS)
-stimuli/    sensory stimulus definitions
-readout/    linear and other decoders
-loop/       GPT <-> fly loop
-notebooks/  01_shiu_validation, 02_translator, 03_gpt_loop
-data/       flywire_v783/ (symlinks into external/), malecns/   [gitignored data]
-external/   Drosophila_brain_model (Shiu et al. 2024 reference)  [gitignored]
-results/    figures/ committed, raw output ignored
-docs/       plan
+sim/          NumPy LIF (FlyWire + MaleCNS)
+stimuli/      sensory stimulus definitions
+readout/      linear and other decoders
+loop/         GPT <-> fly loop
+notebooks/    01_shiu_validation, 02_translator, 03_gpt_loop
+data/         flywire_v783/ (symlinks into third_party/), malecns/  [gitignored data]
+third_party/  Drosophila_brain_model (Shiu et al. 2024 reference)  [gitignored]
+results/      figures/ committed, raw output ignored
+docs/         plan
+scripts/      setup.sh, check_setup.py
 ```
 
 ## Data

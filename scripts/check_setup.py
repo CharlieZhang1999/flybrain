@@ -29,7 +29,26 @@ else:
     ok = False
     print("FAIL FlyWire v783 files missing; run scripts/setup.sh")
 
+env_file = ROOT / ".env"
+if env_file.exists():
+    for line in env_file.read_text().splitlines():
+        if "=" in line and not line.lstrip().startswith("#"):
+            k, v = line.split("=", 1)
+            if v.strip():
+                os.environ.setdefault(k.strip(), v.strip())
+
 token = os.environ.get("NEUPRINT_APPLICATION_CREDENTIALS")
-print("neuPrint token:", "set" if token else "NOT SET (needed for MaleCNS, week 2)")
+if not token:
+    print("neuPrint token: NOT SET (needed for MaleCNS, week 2)")
+else:
+    try:
+        from neuprint import Client
+        c = Client(os.environ.get("NEUPRINT_SERVER", "https://neuprint.janelia.org"),
+                   dataset=os.environ.get("NEUPRINT_DATASET", "male-cns:v1.0"), token=token)
+        n = c.fetch_custom("MATCH (n:Neuron) RETURN count(n) AS n").iloc[0, 0]
+        print(f"neuPrint {c.dataset}: OK, {n:,} Neuron nodes")
+    except Exception as e:  # noqa: BLE001
+        ok = False
+        print(f"FAIL neuPrint: {e}")
 
 sys.exit(0 if ok else 1)

@@ -17,14 +17,14 @@ else
 fi
 .venv/bin/pip check
 
-mkdir -p external data/flywire_v783 data/malecns
-if [ ! -d external/Drosophila_brain_model ]; then
-  git clone --depth 1 https://github.com/philshiu/Drosophila_brain_model external/Drosophila_brain_model
+mkdir -p third_party data/flywire_v783 data/malecns
+if [ ! -d third_party/Drosophila_brain_model ]; then
+  git clone --depth 1 https://github.com/philshiu/Drosophila_brain_model third_party/Drosophila_brain_model
 fi
 
 # FlyWire v783 connectivity ships inside the Shiu repo (Zenodo 10676866 has the raw
 # synapse tables, not these preprocessed files).
-ln -sf ../../external/Drosophila_brain_model/Connectivity_783.parquet data/flywire_v783/Connectivity_783.parquet
-ln -sf ../../external/Drosophila_brain_model/Completeness_783.csv data/flywire_v783/Completeness_783.csv
+ln -sf ../../third_party/Drosophila_brain_model/Connectivity_783.parquet data/flywire_v783/Connectivity_783.parquet
+ln -sf ../../third_party/Drosophila_brain_model/Completeness_783.csv data/flywire_v783/Completeness_783.csv
 
 .venv/bin/python scripts/check_setup.py
