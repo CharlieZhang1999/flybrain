@@ -1,0 +1,12 @@
+# Top-level deps from the plan (section 1). Exact pinned versions: requirements.lock.txt
+numpy
+scipy
+pandas
+pyarrow
+scikit-learn
+matplotlib
+brian2
+jupyter
+navis
+neuprint-python
+openai

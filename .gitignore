@@ -1,0 +1,23 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Secrets
+.env
+
+# Third-party code and large data (re-fetch with scripts/setup.sh)
+external/
+data/**/*.parquet
+data/**/*.csv
+data/**/*.feather
+data/**/*.npz
+data/**/*.npy
+
+# Simulation outputs (figures are committed, raw spikes are not)
+results/**
+!results/figures/
+!results/figures/**
+
+.DS_Store
