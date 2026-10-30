@@ -1,0 +1,212 @@
+<title>Flybrain Week 1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: single reading column; the pathway graph is the centerpiece, full-bleed in its own scroll container */
+:root{
+  --bg:#faf9f6; --fg:#23251f; --muted:#6b6e62; --line:#e2e0d6;
+  --card:#f1efe7; --accent:#4a7a3d; --exc:#4a7a3d; --inh:#b0483a;
+  --code:#eceade; --mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#191b16; --fg:#e4e3da; --muted:#9a9d8e; --line:#33362c;
+  --card:#20231c; --accent:#8fbf7f; --exc:#8fbf7f; --inh:#e08a7c; --code:#23261e;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#191b16; --fg:#e4e3da; --muted:#9a9d8e; --line:#33362c;
+  --card:#20231c; --accent:#8fbf7f; --exc:#8fbf7f; --inh:#e08a7c; --code:#23261e;
+  color-scheme:dark }
+body{background:var(--bg);color:var(--fg);font:15px/1.6 Georgia,'Times New Roman',serif;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 48px}
+main{max-width:760px;margin:0 auto}
+h1{font-size:2rem;line-height:1.15;text-wrap:balance;margin:40px 0 4px}
+h2{font-size:1.25rem;margin:40px 0 10px;text-wrap:balance}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+p{margin:.5em 0}
+.lede{font-size:1.06rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 12px 6px 0;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.n{text-align:right;padding-right:24px}th.n{text-align:right;padding-right:24px}
+code,pre{font-family:var(--mono);font-size:.84em;background:var(--code);border-radius:4px}
+code{padding:1px 5px}
+pre{padding:12px 14px;overflow-x:auto;line-height:1.5}
+.graphwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--card);margin:14px 0 6px}
+svg text{font-family:var(--mono)}
+.cap{font-size:.82rem;color:var(--muted);margin-top:2px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--mono);font-size:.74rem;color:var(--muted);margin:8px 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:22px;height:0;border-top:3px solid var(--exc);display:inline-block}
+.sw.i{border-color:var(--inh)}
+.sw.d{border-top-style:dashed;border-top-width:2px}
+ul{padding-left:1.2em}li{margin:4px 0}
+.flag{color:var(--inh);font-weight:bold}
+a{color:var(--accent)}
+.grid2{display:flex;flex-wrap:wrap;gap:20px}
+.grid2>div{flex:1 1 280px;min-width:0}
+</style>
+
+<main>
+<p class="eyebrow">flybrain · week 1 · validation report · 2026-10-24</p>
+<h1>A fruit fly brain that tastes words, in plain NumPy</h1>
+<p class="lede">We reimplemented the Shiu et&nbsp;al. 2024 whole-brain leaky integrate-and-fire model
+(127,400 neurons, 14.7M synapses, FlyWire v630) as ~100 lines of NumPy and scipy.sparse,
+validated it against the authors' Brian2 reference, and wrapped it in a word demo:
+type a taste, watch the brain decide whether to feed.</p>
+
+<h2>What one trial does</h2>
+<p>Every neuron is the same two-variable LIF unit; all biology lives in the wiring.
+A "word" is a set of annotated sensory neurons driven with 150&nbsp;Hz Poisson spikes for one
+simulated second. Activity propagates through the connectome, and we read the verdict off
+MN9, the motor neuron that extends the proboscis (the fly's "start eating" command).</p>
+<pre>stimulate 21 sugar GRNs ──▶ 127,400-neuron LIF, dt = 0.1 ms ──▶ read MN9 rate
+      word in                   spikes propagate                 behavior out</pre>
+
+<h2>The sugar → MN9 circuit our simulation runs through</h2>
+<p>This is not a cartoon: nodes and arrows below are the actual strongest synaptic paths in
+the FlyWire v630 connectivity table we simulate. Sugar sensory neurons excite a band of
+second-order neurons; those converge onto a handful of premotor neurons; three of them
+excite MN9 while three inhibit it. The feeding decision is literally this tug-of-war.</p>
+
+<div class="graphwrap"><svg id="pathway" width="860" height="520" viewBox="0 0 860 520" role="img" aria-label="Layered graph of the sugar to MN9 pathway"></svg></div>
+<div class="legend">
+  <span><span class="sw"></span>excitatory (width ∝ synapse count)</span>
+  <span><span class="sw i"></span>inhibitory</span>
+  <span><span class="sw d"></span>weak (&lt;20 synapses)</span>
+</div>
+<p class="cap">Node labels: FlyWire cell-type names where the Shiu annotations provide one, otherwise
+the last four digits of the FlyWire root ID. Rates in parentheses: our NumPy simulation, sugar at
+150 Hz. Edge widths scale with summed synapse count; only edges with ≥5 synapses are drawn.
+Bitter GRNs connect to this sugar pathway almost entirely through neurons outside this subgraph,
+which is why their suppression of MN9 (105.7 → 2.7 Hz) works without strong direct edges here.</p>
+
+<h2>Validation against the Brian2 reference</h2>
+<table>
+<tr><th>Stimulus (150 Hz)</th><th class="n">NumPy (ours)</th><th class="n">Brian2 (Shiu code)</th><th class="n">chetaslua's post</th><th>Verdict</th></tr>
+<tr><td>sugar → MN9</td><td class="n">105.7 Hz</td><td class="n">93.3 ± 3.2 Hz</td><td class="n">78 Hz</td><td>extend (feed) ✓, rate +13% <span class="flag">— open item</span></td></tr>
+<tr><td>sugar + bitter → MN9</td><td class="n">2.7 Hz</td><td class="n">suppressed</td><td class="n">3 Hz</td><td>suppression reproduced ✓</td></tr>
+<tr><td>water → MN9</td><td class="n">13.0 Hz</td><td class="n">–</td><td class="n">–</td><td>mild extend, plausible</td></tr>
+<tr><td>runtime, 3 trials</td><td class="n">15 s</td><td class="n">minutes</td><td class="n">–</td><td>~20× faster on one CPU</td></tr>
+</table>
+<p>The bitter result is the strong check: feeding suppression emerges from connectome
+structure alone, and we land within rounding of the viral demo. The sugar rate runs 13%
+hot, which is systematic, not noise (Brian2's trial-to-trial std is 3.2 Hz). Prime suspects,
+in order: Brian2's within-step event ordering (integrate → threshold → synapses → reset,
+where ours detects spikes in the same step inputs arrive), its exact coupled-ODE
+integrator versus our exponential Euler, and refractory-freeze semantics. The fix and a
+per-neuron scatter (all ~450 active neurons, NumPy vs Brian2, slope ≈ 1) is the one item
+left open from Week 1.</p>
+
+<h2>What shipped</h2>
+<div class="grid2">
+<div>
+<p><b>Code</b> — <a href="https://github.com/CharlieZhang1999/flybrain">github.com/CharlieZhang1999/flybrain</a></p>
+<ul>
+<li><code>sim/lif_numpy.py</code> — the simulator: sparse CSC weight matrix, 1.8 ms delay ring buffer, Poisson drive, 5 s per trial</li>
+<li><code>stimuli/words.py</code> — word → GRN mappings (sugar, bitter, water, salt) from the paper's notebooks</li>
+<li><code>scripts/word_demo.py</code> — the demo CLI, plus a <code>/fly-word</code> Claude skill</li>
+</ul>
+</div>
+<div>
+<p><b>Try it</b></p>
+<pre>python scripts/word_demo.py sugar+bitter
+# 409 neurons spike, MN9 at 2.7 Hz
+# -> no feeding response</pre>
+<p class="cap">Early fix worth remembering: the paper's neuron IDs are FlyWire v630, not v783 — the demo loads the v630 tables to match the reference exactly.</p>
+</div>
+</div>
+
+<h2>Week 2: more words, and the male brain</h2>
+<ul>
+<li><b>Close the 13% gap</b> — match Brian2's step ordering and integrator, then publish the per-neuron rate scatter as the validation figure.</li>
+<li><b>Grow the vocabulary</b> — the connectome's annotations cover far more than taste: olfactory glomeruli (vinegar, geosmin), looming detectors (predator), Johnston's organ (sound, wind), hot/cold cells. Each word is just an annotated ID list plus a defensible drive rate.</li>
+<li><b>Port to MaleCNS</b> — the newer male connectome adds the ventral nerve cord, meaning real leg and wing motor neurons to read instead of MN9 proxies. That is the honest version of the viral "fly plays Minecraft" demo: published code, shuffled-connectome controls, motor readouts you can defend.</li>
+</ul>
+</main>
+
+<script>
+(function(){
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// ---- real subgraph extracted from 2023_03_23_connectivity_630_final.parquet ----
+// nodes: [id, label, layer, rateHz or null]
+const nodes = [
+ ["sugar","21 sugar GRNs",0,150],
+ ["bitter","21 bitter GRNs",0,null],
+ [8530,"…8530 (157)",1,157],[5448,"…5448 (186)",1,186],[3685,"…3685 (163)",1,163],
+ [4757,"G2N_1",1,null],[4049,"clavicle",1,null],[1306,"…1306",1,null],
+ [3712,"…3712 (145)",1,145],[3666,"FMIn",1,null],
+ [3515,"…3515",2,null],[1725,"roundup",2,null],[2743,"…2743",2,null],
+ [6209,"…6209",2,null],[9241,"…9241",2,null],[7842,"…7842",2,null],
+ ["mn9","MN9 (106)",3,105.7],
+];
+// edges: [src, dst, synapses, sign]  (aggregated; >=5 synapses except bitter's strongest)
+const edges = [
+ ["sugar",8530,464,1],["sugar",5448,442,1],["sugar",3685,335,1],["sugar",4757,318,1],
+ ["sugar",4049,262,1],["sugar",1306,229,1],["sugar",3712,221,1],["sugar",3666,215,1],
+ ["bitter",1306,1,1],
+ [4757,1725,33,1],[4757,3712,22,1],[4757,4049,18,1],
+ [8530,1725,11,1],[8530,9241,6,1],[8530,3712,8,1],
+ [5448,4757,31,-1],[5448,8530,26,-1],[5448,4049,31,-1],
+ [3685,4757,33,-1],[3685,8530,16,-1],[3685,4049,21,-1],[3685,5448,5,-1],
+ [3712,7842,43,-1],[3712,6209,32,-1],
+ [3666,3515,5,1],
+ [1725,"mn9",424,1],[1725,3515,23,1],[1725,9241,46,1],
+ [3515,"mn9",561,1],[2743,"mn9",281,1],
+ [6209,"mn9",267,-1],[6209,2743,33,-1],[6209,1725,18,-1],
+ [9241,"mn9",173,-1],[9241,3515,7,-1],[9241,6209,7,-1],
+ [7842,"mn9",155,-1],[7842,1725,67,-1],[7842,2743,95,-1],[7842,9241,7,-1],
+];
+const layerX = [90, 330, 580, 790];
+const byLayer = [[],[],[],[]];
+nodes.forEach(n=>byLayer[n[2]].push(n));
+const pos = {};
+byLayer.forEach((ln,li)=>{
+  const h = 520, pad = 60;
+  ln.forEach((n,i)=>{
+    const y = ln.length===1 ? h/2 : pad + i*(h-2*pad)/(ln.length-1);
+    pos[n[0]] = {x:layerX[li], y, label:n[1], layer:li};
+  });
+});
+const svg = document.getElementById('pathway');
+const ns = 'http://www.w3.org/2000/svg';
+const el = (t,a)=>{const e=document.createElementNS(ns,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+// edges first (under nodes)
+edges.forEach(([s,d,syn,sign])=>{
+  const a=pos[s], b=pos[d];
+  const w = Math.max(1, 1.1*Math.log2(syn));
+  const mx = (a.x+b.x)/2;
+  const p = el('path',{d:`M${a.x+14},${a.y} C${mx},${a.y} ${mx},${b.y} ${b.x-14},${b.y}`,
+    fill:'none', stroke: sign>0?css('--exc'):css('--inh'),
+    'stroke-width':w, opacity: sign>0?0.75:0.8});
+  if(syn<20) p.setAttribute('stroke-dasharray','5 4');
+  const tip = el('title',{}); tip.textContent = `${a.label} → ${b.label}: ${syn} synapses, ${sign>0?'excitatory':'inhibitory'}`;
+  p.appendChild(tip); svg.appendChild(p);
+});
+// layer headings
+const heads=['sensory input','second-order','premotor','motor'];
+heads.forEach((h,i)=>{
+  const t=el('text',{x:layerX[i],y:24,'text-anchor':'middle','font-size':'11',
+    fill:css('--muted'),'letter-spacing':'2'});
+  t.textContent=h.toUpperCase(); svg.appendChild(t);
+});
+// nodes
+for(const k in pos){
+  const n=pos[k];
+  const isGroup = k==='sugar'||k==='bitter';
+  const isMn9 = k==='mn9';
+  const r = isMn9?16: isGroup?13:9;
+  const c = el('circle',{cx:n.x,cy:n.y,r,
+    fill: k==='bitter'?css('--inh'): isMn9||k==='sugar'?css('--accent'):css('--bg'),
+    stroke: css('--fg'),'stroke-width':isMn9?2:1.2});
+  const tip=el('title',{}); tip.textContent=n.label; c.appendChild(tip);
+  svg.appendChild(c);
+  const anchor = n.layer===0?'end': n.layer===3?'start':'middle';
+  const tx = n.layer===0?n.x-20: n.layer===3?n.x+22:n.x;
+  const ty = n.layer===0||n.layer===3? n.y+4 : n.y-16;
+  const t=el('text',{x:tx,y:ty,'text-anchor':anchor,'font-size':'12',fill:css('--fg')});
+  t.textContent=n.label; svg.appendChild(t);
+}
+// re-render colors when theme flips
+if (window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>location.reload());
+})();
+</script>
