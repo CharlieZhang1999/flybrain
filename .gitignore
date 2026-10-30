@@ -21,3 +21,6 @@ results/**
 !results/figures/**
 
 .DS_Store
+
+# FlyWire annotation download (31 MB, re-fetch from flyconnectome/flywire_annotations)
+data/flywire_annot/
