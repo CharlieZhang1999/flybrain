@@ -10,6 +10,7 @@ This is not a fly that talks, and nothing here decodes intentions. Every neuron 
 - [x] **Week 1:** NumPy LIF matches the Shiu et al. Brian2 model on FlyWire (sugar → MN9 feeding, bitter suppression). [Report](docs/week1_report.html), [notebook 01](notebooks/01_shiu_validation.ipynb)
 - [x] **Week 2:** MaleCNS port; the persistent attractor fixed by modelling eLN–PN coupling as gap junctions; 17-word readout; shuffled-connectome control; Connectome Explorer. [Summary](progress/week2/week2_summary.md), [notebook 02](notebooks/02_translator.ipynb)
 - [x] **Week 3:** closed loop between the fly brain and an LLM: words in, a sentence to the LLM, the chosen action played back as a hearing-neuron spike code and read back from descending neurons. [Report](docs/week3_report.html), [notebook 03](notebooks/03_gpt_loop.ipynb), [video](results/figures/loop_demo.mp4)
+- [ ] **Week 4 (in progress):** full CNS (brain + VNC, 165,122 neurons) with a PyTorch simulator that matches the NumPy one spike-for-spike; brain→VNC motor-pool regression is next. [Plan](progress/week4/week4_plan.md), [Day 1](progress/week4/day1_results.md)
 
 ## Headline numbers (Week 3, MaleCNS)
 
