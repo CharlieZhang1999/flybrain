@@ -1,0 +1,257 @@
+<meta charset="utf-8">
+<title>Fly Brain Loop</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f2ec; --panel:#fffdf8; --ink:#1d1f1c; --muted:#6b6d63; --line:#dedad0;
+  --raster-bg:#fbfaf6; --dim:rgba(244,242,236,.78);
+  --sens:#c77d0a; --al:#0f8a7e; --cb:#6a5fb8; --dn:#d04a3a;
+  --word:rgba(199,125,10,.10); --code:rgba(208,74,58,.12); --quiet:rgba(0,0,0,.025);
+  --fly:#efe6d2; --fly-ink:#3b2f12; --llm:#1d1f1c; --llm-ink:#f6f3ea; --ok:#2f8a4b; --bad:#c23b2c; --accent:#d04a3a;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1012; --panel:#17181b; --ink:#ecebe6; --muted:#9a9a92; --line:#2a2b2f;
+  --raster-bg:#0b0c0e; --dim:rgba(11,12,14,.72);
+  --sens:#f2b13c; --al:#3cc9b9; --cb:#9c92ff; --dn:#ff6b57;
+  --word:rgba(242,177,60,.10); --code:rgba(255,107,87,.14); --quiet:rgba(255,255,255,.025);
+  --fly:#2a2519; --fly-ink:#f3e7c7; --llm:#ecebe6; --llm-ink:#141414; --ok:#5cc97a; --bad:#ff6b57; --accent:#ff6b57; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1012; --panel:#17181b; --ink:#ecebe6; --muted:#9a9a92; --line:#2a2b2f;
+  --raster-bg:#0b0c0e; --dim:rgba(11,12,14,.72);
+  --sens:#f2b13c; --al:#3cc9b9; --cb:#9c92ff; --dn:#ff6b57;
+  --word:rgba(242,177,60,.10); --code:rgba(255,107,87,.14); --quiet:rgba(255,255,255,.025);
+  --fly:#2a2519; --fly-ink:#f3e7c7; --llm:#ecebe6; --llm-ink:#141414; --ok:#5cc97a; --bad:#ff6b57; --accent:#ff6b57; color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 "IBM Plex Sans",system-ui,sans-serif;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-bottom:12px}
+h1{font:700 22px/1.1 "Bricolage Grotesque",system-ui,sans-serif;margin:0;letter-spacing:-.01em}
+h1 small{display:block;font:400 12px "IBM Plex Sans",sans-serif;color:var(--muted);letter-spacing:0;margin-top:3px}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-left:auto}
+select,button{font:500 13px "IBM Plex Sans",sans-serif;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:6px 10px;cursor:pointer}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink);min-width:74px}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{border:0;border-radius:0;padding:6px 8px;background:var(--panel)}
+.seg button[aria-pressed="true"]{background:var(--line)}
+.stage{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:14px;position:relative}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.ptitle{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font:600 12px "IBM Plex Sans";text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+.ptitle span:last-child{text-transform:none;letter-spacing:0;font:400 12px "IBM Plex Mono",monospace}
+.rounds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.rounds button{position:relative;overflow:hidden;text-align:left;padding:5px 8px;font:500 12px "IBM Plex Sans"}
+.rounds button .fill{position:absolute;inset:0 auto 0 0;background:var(--word);width:0}
+.rounds button span{position:relative}
+.rounds button.on{border-color:var(--ink)}
+.cv-wrap{position:relative}
+canvas{display:block;width:100%}
+#raster{height:430px;border-radius:6px}
+#pop{height:64px;margin-top:6px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.scrub{display:flex;align-items:center;gap:10px;margin-top:10px}
+.scrub input{flex:1;accent-color:var(--accent);min-width:0}
+.chat{display:flex;flex-direction:column;height:100%}
+#feed{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:9px;padding-right:4px;max-height:600px;scroll-behavior:smooth}
+.divider{font:500 11px "IBM Plex Mono";color:var(--muted);text-align:center;margin:6px 0 0;letter-spacing:.04em}
+.msg{max-width:92%;border-radius:12px;padding:8px 11px;animation:pop .25s ease-out}
+.who{font:600 11px "IBM Plex Sans";text-transform:uppercase;letter-spacing:.07em;opacity:.7;margin-bottom:4px}
+.fly{align-self:flex-start;background:var(--fly);color:var(--fly-ink);border-bottom-left-radius:4px}
+.llm{align-self:flex-end;background:var(--llm);color:var(--llm-ink);border-bottom-right-radius:4px}
+.sys{align-self:center;font:12px "IBM Plex Mono";color:var(--muted);text-align:center;max-width:100%}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font:500 13px "IBM Plex Mono";padding:2px 7px;border-radius:5px;background:rgba(127,127,127,.14);animation:pop .2s ease-out}
+.chip sub{font-size:10px;opacity:.65;margin-left:3px;vertical-align:0}
+.chip.bad{outline:1.5px solid var(--bad)}
+.chip.wait{opacity:.45}
+.sent{margin-top:6px;font-size:13.5px}
+.act{font:700 17px "Bricolage Grotesque",sans-serif}
+.tag{display:inline-block;font:500 10.5px "IBM Plex Mono";padding:1px 6px;border-radius:4px;border:1px solid currentColor;opacity:.7;margin-top:5px}
+.ok{color:var(--ok);font-weight:600}.no{color:var(--bad);font-weight:600}
+@keyframes pop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.card{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;background:var(--dim);backdrop-filter:blur(3px);border-radius:12px}
+.card div{max-width:620px;text-align:center;padding:24px}
+.card h2{font:700 34px/1.1 "Bricolage Grotesque",sans-serif;margin:0 0 12px;text-wrap:balance}
+.card p{color:var(--muted);margin:0 auto 16px;max-width:52ch}
+.card .big{font:700 22px "Bricolage Grotesque";color:var(--ink)}
+footer{color:var(--muted);font-size:12px;margin-top:12px;max-width:110ch}
+@media (max-width:860px){.stage{grid-template-columns:1fr}#raster{height:340px}#feed{max-height:420px}}
+</style>
+
+<header>
+  <h1>Fly Brain Loop<small>A simulated fruit-fly brain (MaleCNS connectome) describes its senses to a language model, then hears the answer</small></h1>
+  <div class="controls">
+    <select id="run" aria-label="Run"></select>
+    <button id="play" class="primary">Play</button>
+    <div class="seg" id="speed" aria-label="Speed">
+      <button data-s="0.1">0.1×</button><button data-s="0.2" aria-pressed="true">0.2×</button><button data-s="0.5">0.5×</button><button data-s="1">1×</button>
+    </div>
+  </div>
+</header>
+
+<div class="stage">
+  <section class="panel">
+    <div class="ptitle"><span>Brain activity</span><span id="tlabel">t = 0.00 s</span></div>
+    <div class="rounds" id="rounds"></div>
+    <div class="cv-wrap"><canvas id="raster"></canvas></div>
+    <canvas id="pop"></canvas>
+    <div class="legend">
+      <span><i style="background:var(--sens)"></i>Sensory input</span>
+      <span><i style="background:var(--al)"></i>Antennal lobe</span>
+      <span><i style="background:var(--cb)"></i>Central brain</span>
+      <span><i style="background:var(--dn)"></i>Descending neurons</span>
+      <span id="nspk" class="mono"></span>
+    </div>
+    <div class="scrub"><input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Time"><span class="mono" id="tl2"></span></div>
+  </section>
+  <section class="panel chat">
+    <div class="ptitle"><span>Conversation</span><span id="score"></span></div>
+    <div id="feed"></div>
+  </section>
+  <div class="card" id="card"><div>
+    <h2 id="cardTitle">A fly brain talks to a language model</h2>
+    <p id="cardText">Each round, five stimuli drive the fly's sensory neurons. A readout of the brain's spikes turns them into words, the words become a sentence for the LLM, and the LLM's chosen action is played back into the fly's hearing neurons as a spike code. The fly's descending neurons then read the action back.</p>
+    <button class="primary" id="cardPlay">Play</button>
+  </div></div>
+</div>
+<footer id="foot"></footer>
+
+<script>
+const $=s=>document.querySelector(s);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const PHR={vinegar:'vinegar',fruit:'ripe fruit',sugar:'sugar',bitter:'bitter',water:'water',umami:'savory',hot:'hot',cold:'cold',humid:'humid',dry:'dry',co2:'CO₂',wind:'wind',sound:'sound',looming:'looming',light:'light',dark:'dark',pheromone:'pheromone'};
+const CODE_DESC={'B-L':'left hearing neurons, steady','B-R':'right hearing neurons, steady','A+B':'both hearing groups, steady','B-pulse':'hearing group B, pulsed','A-pulse':'hearing group A, pulsed'};
+let D=null,T=0,playing=false,speed=0.2,last=0,off=[],lastKey='',stage='intro';
+
+function b64u16(s){const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return new Uint16Array(u.buffer)}
+async function init(){
+  const idx=await (await fetch('data/index.json')).json();
+  const name=r=>(r.cfg==='real'?'Real connectome':'Shuffled wiring (control)')+' · seed '+r.seed;
+  idx.sort((a,b)=>a.cfg.localeCompare(b.cfg)||a.seed-b.seed);
+  $('#run').innerHTML=idx.map(r=>`<option value="${r.key}">${name(r)}</option>`).join('');
+  $('#run').onchange=()=>load($('#run').value);
+  await load(idx[0].key);
+}
+async function load(key){
+  D=await (await fetch('data/loop_'+key+'.json')).json();
+  D.sr=b64u16(D.spikes_row);D.st=b64u16(D.spikes_t);
+  $('#rounds').innerHTML=D.rounds.map((r,i)=>`<button data-i="${i}"><div class="fill"></div><span>Round ${i+1} · ${r.t_start.toFixed(1)}–${r.t_end.toFixed(1)} s</span></button>`).join('');
+  $('#rounds').querySelectorAll('button').forEach(b=>b.onclick=()=>{T=D.rounds[+b.dataset.i].t_start;lastKey='';if(stage!=='play'){stage='play';$('#card').hidden=true}draw()});
+  const wc=D.rounds.reduce((a,r)=>a+r.words_correct,0),ac=D.rounds.filter(r=>r.action_ok).length;
+  $('#foot').innerHTML=`${D.n_active.toLocaleString()} neurons fired in this run; the raster shows ${D.n_rows} of them (the most active in each group) and ${D.n_spikes_shown.toLocaleString()} of ${D.n_spikes_total.toLocaleString()} spikes. Words are decoded from all non-sensory neurons; the action is decoded from descending neurons only. LLM replies here come from ${D.rounds[0].llm_provider==='stub'?'an offline rule-based stand-in, not a real LLM':'Claude ('+D.rounds[0].llm_model+'), called live during the run through the Claude Code CLI'}. Run total: words ${wc}/${D.rounds.length*5}, actions ${ac}/${D.rounds.length}.`;
+  D.score=`words ${wc}/${D.rounds.length*5} · actions ${ac}/${D.rounds.length}`;
+  T=0;lastKey='';buildOff();draw();
+}
+function size(cv){const r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1;cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);return dpr}
+const LM=96; // left margin css px for labels
+function buildOff(){
+  const cv=$('#raster');const dpr=size(cv);size($('#pop'));
+  const W=cv.width,H=cv.height,lm=LM*dpr,top=18*dpr,ph=H-top;
+  const cols=[css('--sens'),css('--al'),css('--cb'),css('--dn')];
+  const rowG=new Uint8Array(D.n_rows);D.groups.forEach((g,gi)=>{for(let k=0;k<g.n;k++)rowG[g.start+k]=gi});
+  const rh=ph/D.n_rows;
+  off=D.rounds.map(r=>{
+    const o=document.createElement('canvas');o.width=W;o.height=H;const c=o.getContext('2d');
+    const t0=r.t_start*2000,t1=r.t_end*2000,sx=(W-lm)/(t1-t0);
+    let lo=0,hi=D.st.length;while(lo<hi){const m=(lo+hi)>>1;if(D.st[m]<t0)lo=m+1;else hi=m}
+    const pw=Math.max(1,dpr*1.1),phh=Math.max(1,rh*0.9);
+    for(let g=0;g<4;g++){c.fillStyle=cols[g];
+      for(let k=lo;k<D.st.length&&D.st[k]<t1;k++){const row=D.sr[k];if(rowG[row]!==g)continue;
+        c.fillRect(lm+(D.st[k]-t0)*sx,top+row*rh,pw,phh)}}
+    return o});
+}
+function words(r){return r.true.map((w,k)=>({w,dec:r.decoded[k],p:r.p_top[k],t:r.t_start+(k+1)*0.5}))}
+function draw(){
+  if(!D)return;
+  const ri=Math.max(0,D.rounds.findIndex(r=>T<r.t_end+1e-9)===-1?D.rounds.length-1:D.rounds.findIndex(r=>T<r.t_end+1e-9));
+  const r=D.rounds[ri];
+  const cv=$('#raster'),c=cv.getContext('2d'),dpr=window.devicePixelRatio||1,W=cv.width,H=cv.height,lm=LM*dpr,top=18*dpr;
+  const t0=r.t_start,t1=r.t_end,X=t=>lm+(t-t0)/(t1-t0)*(W-lm);
+  c.fillStyle=css('--raster-bg');c.fillRect(0,0,W,H);
+  // windows
+  const ws=words(r);
+  ws.forEach((w,k)=>{c.fillStyle=k%2?css('--word'):css('--quiet');c.fillRect(X(w.t-0.5),top,X(w.t)-X(w.t-0.5),H-top)});
+  c.fillStyle=css('--code');c.fillRect(X(r.t_words),top,X(r.t_words+0.5)-X(r.t_words),H-top);
+  // spikes up to T
+  const xs=Math.max(lm,Math.min(W,X(T)));
+  c.drawImage(off[ri],0,0,xs,H,0,0,xs,H);
+  // labels top
+  c.font=`500 ${10.5*dpr}px "IBM Plex Mono",monospace`;c.textBaseline='top';c.textAlign='center';
+  ws.forEach(w=>{c.fillStyle=T>=w.t-0.5?css('--ink'):css('--muted');c.globalAlpha=T>=w.t-0.5?1:.45;c.fillText(PHR[w.w]||w.w,X(w.t-0.25),3*dpr)});
+  c.globalAlpha=T>=r.t_words?1:.45;c.fillStyle=css('--accent');c.fillText('code '+r.code,X(r.t_words+0.25),3*dpr);
+  c.fillStyle=css('--muted');c.fillText('quiet',X(r.t_words+0.75),3*dpr);c.globalAlpha=1;
+  // group labels
+  c.textAlign='right';c.textBaseline='middle';c.font=`500 ${11*dpr}px "IBM Plex Sans",sans-serif`;
+  const rh=(H-top)/D.n_rows,cols=[css('--sens'),css('--al'),css('--cb'),css('--dn')];
+  D.groups.forEach((g,gi)=>{const y0=top+g.start*rh,y1=y0+g.n*rh;c.fillStyle=cols[gi];c.fillRect(lm-6*dpr,y0+1,3*dpr,y1-y0-2);
+    const lines=g.name.split(' ');c.fillStyle=css('--ink');lines.forEach((l,li)=>c.fillText(l,lm-12*dpr,(y0+y1)/2+(li-(lines.length-1)/2)*13*dpr));
+    if(gi)c.fillStyle=css('--line'),c.fillRect(lm,y0,W-lm,1)});
+  // playhead
+  if(T>t0&&T<t1){c.fillStyle=css('--accent');c.fillRect(xs-dpr,top,2*dpr,H-top)}
+  // pop
+  const pc=$('#pop'),p=pc.getContext('2d'),PW=pc.width,PH=pc.height;p.clearRect(0,0,PW,PH);
+  const a=Math.round(t0*100),b=Math.round(t1*100),seg=D.pop_10ms.slice(a,b),mx=Math.max(...D.pop_10ms)||1;
+  const PX=i=>lm+i/(b-a)*(PW-lm);
+  p.fillStyle=css('--muted');p.font=`500 ${10.5*dpr}px "IBM Plex Sans",sans-serif`;p.textAlign='right';p.textBaseline='middle';
+  p.fillText('spikes / 10 ms',lm-12*dpr,PH/2);
+  p.fillStyle=css('--line');p.fillRect(lm,PH-1,PW-lm,1);
+  p.beginPath();p.moveTo(PX(0),PH);const n=Math.max(0,Math.min(seg.length,Math.floor((T-t0)*100)));
+  for(let i=0;i<n;i++)p.lineTo(PX(i),PH-(seg[i]/mx)*(PH-4*dpr));p.lineTo(PX(n),PH);p.closePath();
+  p.fillStyle=css('--cb');p.globalAlpha=.55;p.fill();p.globalAlpha=1;
+  // header bits
+  $('#tlabel').textContent=`t = ${T.toFixed(2)} s brain time`;
+  $('#tl2').textContent=`${T.toFixed(2)} / ${D.t_total.toFixed(1)} s`;
+  $('#scrub').value=Math.round(T/D.t_total*1000);
+  $('#rounds').querySelectorAll('button').forEach((bt,i)=>{const q=D.rounds[i];bt.classList.toggle('on',i===ri);
+    bt.querySelector('.fill').style.width=Math.max(0,Math.min(1,(T-q.t_start)/(q.t_end-q.t_start)))*100+'%'});
+  let cnt=0;const ts=Math.round(T*2000);let lo=0,hi=D.st.length;while(lo<hi){const m=(lo+hi)>>1;if(D.st[m]<ts)lo=m+1;else hi=m}cnt=lo;
+  $('#nspk').textContent=cnt.toLocaleString()+' spikes so far';
+  feed();
+}
+function feed(){
+  const items=[];let key='';
+  D.rounds.forEach((r,i)=>{
+    if(T<r.t_start-1e-9)return;
+    const ws=words(r),shown=ws.filter(w=>T>=w.t);
+    key+=`${i}:${shown.length}`;
+    items.push(`<div class="divider">ROUND ${i+1} · ${r.t_start.toFixed(1)} s</div>`);
+    const chips=ws.map(w=>T>=w.t?`<span class="chip${w.dec===w.w?'':' bad'}">${PHR[w.dec]||w.dec}<sub>${Math.round(w.p*100)}%</sub></span>`:(T>=w.t-0.5?`<span class="chip wait">…</span>`:'')).join('');
+    const done=T>=r.t_words;
+    items.push(`<div class="msg fly"><div class="who">Fly brain · decoded from spikes</div><div class="chips">${chips||'<span class="chip wait">listening…</span>'}</div>${done?`<div class="sent">“${r.prompt.replace(' What should I do?','')} <b>What should I do?</b>”</div>`:''}</div>`);
+    key+=done?'p':'';
+    if(T>=r.t_words+0.06){key+='l';
+      const stub=r.llm_provider==='stub';
+      items.push(`<div class="msg llm"><div class="who">Language model</div><div class="act">${r.action[0].toUpperCase()+r.action.slice(1)}.</div><span class="tag">${stub?'offline stand-in · '+r.llm_model:'Claude · '+r.llm_model}</span></div>`);}
+    if(T>=r.t_words+0.15){key+='s';items.push(`<div class="sys">↓ “${r.action}” → spike code <b>${r.code}</b> into the fly's hearing neurons (${CODE_DESC[r.code]||''})</div>`);}
+    if(T>=r.t_words+0.5){key+='a';
+      items.push(`<div class="msg fly"><div class="who">Fly brain · descending neurons</div>Heard: <span class="act">${r.action_decoded}</span> <span class="mono">${Math.round(r.action_p*100)}%</span> ${r.action_ok?'<span class="ok">✓ matches</span>':'<span class="no">✗ mismatch</span>'}</div>`);}
+  });
+  if(key!==lastKey){lastKey=key;const f=$('#feed');f.innerHTML=items.join('');f.scrollTop=f.scrollHeight}
+  $('#score').textContent=T>=D.t_total-1e-6?D.score:'';
+}
+function tick(now){
+  if(playing){const dt=Math.min(0.1,(now-last)/1000);T+=dt*speed;
+    if(T>=D.t_total){T=D.t_total;playing=false;$('#play').textContent='Replay';showEnd()}
+    draw()}
+  last=now;requestAnimationFrame(tick);
+}
+function showEnd(){
+  const wc=D.rounds.reduce((a,r)=>a+r.words_correct,0),ac=D.rounds.filter(r=>r.action_ok).length;
+  $('#cardTitle').textContent=`${wc} of ${D.rounds.length*5} words, ${ac} of ${D.rounds.length} actions`;
+  $('#cardText').innerHTML=`Every word the fly “said” was read from its spikes, and every action the language model chose was read back from its descending neurons. ${D.rounds[0].llm_provider==='stub'?'In this run the language model is an offline rule-based stand-in.':'Each action was chosen live by Claude ('+D.rounds[0].llm_model+').'}`;
+  $('#cardPlay').textContent='Replay';$('#card').hidden=false;stage='end';
+}
+function start(){if(T>=D.t_total)T=0,lastKey='';stage='play';$('#card').hidden=true;playing=true;$('#play').textContent='Pause'}
+$('#play').onclick=()=>{if(playing){playing=false;$('#play').textContent='Play'}else start()};
+$('#cardPlay').onclick=start;
+$('#scrub').oninput=e=>{T=e.target.value/1000*D.t_total;if(stage!=='play'){stage='play';$('#card').hidden=true}draw()};
+$('#speed').querySelectorAll('button').forEach(b=>b.onclick=()=>{speed=+b.dataset.s;$('#speed').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b))});
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(D){buildOff();draw()}},150)});
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(D){buildOff();draw()}});
+window.player={get T(){return T},set T(v){T=v;draw()},start,load,get D(){return D}};
+init().then(()=>requestAnimationFrame(t=>{last=t;tick(t)}));
+document.fonts&&document.fonts.ready.then(()=>D&&draw());
+</script>

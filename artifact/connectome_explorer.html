@@ -1,0 +1,419 @@
+<title>Connectome Graph Explorer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a lab-notebook console. Controls rail on top, the live graph as the bench, readings and notes below. */
+:root {
+  --bg: #f4f5f2; --panel: #ffffff; --ink: #1d2320; --muted: #5d6762; --line: #d9ddd8;
+  --canvas: #fbfbf9; --exc: #c4621d; --inh: #2a6f97; --gap: #7b4fb0; --accent: #2f7d5b;
+  --g-sensory: #b8860b; --g-al: #c4621d; --g-central: #4b6b5c; --g-optic: #5a6fa8; --g-dn: #b03a48; --g-mn: #8a2b8f; --g-other: #8b928e;
+  --hot: #d9480f; --heat-lo: #f6d5cf; --heat-hi: #b3001b; --idle: #c9cec9;
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --f-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121614; --panel: #1a1f1c; --ink: #e6ebe7; --muted: #9aa49f; --line: #2c3430;
+  --canvas: #0d100f; --exc: #f08a3e; --inh: #5fa8d3; --gap: #b48ae6; --accent: #5cc08e;
+  --g-sensory: #e0b03a; --g-al: #f08a3e; --g-central: #86b39d; --g-optic: #8ea2e0; --g-dn: #ef6b7b; --g-mn: #d37ad8; --g-other: #7d8682;
+  --hot: #ff7a3d; --heat-lo: #4a1d1f; --heat-hi: #ff3b2f; --idle: #333a36; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121614; --panel: #1a1f1c; --ink: #e6ebe7; --muted: #9aa49f; --line: #2c3430;
+  --canvas: #0d100f; --exc: #f08a3e; --inh: #5fa8d3; --gap: #b48ae6; --accent: #5cc08e;
+  --g-sensory: #e0b03a; --g-al: #f08a3e; --g-central: #86b39d; --g-optic: #8ea2e0; --g-dn: #ef6b7b; --g-mn: #d37ad8; --g-other: #7d8682;
+  --hot: #ff7a3d; --heat-lo: #4a1d1f; --heat-hi: #ff3b2f; --idle: #333a36; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 40px }
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 18px }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(26px, 4vw, 38px); line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -0.01em }
+h2 { font-family: var(--f-display); font-weight: 600; font-size: 20px; margin: 0 0 8px; text-wrap: balance }
+.lede { color: var(--muted); max-width: 70ch; margin: 6px 0 0 }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: end; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px }
+.ctl { display: grid; gap: 4px; min-width: 0 }
+.ctl > span { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600 }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; flex-wrap: wrap }
+.seg button { font: inherit; font-size: 13px; padding: 6px 10px; border: 0; background: transparent; color: var(--ink); cursor: pointer; border-right: 1px solid var(--line) }
+.seg button:last-child { border-right: 0 }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg) }
+.seg button:disabled { opacity: .35; cursor: not-allowed }
+select, .btn { font: inherit; font-size: 13px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink) }
+.btn { cursor: pointer }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.bench { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 14px }
+@media (max-width: 900px) { .bench { grid-template-columns: minmax(0, 1fr) } }
+.stage { position: relative; background: var(--canvas); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; height: min(68vh, 640px); min-height: 380px; touch-action: none }
+canvas { display: block; width: 100%; height: 100% }
+.stage .zoom { position: absolute; right: 10px; bottom: 10px; display: grid; gap: 6px }
+.stage .zoom button { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-size: 16px; cursor: pointer }
+.stage .status { position: absolute; left: 12px; bottom: 10px; font-size: 12px; color: var(--muted); font-family: var(--f-mono); background: color-mix(in srgb, var(--canvas) 80%, transparent); padding: 2px 6px; border-radius: 6px }
+.tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 12px; max-width: 280px; box-shadow: 0 6px 20px rgba(0,0,0,.18); z-index: 3 }
+.tip b { font-family: var(--f-mono); font-weight: 500 }
+.side { display: grid; gap: 12px; align-content: start; min-width: 0 }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; min-width: 0 }
+.kv { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; font-size: 13px }
+.kv dt { color: var(--muted) } .kv dd { margin: 0; text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums }
+.pill { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; font-weight: 600 }
+.pill.bad { background: color-mix(in srgb, var(--hot) 18%, transparent); color: var(--hot) }
+.pill.good { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent) }
+.legend { display: grid; gap: 4px; font-size: 12px }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px }
+.legend .ln { display: inline-block; width: 18px; height: 0; border-top: 2px solid; margin-right: 6px; vertical-align: 3px }
+.timeline { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 10px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px }
+.timeline input[type=range] { width: 100% }
+.spark { grid-column: 1 / -1; height: 54px; width: 100% }
+@media (max-width: 600px) { .timeline input[type=range] { grid-column: 1 / -1 } }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px }
+.cm { overflow-x: auto }
+.cm table { border-collapse: collapse; font-family: var(--f-mono); font-size: 10px }
+.cm td, .cm th { width: 18px; height: 18px; text-align: center; padding: 0 }
+.cm th { color: var(--muted); font-weight: 400 }
+.cm th.r { text-align: right; padding-right: 6px; width: auto; white-space: nowrap }
+table.acc { border-collapse: collapse; font-size: 13px; width: 100% }
+table.acc th, table.acc td { padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: left }
+table.acc td.n { text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums }
+.notes p, .notes li { max-width: 72ch } .notes ul { padding-left: 18px; margin: 6px 0 }
+.small { font-size: 12px; color: var(--muted) }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Connectome Graph Explorer</h1>
+    <p class="lede">Each view is one 1-second trial of the NumPy leaky integrate-and-fire model, drawn on the part of the fly connectome it used. Nodes are neurons (rows and columns of the weight matrix <span class="mono">W</span>), edges are non-zero entries. The stimulus drives the chosen sensory neurons for 0–0.5 s, then stops. A healthy model goes quiet afterwards.</p>
+  </header>
+
+  <section class="controls" aria-label="View controls">
+    <div class="ctl"><span>Connectome</span><div class="seg" id="c-con"></div></div>
+    <div class="ctl"><span>Model</span><div class="seg" id="c-model"></div></div>
+    <div class="ctl"><label for="c-word" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600">Stimulus</label><select id="c-word"></select></div>
+    <div class="ctl"><span>Layout</span><div class="seg" id="c-layout"></div></div>
+    <div class="ctl"><span>Color</span><div class="seg" id="c-color"></div></div>
+    <div class="ctl"><span>Edges</span><div class="seg" id="c-edges"></div></div>
+  </section>
+
+  <section class="bench">
+    <div class="stage" id="stage">
+      <canvas id="cv" aria-label="Connectome graph with simulated activity"></canvas>
+      <div class="status" id="status">loading…</div>
+      <div class="zoom"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button><button id="zfit" aria-label="Fit view">⤢</button></div>
+      <div class="tip" id="tip" hidden></div>
+    </div>
+    <aside class="side">
+      <div class="card">
+        <h2 id="v-title">—</h2>
+        <dl class="kv">
+          <dt>Neurons that fired</dt><dd id="v-active">—</dd>
+          <dt>Shown (incl. all motor neurons)</dt><dd id="v-shown">—</dd>
+          <dt>Edges / gap junctions</dt><dd id="v-edges">—</dd>
+          <dt>Still firing at 0.9–1.0 s</dt><dd id="v-tail">—</dd>
+        </dl>
+        <p style="margin:10px 0 0" id="v-verdict"></p>
+      </div>
+      <div class="card legend" id="heat-legend" aria-label="Heat legend" hidden>
+        <div style="font-weight:600" id="heat-title">Heat</div>
+        <div style="height:12px;border-radius:6px;background:linear-gradient(90deg,var(--heat-lo),var(--heat-hi))"></div>
+        <div style="display:flex;justify-content:space-between" class="small mono"><span id="heat-min">low</span><span id="heat-max">high</span></div>
+        <div><i style="background:var(--idle)"></i>Silent</div>
+        <div class="small" id="heat-note"></div>
+      </div>
+      <div class="card legend" id="class-legend" aria-label="Legend">
+        <div><i style="background:var(--g-sensory)"></i>Stimulated sensory neurons</div>
+        <div><i style="background:var(--g-al)"></i>Antennal lobe (PNs, LNs)</div>
+        <div><i style="background:var(--g-central)"></i>Central brain</div>
+        <div><i style="background:var(--g-optic)"></i>Optic lobe / visual</div>
+        <div><i style="background:var(--g-dn)"></i>Descending neurons</div>
+        <div><i style="background:var(--g-mn)"></i>Motor neurons (MN9 ringed)</div>
+        <div><i style="background:var(--g-other)"></i>Other</div>
+        <div style="margin-top:4px"><span class="ln" style="border-color:var(--exc)"></span>Excitatory synapse</div>
+        <div><span class="ln" style="border-color:var(--inh)"></span>Inhibitory synapse</div>
+        <div><span class="ln" style="border-color:var(--gap);border-top-style:dashed"></span>Gap junction (calibrated model)</div>
+        <div class="small" style="margin-top:4px">Bright, larger nodes are spiking in the current 20 ms bin. Layered layout: stimulated sensory neurons on the left, all brain motor neurons in a column on the right (silent ones too), everything else placed by synaptic hops from the stimulus.</div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="timeline" aria-label="Time">
+    <button class="btn" id="play">Play</button>
+    <span class="mono" id="tlabel">0 ms</span>
+    <input type="range" id="t" min="0" max="49" value="0" aria-label="Time bin">
+    <canvas class="spark" id="spark" aria-label="Spikes per 20 ms bin across the whole brain"></canvas>
+  </section>
+
+  <section class="grid2">
+    <div class="card">
+      <h2>Word readout</h2>
+      <p class="small" style="margin-top:0">L2 logistic regression on spike counts from 0–0.5 s, 17 words × 10 seeds (train 0–6, test 7–9; LOSO = leave one seed out). Chance is 5.9%.</p>
+      <div id="acc"></div>
+    </div>
+    <div class="card">
+      <h2>Confusion matrix</h2>
+      <div class="ctl" style="margin-bottom:8px"><div class="seg" id="c-cm"></div></div>
+      <div class="cm" id="cm"></div>
+    </div>
+  </section>
+
+  <section class="card notes">
+    <h2>How to read this</h2>
+    <ul>
+      <li><b>Base</b> is the Shiu et al. 2024 LIF on the connectome (MaleCNS: brain only, monoamines removed, weights × 0.581, rate APL). On both connectomes, smells keep about 3,000–8,000 neurons firing after the stimulus stops.</li>
+      <li><b>Calibrated</b> replaces the chemical cholinergic LN→PN synapses with eLN–PN gap junctions, because Yaksi &amp; Wilson (2010) showed that this connection is electrical (it survives nicotinic blockers and is lost in shakB²). The persistent state goes away, and odors activate only their own glomeruli's PNs.</li>
+      <li><b>Shuffled</b> keeps each neuron's number of inputs and outputs and the sign of its outputs, and randomizes who connects to whom. If the readout works just as well on it, decoding success says little about the real wiring.</li>
+      <li><b>Limits.</b> Electron microscopy sees chemical synapses only, so gap junctions are placed where eLNs and PNs touch, which is an assumption. At this coupling strength, the excitatory LNs are shunted almost silent, which real eLNs are not. Wind still leaves a tail of about 390 neurons outside the antennal lobe on MaleCNS. On the base model, 0.5–1.0 s decoding uses the persistent state; on the calibrated model, it uses the offset transient, which still carries word identity. The model has no adaptation or short-term depression.</li>
+      <li>Each graph shows at most 1,200 of the neurons that fired (the most active ones), each neuron's strongest input, and the strongest remaining edges up to 4,000.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  let INDEX = null, VIEW = null, READ = null;
+  const st = { con: 'malecns', model: 'calib', word: 'vinegar', layout: 'layer', edges: 'active', color: 'heatstim', t: 0, cm: 'calib' };
+  try { Object.assign(st, JSON.parse(localStorage.getItem('cge-state') || '{}')); } catch (e) {}
+  const save = () => { try { localStorage.setItem('cge-state', JSON.stringify(st)); } catch (e) {} };
+  const MODELS = { base: 'Base', calib: 'Calibrated', shuffle: 'Shuffled' };
+  const CONS = { malecns: 'MaleCNS', flywire: 'FlyWire' };
+
+  function seg(el, opts, key, onchange, enabled) {
+    el.innerHTML = '';
+    for (const [k, lab] of Object.entries(opts)) {
+      const b = document.createElement('button'); b.textContent = lab; b.type = 'button';
+      b.setAttribute('aria-pressed', st[key] === k); b.disabled = enabled ? !enabled(k) : false;
+      b.onclick = () => { st[key] = k; save(); onchange(); };
+      el.appendChild(b);
+    }
+  }
+  const has = (con, model, word) => INDEX.views.includes(`${con}_${model}_${word}`);
+  function renderControls() {
+    seg($('c-con'), CONS, 'con', changed, k => INDEX.views.some(v => v.startsWith(k + '_')));
+    seg($('c-model'), MODELS, 'model', changed, k => INDEX.views.some(v => v.startsWith(st.con + '_' + k + '_')));
+    seg($('c-layout'), { layer: 'Layered', force: 'Force' }, 'layout', () => { renderControls(); fit(); draw(); });
+    seg($('c-edges'), { active: 'Active only', all: 'All', none: 'None' }, 'edges', () => { renderControls(); draw(); });
+    seg($('c-color'), { heatstim: 'Heat: stimulus', heatnow: 'Heat: now', cls: 'Cell class' }, 'color', () => { renderControls(); legend(); draw(); });
+    const words = [...new Set(INDEX.views.filter(v => v.startsWith(`${st.con}_${st.model}_`)).map(v => v.split('_').slice(2).join('_')))];
+    const sel = $('c-word'); sel.innerHTML = '';
+    for (const w of INDEX.words.filter(w => words.includes(w))) { const o = document.createElement('option'); o.value = w; o.textContent = ({ 'sugar-bitter': 'sugar + bitter', salt: st.con === 'flywire' ? 'salt (Ir94e)' : 'salt' })[w] || w; sel.appendChild(o); }
+    if (!words.includes(st.word)) st.word = words.includes('vinegar') ? 'vinegar' : words[0];
+    sel.value = st.word;
+  }
+  $('c-word').onchange = e => { st.word = e.target.value; save(); load(); };
+  function changed() {
+    if (!INDEX.views.some(v => v.startsWith(`${st.con}_${st.model}_`))) st.model = INDEX.views.find(v => v.startsWith(st.con + '_')).split('_')[1];
+    renderControls(); load();
+  }
+
+  // ---------- graph drawing ----------
+  const cv = $('cv'), ctx = cv.getContext('2d');
+  let W = 0, H = 0, DPR = 1, view = { s: 1, x: 0, y: 0 }, nodes = [], act = [], inE = [], outE = [];
+  function group(n) {
+    if (n.st) return '--g-sensory';
+    const c = n.c || '', s = n.s || '', t = n.t || '';
+    if (/^AL(PN|LN)$/.test(c) || /^ALPN|^ALLN/.test(c)) return '--g-al';
+    if (/motor/.test(s) || /^MN/.test(t)) return '--g-mn';
+    if (/descending/.test(s)) return '--g-dn';
+    if (/^ol_|optic|visual/.test(s)) return '--g-optic';
+    if (/sensory/.test(s)) return '--g-sensory';
+    if (/^cb_intrinsic$|central/.test(s)) return '--g-central';
+    return '--g-other';
+  }
+  function hex(c) { c = c.replace('#', ''); if (c.length === 3) c = c.split('').map(x => x + x).join(''); return [0, 2, 4].map(k => parseInt(c.slice(k, k + 2), 16)); }
+  function legend() {
+    const heatOn = st.color !== 'cls';
+    $('heat-legend').hidden = !heatOn;
+    if (!heatOn || !VIEW) return;
+    if (st.color === 'heatnow') { $('heat-title').textContent = 'Heat: spikes in this 20 ms bin'; $('heat-min').textContent = '1 spike'; $('heat-max').textContent = '6+ spikes'; $('heat-note').textContent = 'Press Play to watch activity move from the sensory neurons on the left to the motor neurons on the right.'; }
+    else { $('heat-title').textContent = 'Heat: participation during the stimulus'; $('heat-min').textContent = '2 Hz'; $('heat-max').textContent = `${Math.round(VIEW.maxStimHz)} Hz`; $('heat-note').textContent = 'Mean firing rate over 0–0.5 s (log scale). Deep red = strongly driven; pale red = weakly driven.'; }
+  }
+  function decode(b64) { const s = atob(b64), a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; }
+  function resize() {
+    DPR = window.devicePixelRatio || 1; const r = cv.getBoundingClientRect();
+    W = r.width; H = r.height; cv.width = W * DPR; cv.height = H * DPR; draw(); drawSpark();
+  }
+  // one transform for both layouts: screen = o + coord * size * k
+  function fit() {
+    const pad = 30;
+    if (st.layout === 'layer') view = { ox: pad, oy: pad + 14, sx: W - 2 * pad - 30, sy: H - 2 * pad - 14, k: 1 };
+    else { const s = Math.min(W, H) - 2 * pad; view = { ox: (W - s) / 2, oy: (H - s) / 2, sx: s, sy: s, k: 1 }; }
+  }
+  function xy(n) {
+    const x = st.layout === 'layer' ? n.x : n.fx, y = st.layout === 'layer' ? n.y : n.fy;
+    return [view.ox + x * view.sx * view.k, view.oy + y * view.sy * view.k];
+  }
+  function draw() {
+    if (!VIEW) return;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H);
+    const t = st.t, P2 = nodes.map(xy);
+    const cExc = css('--exc'), cInh = css('--inh'), cGap = css('--gap');
+    if (st.edges !== 'none') {
+      ctx.lineWidth = 0.6;
+      for (const [a, b, w] of VIEW.edges) {
+        const on = act[a][t] > 0;
+        if (st.edges === 'active' && !on) continue;
+        ctx.strokeStyle = w > 0 ? cExc : cInh;
+        ctx.globalAlpha = (on ? 0.25 : 0.05) + Math.min(Math.abs(w), 1) * (on ? 0.5 : 0.2);
+        ctx.beginPath(); ctx.moveTo(P2[a][0], P2[a][1]); ctx.lineTo(P2[b][0], P2[b][1]); ctx.stroke();
+      }
+      if (VIEW.gaps.length) {
+        ctx.setLineDash([3, 3]); ctx.strokeStyle = cGap;
+        for (const [a, b, c] of VIEW.gaps) {
+          const on = act[a][t] > 0 || act[b][t] > 0;
+          if (st.edges === 'active' && !on) continue;
+          ctx.globalAlpha = on ? 0.55 : 0.15;
+          ctx.beginPath(); ctx.moveTo(P2[a][0], P2[a][1]); ctx.lineTo(P2[b][0], P2[b][1]); ctx.stroke();
+        }
+        ctx.setLineDash([]);
+      }
+    }
+    ctx.globalAlpha = 1;
+    const col = {}; for (const g of ['--g-sensory','--g-al','--g-central','--g-optic','--g-dn','--g-mn','--g-other']) col[g] = css(g);
+    const lo = hex(css('--heat-lo')), hi = hex(css('--heat-hi')), idle = css('--idle');
+    const heat = f => `rgb(${lo.map((v0, k) => Math.round(v0 + (hi[k] - v0) * f)).join(',')})`;
+    const order = st.color === 'cls' ? nodes.map((_, i) => i) : nodes.map((_, i) => i).sort((a, b) => (st.color === 'heatnow' ? act[a][t] - act[b][t] : nodes[a].part - nodes[b].part));
+    order.forEach(i => {
+      const n = nodes[i], c = act[i][t], [x, y] = P2[i];
+      let r;
+      if (st.color === 'cls') { ctx.fillStyle = col[n.g]; ctx.globalAlpha = c > 0 ? 1 : 0.28; r = c > 0 ? 2.2 + Math.min(c, 6) * 0.7 : 1.6; }
+      else {
+        const f = st.color === 'heatnow' ? Math.min(c, 6) / 6 : n.part;
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = f > 0 ? heat(Math.sqrt(f)) : idle;
+        r = f > 0 ? 1.8 + f * 3.2 : 1.6;
+        if (n.g === '--g-mn') r += 0.8;
+      }
+      ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
+      if (n.t === 'MN9' || n.m9) { ctx.globalAlpha = 1; ctx.strokeStyle = col['--g-mn']; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, r + 3, 0, 6.283); ctx.stroke(); }
+    });
+    ctx.globalAlpha = 1;
+    if (st.layout === 'layer') {
+      ctx.fillStyle = css('--muted'); ctx.font = '600 11px ' + css('--f-body');
+      const yl = view.oy - 10; ctx.textAlign = 'left'; ctx.fillText('SENSORY INPUT', view.ox - 4, yl);
+      ctx.textAlign = 'right'; ctx.fillText('MOTOR NEURONS', view.ox + view.sx * view.k + 6, yl); ctx.textAlign = 'left';
+    }
+    if (hover >= 0) { const [x, y] = P2[hover]; ctx.strokeStyle = css('--ink'); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, 7, 0, 6.283); ctx.stroke(); }
+    const ms = t * VIEW.bin_ms;
+    $('tlabel').textContent = `${ms}–${ms + VIEW.bin_ms} ms ${ms < VIEW.t_stim * 1000 ? '· stimulus on' : '· stimulus off'}`;
+  }
+  function drawSpark() {
+    const c = $('spark'); if (!VIEW) return;
+    const r = c.getBoundingClientRect(), g = c.getContext('2d'); c.width = r.width * DPR; c.height = r.height * DPR;
+    g.setTransform(DPR, 0, 0, DPR, 0, 0); g.clearRect(0, 0, r.width, r.height);
+    const pop = VIEW.pop, n = pop.length, mx = Math.max(...pop, 1), bw = r.width / n;
+    const ton = VIEW.t_stim * 1000 / VIEW.bin_ms;
+    g.fillStyle = css('--line'); g.fillRect(0, 0, ton * bw, r.height);
+    g.fillStyle = css('--muted'); g.font = '10px ' + css('--f-mono'); g.fillText('stimulus', 4, 11);
+    for (let i = 0; i < n; i++) { const h = (pop[i] / mx) * (r.height - 14); g.fillStyle = i === st.t ? css('--hot') : css('--accent'); g.fillRect(i * bw + 1, r.height - h, bw - 2, h); }
+    g.fillStyle = css('--muted'); g.fillText(`max ${mx.toLocaleString()} spikes / ${VIEW.bin_ms} ms`, r.width - 150, 11);
+  }
+
+  // ---------- interaction ----------
+  let hover = -1, drag = null;
+  function nearest(px, py) { let best = -1, bd = 100; nodes.forEach((n, i) => { const [x, y] = xy(n); const d = (x - px) ** 2 + (y - py) ** 2; if (d < bd) { bd = d; best = i; } }); return best; }
+  function zoomAt(f, px, py) {
+    view.ox = px - (px - view.ox) * f; view.oy = py - (py - view.oy) * f; view.k *= f;
+    draw();
+  }
+  cv.addEventListener('wheel', e => { e.preventDefault(); const r = cv.getBoundingClientRect(); zoomAt(e.deltaY < 0 ? 1.15 : 1 / 1.15, e.clientX - r.left, e.clientY - r.top); }, { passive: false });
+  cv.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, moved: false }; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove', e => {
+    const r = cv.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+    if (drag) { const dx = e.clientX - drag.x, dy = e.clientY - drag.y; if (Math.abs(dx) + Math.abs(dy) > 2) drag.moved = true;
+      view.ox += dx; view.oy += dy;
+      drag.x = e.clientX; drag.y = e.clientY; draw(); return; }
+    showTip(nearest(px, py), px, py);
+  });
+  cv.addEventListener('pointerup', e => { const r = cv.getBoundingClientRect(); if (drag && !drag.moved) showTip(nearest(e.clientX - r.left, e.clientY - r.top), e.clientX - r.left, e.clientY - r.top); drag = null; });
+  cv.addEventListener('pointerleave', () => { if (!drag) { hover = -1; $('tip').hidden = true; draw(); } });
+  $('zin').onclick = () => zoomAt(1.3, W / 2, H / 2); $('zout').onclick = () => zoomAt(1 / 1.3, W / 2, H / 2); $('zfit').onclick = () => { fit(); draw(); };
+  function showTip(i, px, py) {
+    hover = i; const tip = $('tip');
+    if (i < 0) { tip.hidden = true; draw(); return; }
+    const n = nodes[i], rate = n.r;
+    const nm = k => { const m = nodes[k]; return `${m.t || 'untyped'}`; };
+    const ins = (inE[i] || []).slice(0, 3).map(([k, w]) => `${nm(k)} ${w > 0 ? '+' : '−'}${Math.abs(w).toFixed(2)}`).join(', ') || '—';
+    const outs = (outE[i] || []).slice(0, 3).map(([k, w]) => `${nm(k)} ${w > 0 ? '+' : '−'}${Math.abs(w).toFixed(2)}`).join(', ') || '—';
+    const sp = act[i][st.t];
+    tip.innerHTML = `<b>${n.t || 'untyped'}</b> · ${n.nt || '?'}<br>${n.c || n.s || ''} · id <span class="mono">${n.id}</span><br>` +
+      `stimulus rate <b>${n.stimHz.toFixed(0)} Hz</b> · whole trial ${rate.toFixed(0)} Hz${n.st ? ' · stimulated' : ''}${n.g === '--g-mn' ? ' · motor neuron' : ''}<br>` +
+      `spikes in this bin: ${sp}<br><span class="small">top inputs:</span> ${ins}<br><span class="small">top outputs:</span> ${outs}`;
+    tip.hidden = false;
+    const tw = 280; tip.style.left = Math.min(px + 14, W - tw - 8) + 'px'; tip.style.top = Math.min(py + 14, H - 150) + 'px';
+    draw();
+  }
+  $('t').oninput = e => { st.t = +e.target.value; draw(); drawSpark(); };
+  let timer = null;
+  $('play').onclick = () => {
+    if (timer) { clearInterval(timer); timer = null; $('play').textContent = 'Play'; return; }
+    $('play').textContent = 'Pause';
+    if (st.t >= VIEW.pop.length - 1) st.t = 0;
+    timer = setInterval(() => { st.t = (st.t + 1) % VIEW.pop.length; $('t').value = st.t; draw(); drawSpark(); if (st.t === VIEW.pop.length - 1) { clearInterval(timer); timer = null; $('play').textContent = 'Play'; } }, 160);
+  };
+
+  // ---------- loading ----------
+  async function load() {
+    $('status').textContent = 'loading…';
+    const key = `${st.con}_${st.model}_${st.word}`;
+    try {
+      const v = await (await fetch(`data/${key}.json`)).json();
+      VIEW = v; nodes = v.nodes; nodes.forEach(n => { n.g = group(n); });
+      act = nodes.map(n => decode(n.a));
+      // spread each layer into a band so columns don't collapse into lines
+      const maxL = Math.max(1, ...nodes.map(n => n.L));
+      nodes.forEach((n, i) => { const h = Math.sin(i * 12.9898 + n.y * 78.233) * 43758.5453; const j = h - Math.floor(h);
+        n.x = n.st ? 0 : 0.06 + 0.8 * Math.min(1, Math.max(0, (n.L - 0.5) / maxL + (j - 0.5) * 0.5 / maxL)); });
+      // motor neurons: one column at the right edge, most active at the top
+      const mns = nodes.filter(n => n.g === '--g-mn').sort((p, q) => q.r - p.r);
+      mns.forEach((n, k) => { n.x = 1; n.y = (k + 0.5) / mns.length; });
+      // participation: spikes during the stimulus window, log-scaled 0..1
+      const ton = Math.round(v.t_stim * 1000 / v.bin_ms);
+      const tot = act.map(a => { let s = 0; for (let k = 0; k < ton; k++) s += a[k]; return s; });
+      const mx = Math.max(1, ...tot); nodes.forEach((n, i) => { n.part = tot[i] ? Math.log1p(tot[i]) / Math.log1p(mx) : 0; n.stimHz = tot[i] / v.t_stim; });
+      VIEW.maxStimHz = mx / v.t_stim;
+      legend();
+      inE = nodes.map(() => []); outE = nodes.map(() => []);
+      for (const [a, b, w] of v.edges) { outE[a].push([b, w]); inE[b].push([a, w]); }
+      inE.forEach(l => l.sort((p, q) => Math.abs(q[1]) - Math.abs(p[1]))); outE.forEach(l => l.sort((p, q) => Math.abs(q[1]) - Math.abs(p[1])));
+      $('t').max = v.pop.length - 1; st.t = Math.min(st.t, v.pop.length - 1); $('t').value = st.t;
+      $('v-title').textContent = `${CONS[st.con]} · ${MODELS[st.model]} · ${st.word}`;
+      $('v-active').textContent = v.n_active.toLocaleString();
+      $('v-shown').textContent = v.n_shown.toLocaleString();
+      $('v-edges').textContent = `${v.edges.length.toLocaleString()} / ${v.gaps.length.toLocaleString()}`;
+      $('v-tail').textContent = v.tail_neurons.toLocaleString();
+      $('v-verdict').innerHTML = v.tail_neurons > 20
+        ? `<span class="pill bad">Persistent</span> ${v.tail_neurons.toLocaleString()} neurons keep firing after the stimulus ends.`
+        : `<span class="pill good">Returns to rest</span> Activity stops after the stimulus ends.`;
+      $('status').textContent = `${v.n_shown} neurons · drag to pan, scroll or +/− to zoom`;
+      fit(); draw(); drawSpark();
+    } catch (e) { $('status').textContent = `Could not load ${key}: ${e.message}`; }
+  }
+  function renderReadout() {
+    if (!READ) { $('acc').innerHTML = '<p class="small">Readout results are not in this version yet.</p>'; return; }
+    const rows = [['base', 'Base'], ['calib', 'Calibrated'], ['shuffle', 'Shuffled (calibrated)']];
+    let h = '<table class="acc"><thead><tr><th>Model</th><th>Neurons</th><th>Test</th><th>LOSO</th><th>Post-stimulus LOSO</th></tr></thead><tbody>';
+    for (const [k, lab] of rows) for (const nset of ['all', 'motor']) {
+      const r = READ.results[`${k}/stim/${nset}`], p = READ.results[`${k}/post/${nset}`]; if (!r) continue;
+      h += `<tr><td>${lab}</td><td>${nset === 'all' ? 'all non-sensory' : 'DNs + MNs'}</td><td class="n">${(r.acc_split * 100).toFixed(0)}%</td><td class="n">${(r.acc_loso * 100).toFixed(0)}%</td><td class="n">${p ? (p.acc_loso * 100).toFixed(0) + '%' : '—'}</td></tr>`;
+    }
+    $('acc').innerHTML = h + '</tbody></table><p class="small">The post-stimulus column decodes from 0.5–1.0 s, after the input has stopped. On the base model that window is the persistent state.</p>';
+    seg($('c-cm'), { base: 'Base', calib: 'Calibrated', shuffle: 'Shuffled' }, 'cm', () => { renderReadout(); }, k => !!READ.results[`${k}/stim/all`]);
+    const r = READ.results[`${st.cm}/stim/all`]; if (!r) return;
+    const words = READ.words, cm = r.confusion, mx = 3;
+    let t = '<table><tr><th></th>' + words.map((w, i) => `<th title="${w}">${i + 1}</th>`).join('') + '</tr>';
+    cm.forEach((row, i) => { t += `<tr><th class="r">${words[i]}</th>` + row.map((v, j) => `<td title="true ${words[i]} → predicted ${words[j]}: ${v}" style="background:color-mix(in srgb, ${i === j ? 'var(--accent)' : 'var(--hot)'} ${Math.round(v / mx * 85)}%, transparent)">${v || ''}</td>`).join('') + '</tr>'; });
+    $('cm').innerHTML = t + '</table><p class="small">Rows: true word. Columns: predicted word, numbered as the rows. Test seeds 7–9.</p>';
+  }
+  async function init() {
+    try { INDEX = await (await fetch('data/index.json')).json(); }
+    catch (e) { $('status').textContent = 'Could not load the view index.'; return; }
+    try { READ = await (await fetch('data/readout_summary.json')).json(); } catch (e) { READ = null; }
+    if (!INDEX.views.includes(`${st.con}_${st.model}_${st.word}`)) Object.assign(st, { con: 'malecns', model: 'calib', word: 'vinegar' });
+    if (!INDEX.views.includes(`${st.con}_${st.model}_${st.word}`)) { const [c, m, ...w] = INDEX.views[0].split('_'); Object.assign(st, { con: c, model: m, word: w.join('_') }); }
+    renderControls(); renderReadout(); resize(); load();
+  }
+  window.addEventListener('resize', resize);
+  init();
+})();
+</script>

@@ -56,13 +56,22 @@ Data to download:
 3. Define 16 stimuli as sets of sensory neurons plus drive rates. Suggested: sugar, bitter, water, salt-low, salt-high, vinegar (DM1 ORNs), yeast (DM2 and VA2 ORNs), warm (hot cells), cold (cold cells), bright (R1-R6 photoreceptors), dark (none), wind-left, wind-right (JO-CE), loud (JO-AB), wall-ahead (looming via lobula columnar LC4/LPLC2), touch (leg mechanosensors if using CNS). Each stimulus: 500 ms of drive, record 10 trials with different Poisson seeds.
 4. Features: mean firing rate per non-sensory neuron over the last 300 ms. Train a linear readout (logistic regression, L2) on 7 trials per class, test on 3 held-out trials. Also train motor-only (DNs + MNs). Expect close to 100% and 85%, like chetaslua.
 5. Milestone: confusion matrix for all-neuron and motor-only readouts, plus a shuffled-connectome control (degree-preserving shuffle of the weight matrix). If the shuffled brain also gives 100%, say so. It probably will, and that is the most important lesson of Phase 1.
+6. **Week 2 final product: the Connectome Graph Explorer artifact.** Week 3 does not start until this is published. It is an interactive web page (a claude.ai Artifact) that shows the NumPy simulation running on the connectome, drawn as a graph. Specification:
+   - **What a node and an edge are.** A node is a neuron, as a row and column of the NumPy weight matrix `W` (post × pre) that the LIF actually simulates. An edge is a non-zero entry of `W`. Edge color shows the sign (excitatory or inhibitory), width shows |w| (synapse count × w_syn × 0.581). Gap junctions from the Week 2 calibration are drawn as dashed undirected edges.
+   - **Which neurons are shown.** All 138k neurons cannot be drawn in a browser, so each view is a subgraph exported from `W`. For each word, include every neuron that fires during the stimulus in a 10-seed average, plus the strongest edges among them. The cap is about 3,000 nodes and 15,000 edges per view. Add a **cell-type overview**: neurons aggregated by `type`, with summed weights, covering the whole brain at about 8k nodes.
+   - **Layout.** Layered by synaptic distance from the stimulated sensory neurons: sensory → antennal lobe / SEZ → LH / MB / higher centers → DNs / MN9. Neuropil or superclass sets the color family. A force-directed option is available.
+   - **Activity overlay from the NumPy sim.** A time slider over 0–1.6 s in 5 ms bins. Node brightness shows firing rate, and play/pause animates the spread from the sensory input to the readout neurons. Hovering a node shows bodyId or root_id, type, transmitter, rate and the top in/out partners.
+   - **Comparison toggles.** Base model vs calibrated (gap junctions); MaleCNS vs FlyWire; real vs degree-preserving shuffled connectome. Each toggle loads a precomputed view.
+   - **Story panels.** (a) The persistent-attractor core (the 104 C1 neurons and the eLN↔PN loop), before and after the calibration. (b) The 16-word readout: confusion matrices for real vs shuffled, plus the stimulus-window accuracy. (c) A short "how to read this" note covering the limitations: chemical-only EM, gap-junction placement assumed, no adaptation.
+   - **Build.** `scripts/export_graph.py` writes one JSON per view (nodes, edges, activity bins), kept under 16 MB in total. The page renders with sigma.js + graphology (WebGL, handles about 10k nodes) loaded from cdnjs. It is published as a private Artifact, linked from the README, and the JSON is committed under `results/graph/`.
+   - **Acceptance.** Picking any word shows its activity flowing across the graph. Base vs calibrated visibly shows the attractor disappearing after offset. The real vs shuffled view and the confusion matrices sit side by side. It loads in under 5 s and works at phone width.
 
 ### Week 3. Close the ChatGPT loop
 1. Fly to GPT: run a multi-stimulus episode (vinegar + yeast + sugar + warm + bright), decode each 500 ms window to a word, template into a prompt, send to the OpenAI API (or Claude). Log the reply.
 2. GPT to fly: map a small action vocabulary ("turn left", "turn right", "go forward", "stop", "eat") to stimulation patterns on JO auditory neurons (e.g., distinct frequency codes on JO-A vs JO-B populations). Train a second readout from DN activity back to the action. Verify 37/37 style accuracy on held-out trials.
 3. Record a 60-second screen capture like the original. Write a README that states plainly what is deterministic, what is learned, and what the shuffled control showed.
 
-Deliverable: `flybrain/` repo with `sim/` (NumPy LIF, both connectomes), `stimuli/`, `readout/`, `loop/`, `notebooks/01_shiu_validation.ipynb`, `02_translator.ipynb`, `03_gpt_loop.ipynb`, results figures, README.
+Deliverable: `flybrain/` repo with `sim/` (NumPy LIF, both connectomes), `stimuli/`, `readout/`, `loop/`, `notebooks/01_shiu_validation.ipynb`, `02_translator.ipynb`, `03_gpt_loop.ipynb`, results figures, README, and the Week 2 Connectome Graph Explorer artifact (`scripts/export_graph.py`, `results/graph/`, published link). Week 3 can later add a live "GPT loop" view to the same artifact.
 
 ## 3. Phase 2: make it more impressive and more honest (weeks 4 to 12)
 
@@ -97,7 +106,7 @@ Replace the "send words to ChatGPT" gimmick with an LLM that does something usef
 | Week | Milestone | Proof |
 |---|---|---|
 | 1 | NumPy LIF matches Brian2 on FlyWire sugar/bitter | MN9 rate comparison figure |
-| 2 | MaleCNS brain sim, 16-word linear readout, shuffled control | Confusion matrices x3 |
+| 2 | MaleCNS brain sim (calibrated so odors don't leave a persistent attractor), 16-word linear readout, shuffled control, **Connectome Graph Explorer artifact** (required before Week 3) | Confusion matrices x3; published artifact showing NumPy activity on the connectome graph, base vs calibrated, real vs shuffled |
 | 3 | Fly to GPT to fly loop reproduced | 60 s video, README |
 | 6 | Full 166.7k CNS sim, brain to VNC motor-pool regression | R2 table, speed benchmark |
 | 8 | Hard-decoding benchmark, linear vs CNN vs transformer vs LLM-merge | Results table with controls |

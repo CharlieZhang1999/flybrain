@@ -1,0 +1,179 @@
+<meta charset="utf-8">
+<title>Flybrain Week 3</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Same visual system as week1_report.html: serif reading column, moss-green accent, mono labels */
+:root{
+  --bg:#faf9f6; --fg:#23251f; --muted:#6b6e62; --line:#e2e0d6;
+  --card:#f1efe7; --accent:#4a7a3d; --exc:#4a7a3d; --inh:#b0483a; --word:#c77d0a; --pop:#6a5fb8;
+  --code:#eceade; --mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#191b16; --fg:#e4e3da; --muted:#9a9d8e; --line:#33362c;
+  --card:#20231c; --accent:#8fbf7f; --exc:#8fbf7f; --inh:#e08a7c; --word:#f2b13c; --pop:#9c92ff; --code:#23261e;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#191b16; --fg:#e4e3da; --muted:#9a9d8e; --line:#33362c;
+  --card:#20231c; --accent:#8fbf7f; --exc:#8fbf7f; --inh:#e08a7c; --word:#f2b13c; --pop:#9c92ff; --code:#23261e;
+  color-scheme:dark }
+body{background:var(--bg);color:var(--fg);font:15px/1.6 Georgia,'Times New Roman',serif;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 48px}
+main{max-width:760px;margin:0 auto}
+h1{font-size:2rem;line-height:1.15;text-wrap:balance;margin:40px 0 4px}
+h2{font-size:1.25rem;margin:40px 0 10px;text-wrap:balance}
+h3{font-size:1.02rem;margin:22px 0 6px}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+p{margin:.5em 0}
+.lede{font-size:1.06rem;color:var(--muted)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 12px 6px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+code,pre{font-family:var(--mono);font-size:.84em;background:var(--code);border-radius:4px}
+code{padding:1px 5px}
+td code{white-space:nowrap}
+pre{padding:12px 14px;overflow-x:auto;line-height:1.5}
+figure{margin:16px 0 8px}
+figure img{display:block;width:100%;border-radius:8px;border:1px solid var(--line)}
+.graphwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--card);margin:14px 0 6px}
+svg text{font-family:var(--mono)}
+.cap,figcaption{font-size:.82rem;color:var(--muted);margin-top:4px}
+ul{padding-left:1.2em}li{margin:4px 0}
+.flag{color:var(--inh);font-weight:bold}
+.ok{color:var(--exc);font-weight:bold}
+a{color:var(--accent)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:12px 0}
+.grid3>div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;min-width:0}
+.grid3 h3{margin:0 0 6px;font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.grid3 ul{margin:0;font-size:.92rem}
+.big{font-size:1.7rem;font-weight:bold;line-height:1.1}
+</style>
+
+<main>
+<p class="eyebrow">flybrain · week 3 · closed-loop report · 2026-11-13</p>
+<h1>A simulated fly brain in a conversation with Claude</h1>
+<p class="lede">Week 3 closed the loop. Five stimuli drive the sensory neurons of the MaleCNS brain model; a readout turns its spikes into a sentence;
+Claude picks an action; the action goes back into the brain as a spike code on its hearing neurons; and the brain's descending neurons read it back.
+Three rounds run in one continuous 10.5 s simulation, so each round starts in a brain still carrying the last one.</p>
+
+<figure>
+  <img src="__STILL__" alt="Split-screen player at the end of round 1: spike raster on the left, chat with decoded words, Claude's reply 'Turn left', and the descending-neuron readback on the right">
+  <figcaption>Round 1 of the loop video (real connectome, seed 4000). Left: spikes from sensory input, antennal lobe, central brain and descending neurons, with the five word windows and the action-code window. Right: decoded words, the sentence sent to Claude, its reply, and what the descending neurons read back. Full video: <code>results/figures/loop_demo.mp4</code>.</figcaption>
+</figure>
+
+<h2>What one round does</h2>
+<pre>5 words × 500 ms ──▶ word readout ──▶ "I smell vinegar. … What should I do?"
+  sensory drive        all non-sensory              │
+                       neurons                      ▼
+                                          Claude picks 1 of 5 actions
+                                                    │
+DN readout ◀── brain, 500 ms code ◀── action spike code on hearing (JO) neurons
+"turn left"     + 500 ms quiet          turn left = left JO-B at 150 Hz</pre>
+
+<div class="grid3">
+  <div><h3>Words read from spikes</h3><p class="big">60 / 60</p><p class="cap">4 runs × 3 rounds × 5 words, inside continuous episodes</p></div>
+  <div><h3>Actions read back</h3><p class="big">12 / 12</p><p class="cap">descending neurons only; 37/37 on the Day 4 held-out test</p></div>
+  <div><h3>Loop wall time</h3><p class="big">5–7.5 min</p><p class="cap">per 3-round run on one CPU, with save/resume</p></div>
+</div>
+
+<h2>The loop, round by round</h2>
+<p>Population activity of the real-connectome run with Claude, seed 4000. Word windows are labelled with what the readout decoded; red bands are the action codes Claude chose.</p>
+<div class="graphwrap"><svg id="pop" style="display:block;width:100%;height:auto;min-width:600px" viewBox="0 0 860 250" role="img" aria-label="Population spike rate over 10.5 seconds with word and action labels"></svg></div>
+<div class="tw"><table id="rounds"><thead><tr><th>round</th><th>sentence the fly sends</th><th>Claude</th><th>code</th><th>read back</th></tr></thead><tbody></tbody></table></div>
+
+<h2>Day by day</h2>
+<div class="tw"><table>
+<thead><tr><th>Day</th><th>Question</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Can words be decoded back to back, with no rest between them?</td><td>Isolated-word readout: 95.5% on 200 episode windows. Errors came from cold and humid leaving long tails that biased the next word. With presynaptic modulation of sensory terminals (below): <span class="ok">100%</span>.</td></tr>
+<tr><td>2</td><td>Fly → LLM</td><td>Word readout, first-person prompt, LLM client with a forced 5-action choice. Demo episode (vinegar, ripe fruit, sugar, hot, looming) decoded 50/50 over 10 seeds.</td></tr>
+<tr><td>3</td><td>Which spike codes on hearing neurons can carry an action?</td><td>8 candidate codes on JO-A/JO-B. Left-side and bilateral codes: 100% from DNs. <span class="flag">Right-side codes drove no DN at all</span>, which traced to an incomplete reconstruction (below).</td></tr>
+<tr><td>4</td><td>The original demo's 37/37, after a word episode</td><td>Real: <span class="ok">37/37</span> from DNs only. Shuffled: 36/37.</td></tr>
+<tr><td>5</td><td>Full loop, end to end</td><td>4 runs: 60/60 words, 12/12 actions (offline stand-in LLM).</td></tr>
+<tr><td>6</td><td>Make it watchable; use a real LLM</td><td>Save/resume (spike-for-spike identical, 20 → 5 min), split-screen player and 61 s video. Re-run with Claude choosing live: 60/60 words, 12/12 actions.</td></tr>
+</tbody></table></div>
+
+<h2>Two fixes, both from the biology</h2>
+<h3>Central input onto sensory neurons is presynaptic modulation</h3>
+<p>The connectome has about 65k inhibitory synapses from central neurons onto sensory axon terminals. Simulated as ordinary synapses, they made sensory neurons fire without a stimulus, and cold and humid kept a loop running that the next word inherited. In the fly these synapses do presynaptic inhibition: GABA-A and a slow GABA-B phase on ORN terminals turn down transmitter release (Olsen &amp; Wilson 2008), and GABA-B on sweet GRNs is one route by which bitter suppresses sweet (Chu et al. 2014). So the model now never lets central input reach a sensory membrane; inhibitory input scales the terminal's release gain as <code>1 / (1 + (GABA<sub>A</sub> + GABA<sub>B</sub>) / K)</code> with τ 5 ms and 300 ms, K = 0.05. Excitatory input onto terminals is ignored, because its effect has not been characterised. FlyWire sugar → MN9 stays at 68 Hz with K = 0.05.</p>
+<h3>The right Johnston's organ is a reconstruction gap, so it is mirrored</h3>
+<p>In MaleCNS v1.0 the right JO bodies exist in normal numbers but make 34% of the left side's output synapses (JO-A: 880 vs 16,869), 130 of them are typed "unclear" and 84 have no outputs at all. FlyWire, a different animal, is balanced. An optional mirror gives each right JO neuron its left counterpart's outputs, sent to the mirror-image partners. With it, right-side codes reach as many DNs as left-side ones, and the DN readout separates all four lateral codes.</p>
+
+<h2>Actions: real wiring versus shuffled wiring</h2>
+<p>Day 4 test: each code played straight after a 5-word episode, 37 held-out trials (eat 8, go forward 5, stop 9, turn left 8, turn right 7).</p>
+<div class="tw"><table>
+<thead><tr><th>Brain</th><th>Readout</th><th>Held-out correct</th><th>Neurons that fire</th></tr></thead>
+<tbody>
+<tr><td>real</td><td>descending neurons only</td><td class="ok">37 / 37</td><td>445</td></tr>
+<tr><td>real</td><td>all non-sensory</td><td>37 / 37</td><td>3,361</td></tr>
+<tr><td>shuffled</td><td>descending neurons only</td><td>36 / 37</td><td>24</td></tr>
+<tr><td>shuffled</td><td>all non-sensory</td><td>37 / 37</td><td>1,049</td></tr>
+</tbody></table></div>
+<p>The shuffled brain (chemical matrix shuffled, each neuron's in/out degree and sign kept) almost matches. Reading back a stimulus you injected yourself works with nearly any wiring. What the real wiring changes is the route: the hearing code reaches 445 descending neurons instead of 24, and in the loop the real brain reads actions back at 0.96–1.00 confidence against 0.81–0.91 for the shuffled one.</p>
+
+<h2>The loop with Claude</h2>
+<div class="tw"><table>
+<thead><tr><th>Run</th><th>Words</th><th>Claude's choices</th><th>Read back</th><th>Confidence</th></tr></thead>
+<tbody id="runs"></tbody></table></div>
+<p>Claude (claude-sonnet-5-5) was called live through the Claude Code CLI, about $0.14 per reply. It is not deterministic: every run opens with the same sentence, and Claude answered "turn left" three times and "stop" once. It disagreed with the earlier rule-based stand-in on 4 of 12 rounds, and since each action is played into the brain, the next round starts from a different state. Every run still decoded all 15 words.</p>
+
+<h2>Deterministic, learned, and what the shuffled brain also does</h2>
+<div class="grid3">
+  <div><h3>Deterministic</h3><ul><li>MaleCNS connectome, signs, weight scale</li><li>Shiu et al. LIF equations</li><li>Week 2 gap-junction calibration</li><li>Presynaptic modulation, JO mirror</li><li>Stimulus sets, rates, action codes</li></ul></div>
+  <div><h3>Learned</h3><ul><li>Word readout (logistic regression, all non-sensory neurons)</li><li>Action readout (logistic regression, DNs only)</li><li>Nothing else. The connectome is never trained.</li></ul></div>
+  <div><h3>Shuffled brain also</h3><ul><li>decodes 17 words at 100% (all neurons)</li><li>reads actions back 36/37 (DNs)</li><li>completes the loop: 15/15 words, 3/3 actions</li></ul></div>
+</div>
+<p>So the honest description is a <em>connectome-constrained LIF simulation with a trained readout</em>, not a fly that talks. The wiring shows up where the readout is starved of easy features: motor-only word decoding (94% vs 85%), decoding after the stimulus ends (68% vs 21%), and how widely an input reaches the descending neurons.</p>
+
+<h2>Limits</h2>
+<ul>
+<li>Brain only: no ventral nerve cord, so descending neurons are the motor readout and MaleCNS sugar → MN9 is near zero.</li>
+<li>Wind and looming still leave a tail of activity outside the antennal lobe.</li>
+<li>Action codes are arbitrary patterns on hearing neurons that a readout learns; they are not natural steering commands.</li>
+<li>Decoding is easy by design here: clean, separable inputs and 500 ms windows.</li>
+</ul>
+
+<h2>Next: Phase 2</h2>
+<p>Plan.md's Phase 2 makes the readout earn its keep: the full 166,700-neuron CNS with real leg and wing motor neurons as readout targets (2A), mixtures, noise, short windows and a 1% electrode subset so decoding is hard (2B), and a body in FlyGym where the loop is closed by physics rather than by a script (2C).</p>
+
+<h2>What shipped</h2>
+<ul>
+<li><code>loop/</code>: word and action readouts, prompt, LLM client (stub, claude-cli, openai, anthropic), action codes, runner with save/resume</li>
+<li><code>sim/presyn.py</code>, <code>sim/jo_mirror.py</code>; <code>state=</code>/<code>return_state=</code> and <code>blocks=</code> in <code>sim/lif_numpy.py</code></li>
+<li><code>artifact/loop/</code>: the split-screen player; <code>results/figures/loop_demo.mp4</code></li>
+<li><code>notebooks/01_shiu_validation</code>, <code>02_translator</code>, <code>03_gpt_loop</code>: each loads saved results only</li>
+<li>Day notes: <code>progress/week3/</code></li>
+</ul>
+</main>
+
+<script>
+(function(){
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const D=__LOOP__;
+const RUNS=__RUNS__;
+const PHR={fruit:'ripe fruit',umami:'savory',co2:'CO₂',mold:'mould'};
+// rounds table
+document.querySelector('#rounds tbody').innerHTML=D.rounds.map(r=>`<tr><td>${r.round}</td><td>${r.prompt}</td><td>${r.action}</td><td><code>${r.code}</code></td><td>${r.action_decoded} (${r.action_p.toFixed(2)}) ${r.action_ok?'<span class="ok">✓</span>':'<span class="flag">✗</span>'}</td></tr>`).join('');
+document.querySelector('#runs').innerHTML=RUNS.map(r=>`<tr><td>${r.run}</td><td>${r.words}</td><td>${r.actions}</td><td>${r.ok}</td><td>${r.conf}</td></tr>`).join('');
+function draw(){
+  const svg=document.getElementById('pop');svg.innerHTML='';const ns='http://www.w3.org/2000/svg';
+  const el=(t,a,txt)=>{const e=document.createElementNS(ns,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e};
+  const L=40,R=850,T=70,B=225,p=D.pop,mx=Math.max(...p),X=t=>L+t/D.t_total*(R-L),Y=v=>B-v/mx*(B-T);
+  D.rounds.forEach(r=>{
+    el('rect',{x:X(r.t_words),y:T-4,width:X(r.t_words+.5)-X(r.t_words),height:B-T+4,fill:css('--inh'),opacity:.16});
+    r.decoded.forEach((w,k)=>{const x=X(r.t_start+k*.5+.25);el('text',{x,y:T-8,'font-size':10,fill:css('--word'),transform:`rotate(-55 ${x} ${T-8})`},PHR[w]||w)});
+    const x=X(r.t_words+.25);el('text',{x,y:T-8,'font-size':10,'font-weight':'bold',fill:css('--inh'),transform:`rotate(-55 ${x} ${T-8})`},r.action);
+    el('line',{x1:X(r.t_start),x2:X(r.t_start),y1:T-4,y2:B,stroke:css('--line')});
+  });
+  let d=`M${X(0)},${B}`;p.forEach((v,i)=>d+=`L${X(i/100).toFixed(1)},${Y(v).toFixed(1)}`);d+=`L${X(p.length/100)},${B}Z`;
+  el('path',{d,fill:css('--pop'),opacity:.6});
+  el('line',{x1:L,x2:R,y1:B,y2:B,stroke:css('--muted')});
+  for(let s=0;s<=10;s+=2)el('text',{x:X(s),y:B+15,'font-size':10,fill:css('--muted'),'text-anchor':'middle'},s+' s');
+  el('text',{x:L-6,y:T+4,'font-size':10,fill:css('--muted'),'text-anchor':'end'},mx);
+  el('text',{x:L-6,y:B,'font-size':10,fill:css('--muted'),'text-anchor':'end'},'0');
+  el('text',{x:L,y:B+32,'font-size':10,fill:css('--muted')},'spikes per 10 ms, whole brain');
+}
+draw();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
+})();
+</script>
