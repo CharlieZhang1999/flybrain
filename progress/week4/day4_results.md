@@ -3,11 +3,11 @@
 Question: is the Day 5 training set (about 200 episodes × 2 s, real + shuffled) feasible on this CPU, and informative (motor pools vary, and the shuffled control separates)?
 
 ## Built
-- `stimuli/mixtures.py`: `sample_episode(rng, words=WORDS, T=2.0)` returns a JSON-able spec (Poisson seed, spec seed, background rate, and per word: rate, onset, offset). 2–4 words with distinct modalities (modalities drawn uniformly, then one word per modality), rate U(30, 150) Hz, onset U(0, T − 0.3) s, duration U(0.2, 1.0) s clipped to T, background U(1, 5) Hz on all 15,912 sensory neurons for [0, T). Times are rounded to the 0.1 ms step. `to_blocks(spec, meta, pos)` gives the `run_trial` blocks.
+- `stimuli/mixtures.py`: `sample_episode(rng, words=WORDS, T=2.0)` returns a JSON-able spec (Poisson seed, spec seed, background rate, and per word: rate, onset, offset). 2–4 words with distinct modalities (modalities drawn uniformly, then one word per modality), rate U(30, 150) Hz, onset U(0, T − 0.3) s, duration U(0.2, 1.0) s clipped to T, background U(1, 5) Hz on all 15,912 sensory neurons for [0, T) (`pilot_summary.md` §0). Times are rounded to the 0.1 ms step. `to_blocks(spec, meta, pos)` gives the `run_trial` blocks.
 - `scripts/w4d4_pilot.py`: 10 mixture specs (seeds 4040–4049) + 2 background-only (1 Hz and 5 Hz, the ends of the range), each run with `calib` and `shuffle` (W4_CALIB, same spec and Poisson seed, CPU float32 rng=torch). Modes `check <k> <cfg>` (re-run and compare spikes) and `bgoff` (background switched off at 1.5 s).
 - `scripts/w4d4_pilot_summary.py` → `results/w4/regression/pilot/pilot_summary.md` (+ `pool_variance.csv`, `group_variance.csv`). Raw log: `pilot_log.txt`.
 
-Uniform-modality sampling puts looming in about 42% of episodes (2,083 of 5,000 sampled specs); in the pilot, 5 of 10.
+Uniform-modality sampling puts looming in about 42% of episodes (2,083 of 5,000 specs, seeds 0–4999, `pilot_summary.md` §0); in the pilot, 5 of 10.
 
 ## Motor-pool variance (10 ms bins, 2,000 bins pooled over 10 episodes)
 Floor 1 Hz² (SD 1 Hz). One spike of a 1-neuron pool in one bin of the 2,000 already gives 5 Hz², so the floor asks for more than a stray spike in small pools.
@@ -45,7 +45,7 @@ Background only, active non-sensory neurons per 100 ms (bins 0.1–2.0 s):
 At 5 Hz the activity is flat from the first bin (no build-up). The most active types are VNC ascending and intrinsic neurons (AN01B002, ANXXX027, AN08B034, AN05B009, INXXX044). With background switched off at 1.5 s (`bgoff`), it drops from 665 to 73 in the next 100 ms and to 0 from 1.6 s on. Persistence flag: 2 of 10 mixture episodes have a full window more than 100 ms after their last word. Neither is flagged (calib tail means 272.5 and 550.5, against a background-only max of 831).
 
 ## Cost
-Wall seconds per bio-second (CPU, 4 threads, one process): calib mixtures median 20.9 (18.9–25.2), calib background 20.0, shuffle mixtures 16.8 (13.7–19.6), shuffle background 14.4. Over all 24 runs: median 19.1, max 25.2. Model build 14–15 s per cfg.
+Wall seconds per bio-second (CPU, 4 threads, one process): calib mixtures median 20.9 (18.9–25.2), calib background 20.0, shuffle mixtures 16.8 (13.7–19.6), shuffle background 14.4. Over all 24 runs: median 19.1, max 25.2. Model build 14–20 s per cfg (`pilot_log.txt`).
 
 ## Checks
 - Same spec and seed reproduce identical spikes: ep001 calib, 208,370 spikes (`pilot_log.txt`).

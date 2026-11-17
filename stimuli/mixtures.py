@@ -24,6 +24,8 @@ to_blocks(spec, meta, pos) -> run_trial blocks [(t0, t1, idx, rate_hz), ...]:
   then one block per word (the word's neurons, stimuli.malecns_words.select_ids,
   same indices as scripts.ckpt2_ab.stim_idx). A word neuron that is also
   sensory receives background + word drive inside its window.
+  Timing: run_trial records a Poisson hit at step t as a spike at step t+1, so
+  drive-only spikes of a block [t0, t1) fall in steps (t0, t1] (in 0.1 ms steps).
 
 Usage:
   from stimuli.mixtures import sample_episode, to_blocks
