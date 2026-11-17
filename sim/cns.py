@@ -38,7 +38,19 @@ SCALE, K_APL, K_PRESYN = 0.581, 0.1, 0.05
 # cns_model defaults, so Week 4 day 1-2 results stay reproducible; pass
 # **W4_CALIB from day 4 on.
 GF_GAP_MV = 8.0
-W4_CALIB = dict(gf_gap=GF_GAP_MV, mn_glu=True)
+# Week 4 day 3b: sign corrections for the two cell types that drive the
+# looming-ignited central-complex state (progress/week4/day3b_results.md).
+#   GLNO: MaleCNS consensus and prediction 'unclear' (-> +1); FlyWire predicts
+#         GABA (3/4) / glutamate (1/4), hemilineage LALv1.
+#   LPsP: MaleCNS predicts ACh (0.88); FlyWire known_nt = dopamine + glutamate,
+#         ACh-negative (Alekseyenko 2013; Wolff 2024 EASI-FISH). Glutamate -> -1.
+SIGN_FIX = {'GLNO': -1, 'LPsP': -1}
+# Two small all-to-all excitatory cliques (ACh, consistent in MaleCNS and
+# FlyWire) reverberate forever in a LIF model without adaptation: DNg33 L<->R
+# (~750 synapses each way) and the IN19B040 quartet. Scale only the
+# within-clique synapses (smallest gain that stops them, day 3b sweep).
+CLIQUE_GAIN = ({'DNg33', 'IN19B040'}, 0.3)
+W4_CALIB = dict(gf_gap=GF_GAP_MV, mn_glu=True, sign_fix=SIGN_FIX, clique_gain=CLIQUE_GAIN)
 
 LEG_SEGMENT = {   # functional type -> joint it moves (Azevedo et al. 2024 naming)
     'Pleural remotor/abductor MN': 'thorax-coxa', 'Tergopleural/Pleural promotor MN': 'thorax-coxa',
@@ -97,7 +109,7 @@ def _apl(meta, W):
 
 
 def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True, gf_gap=None,
-              mn_glu=False):
+              mn_glu=False, sign_fix=None, clique_gain=None):
     """Return dict(meta, W, gap, presyn, apl, vnc, info).
 
     scope : 'cns' (brain + VNC, Week 4) or 'brain' (Week 3 model, VNC masked).
@@ -109,6 +121,10 @@ def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True
             glutamatergic (-1). Fly motor neurons are glutamatergic; the
             per-body prediction gives their few central synapses 'unclear'
             (+1) or acetylcholine for most MNs (Week 4 day 3 sign audit).
+    sign_fix: optional {cell type: +1 / -1}; sets the sign of every chemical
+            output of neurons of that type (Week 4 day 3b: SIGN_FIX).
+    clique_gain: optional (types, g); synapses between two neurons of the same
+            listed type are scaled by g (Week 4 day 3b: CLIQUE_GAIN).
     """
     from scripts.w2d3_gap_malecns import cut_ln_pn
     from scripts.w2d4_word_trials import shuffle_W, GAP_KW
@@ -124,6 +140,27 @@ def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True
         W = (W @ sparse.diags((~is_mn).astype(float))
              - abs(W) @ sparse.diags(is_mn.astype(float))).tocsc()   # columns = presynaptic
         W.eliminate_zeros()
+    if sign_fix:
+        from scipy import sparse
+        tt = meta.type.astype(str).to_numpy()
+        pos_, neg_, keep_ = np.zeros(len(tt)), np.zeros(len(tt)), np.ones(len(tt))
+        for typ, sg in sign_fix.items():
+            k = tt == typ
+            if not k.any():
+                raise ValueError(f'sign_fix: no neurons of type {typ}')
+            keep_[k] = 0
+            (pos_ if sg > 0 else neg_)[k] = 1
+        W = (W @ sparse.diags(keep_) + abs(W) @ sparse.diags(pos_)
+             - abs(W) @ sparse.diags(neg_)).tocsc()
+        W.eliminate_zeros()
+    if clique_gain:
+        types, gq = clique_gain
+        tt = meta.type.astype(str).to_numpy()
+        C = W.tocoo()
+        k = (tt[C.row] == tt[C.col]) & np.isin(tt[C.col], list(types))
+        d = C.data.copy(); d[k] *= gq
+        from scipy import sparse
+        W = sparse.csc_matrix((d, (C.row, C.col)), shape=W.shape)
     if scope == 'brain':
         W = _mask(W, lambda r, c: ~vnc[r] & ~vnc[c])
     elif scope != 'cns':

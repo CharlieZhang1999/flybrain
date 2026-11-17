@@ -6,7 +6,8 @@ Conditions (Poisson 150 Hz on the named neurons 0-0.3 s, run to 0.4 s):
   none; GF (DNp01 both sides); MDN (4); DNg100 (2); DNa02_L / DNa02_R (one
   side each, for the turning asymmetry); looming (sensory word, takeoff).
 Configs: calib, shuffle, calib+gf<mV> (rectifying GF junctions, spikelet in mV),
-  +mnglu (motor-neuron outputs glutamatergic), e.g. calib+gf8+mnglu.
+  +mnglu (motor-neuron outputs glutamatergic), e.g. calib+gf8+mnglu;
+  calib+w4 / shuffle+w4 = full sim/cns.W4_CALIB (adds the day-3b sign fix and clique gain).
 Per trial we record the rate (Hz, 0-0.3 s) of every motor pool and of a few
 named neurons (GF, TTMn, PSI, DLMn), and the TTMn and PSI spikes that follow
 a GF spike within 3 ms (1:1 following).
@@ -64,7 +65,11 @@ def main(config='calib', seeds=3, conds='all'):
     for x in parts[1:]:
         if x.startswith('gf'):
             gf = float(x[2:])
-    m = cns_model('cns', cfg, gf_gap=gf, mn_glu=mnglu)
+    if 'w4' in parts:                    # full sim/cns.W4_CALIB (day 3b)
+        from sim.cns import W4_CALIB
+        m = cns_model('cns', cfg, **W4_CALIB)
+    else:
+        m = cns_model('cns', cfg, gf_gap=gf, mn_glu=mnglu)
     meta = m['meta']
     t = meta.type.astype(str)
     pos = {b: i for i, b in enumerate(meta.bodyId)}

@@ -35,7 +35,7 @@ def g(df, cfg, cond, pool=None, sub=None, side=None, typ=None):
 
 def main():
     df = load()
-    cfgs = [c for c in ['calib', 'shuffle', 'calib+gf4', 'calib+gf8', 'calib+gf12', 'shuffle+gf8', 'calib+gf8+mnglu', 'shuffle+gf8+mnglu']
+    cfgs = [c for c in ['calib', 'shuffle', 'calib+gf4', 'calib+gf8', 'calib+gf12', 'shuffle+gf8', 'calib+gf8+mnglu', 'shuffle+gf8+mnglu', 'calib+w4', 'shuffle+w4']
             if c in set(df.config)]
     L = ['# W4D3 descending-neuron panel (rates in Hz during 0-0.3 s drive, mean of seeds)', '']
     # 1. expected-target table
@@ -81,7 +81,7 @@ def main():
     _, pdf = motor_pools(meta)
     d = df[~df.pool.str.startswith('@')].merge(pdf[['pool', 'group']], on='pool')
     L += ['', '## Top motor groups per stimulus (side x subclass / group, Hz)', '']
-    for c in [x for x in ['calib', 'shuffle', 'calib+gf8+mnglu'] if x in cfgs]:
+    for c in [x for x in ['calib', 'shuffle', 'calib+gf8+mnglu', 'calib+w4'] if x in cfgs]:
         L.append(f'**{c}**')
         L.append('')
         for cond in ['GF', 'MDN', 'DNg100', 'DNa02_L', 'DNa02_R', 'looming']:
