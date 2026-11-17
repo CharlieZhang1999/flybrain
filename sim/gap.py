@@ -48,3 +48,47 @@ def build_gap(W, ln_mask, pn_mask, c0, s_ref=S_REF, min_syn=1, cap=None, v_spike
                 sum_c_PN_median=float(np.median(deg[len(L):])),
                 sum_c_LN_median=float(np.median(deg[:len(L)])))
     return dict(idx=idx, C=C, v_spike=v_spike), info
+
+
+# --- Week 4: giant-fiber electrical synapses (rectifying) -------------------
+# In the fly the giant fiber (GF, DNp01) drives the jump muscle motor neuron
+# (TTMn) and the peripherally synapsing interneuron (PSI, -> DLMn flight power
+# muscles) mainly through ShakB gap junctions, which rectify (GF -> target).
+# EM counts only the chemical part. A rectifying junction is a one-way row in
+# C: C[target, GF] = c, C[GF, target] = 0. With the simulator's gap update
+# (dv_i = dt/tm * sum_j C_ij (v_j - v_i); spikelet C_ij * v_spike on a spike of
+# j), the target is pulled toward GF voltage and gets a spikelet of
+# c * v_spike when GF fires; GF itself is not loaded by the targets.
+
+def build_gf_gap(meta, spikelet_mV, v_spike=0.002, targets=('TTMn', 'PSI')):
+    """Rectifying GF -> TTMn / PSI junctions, ipsilateral pairs (by somaSide).
+
+    spikelet_mV: depolarisation of the target per GF spike (sets c =
+    spikelet / v_spike). Returns a gap dict on the global index plus info."""
+    t = meta.type.astype(str).values
+    side = meta.somaSide.astype(str).values
+    gf = np.flatnonzero(t == 'DNp01')
+    pairs = []
+    for g in gf:
+        for typ in targets:
+            for j in np.flatnonzero((t == typ) & (side == side[g])):
+                pairs.append((j, g))
+    c = spikelet_mV * 1e-3 / v_spike
+    idx = np.unique(np.array(pairs).ravel())
+    pos = {k: i for i, k in enumerate(idx)}
+    r = [pos[a] for a, _ in pairs]; q = [pos[b] for _, b in pairs]
+    C = sparse.csr_matrix((np.full(len(pairs), c), (r, q)), shape=(len(idx), len(idx)))
+    info = dict(pairs=len(pairs), c=c, spikelet_mV=spikelet_mV,
+                names=[(t[a], side[a], t[b], side[b]) for a, b in pairs])
+    return dict(idx=idx, C=C, v_spike=v_spike), info
+
+
+def merge_gap(a, b):
+    """Block-diagonal union of two gap dicts with the same v_spike and
+    disjoint neuron sets."""
+    if a is None:
+        return b
+    assert a.get('v_spike', 0.04) == b.get('v_spike', 0.04)
+    assert not np.intersect1d(a['idx'], b['idx']).size
+    C = sparse.block_diag([a['C'], b['C']]).tocsr()
+    return dict(idx=np.concatenate([a['idx'], b['idx']]), C=C, v_spike=a.get('v_spike', 0.04))

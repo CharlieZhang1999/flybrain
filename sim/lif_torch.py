@@ -11,7 +11,14 @@ NumPy simulator; see that docstring for the model. Differences:
     same order as lif_numpy, so on CPU/float64 the result is spike-for-spike
     identical to the NumPy simulator (scripts/w4d1_torch_parity.py).
     rng='torch' draws on the device (faster on GPUs; statistically equivalent).
-  - No save/resume yet (state=/return_state=).
+  - Save/resume (Week 4 day 2): return_state=True adds 'state' to the result;
+    state=... continues the same trial up to the new params['t_run'] (absolute
+    time), spike-for-spike identical to one uninterrupted run (same contract as
+    lif_numpy; scripts/w4d2_resume_check.py). The state keeps tensors on the
+    device, so chained episodes never leave the GPU.
+  - compile=True runs the elementwise LIF update (steps 1-2) through
+    torch.compile; the event-driven parts have data-dependent shapes and stay
+    eager.
 """
 import numpy as np
 import torch
@@ -53,6 +60,18 @@ class _CSC:
         return out
 
 
+def _decay(v, g, last, rfc_n, t, v0, a_coef, em, es):
+    """Steps 1-2: refractory mask and exact linear (v, g) update."""
+    free = (t - last) >= rfc_n
+    A = torch.where(free, g * a_coef, 0.0)
+    v = torch.where(free, v0 + (v - v0 - A) * em + A * es, v)
+    g = torch.where(free, g * es, g)
+    return v, g, free
+
+
+_decay_compiled = None
+
+
 def default_device():
     if torch.cuda.is_available():
         return 'cuda'
@@ -63,14 +82,19 @@ def default_device():
 
 def run_trial(W, exc_idx, r_poi=150.0, params=P, seed=0, apl=None, t_stim=None,
               record=False, gap=None, blocks=None, presyn=None, device=None,
-              dtype=None, rng='numpy', bin_steps=None, bin_groups=None):
+              dtype=None, rng='numpy', bin_steps=None, bin_groups=None, compile=False,
+              state=None, return_state=False):
     """Simulate one trial. Returns counts (n,) or, with record=True, a dict with
     counts, t (step of each spike), i (neuron of each spike).
 
     bin_steps / bin_groups: optional on-device binning for long runs. With
     bin_steps=k, the result also has 'binned' = (n_bins, n) spike counts per
     k-step bin (or (n_bins, len(bin_groups)) summed over each group, if
-    bin_groups is a list of index arrays). Avoids recording every spike.
+    bin_groups is a list of index arrays). Avoids recording every spike. On resume, bins start at the resume step.
+
+    state / return_state: see module docstring. counts are cumulative over the
+    whole chained trial (as in lif_numpy); 't'/'i' and 'binned' hold only the
+    new segment.
     """
     device = device or default_device()
     if dtype is None:
@@ -116,9 +140,12 @@ def run_trial(W, exc_idx, r_poi=150.0, params=P, seed=0, apl=None, t_stim=None,
     if gap is not None:
         g_idx = torch.as_tensor(np.asarray(gap['idx'], np.int64), device=device)
         C = gap['C'].tocsr()
-        g_C = torch.sparse_csr_tensor(torch.as_tensor(C.indptr.astype(np.int64)),
-                                      torch.as_tensor(C.indices.astype(np.int64)),
-                                      torch.as_tensor(C.data), size=C.shape).to(**tk)
+        if device == 'cpu':   # sparse CSR: same summation order as scipy (exact parity)
+            g_C = torch.sparse_csr_tensor(torch.as_tensor(C.indptr.astype(np.int64)),
+                                          torch.as_tensor(C.indices.astype(np.int64)),
+                                          torch.as_tensor(C.data), size=C.shape).to(**tk)
+        else:                 # small (830 x 830): dense works on CUDA and MPS
+            g_C = torch.as_tensor(C.toarray(), **tk)
         g_deg = torch.as_tensor(np.asarray(C.sum(axis=1)).ravel(), **tk)
         g_Cc = _CSC(gap['C'], device, dtype)
         g_pos = torch.full((n,), -1, dtype=torch.int64, device=device)
@@ -135,8 +162,25 @@ def run_trial(W, exc_idx, r_poi=150.0, params=P, seed=0, apl=None, t_stim=None,
     ring = [empty] * dly
     counts = torch.zeros(n, dtype=torch.int64, device=device)
     rec_t, rec_i = [], []
+    t_begin = 0
+    if state is not None:                                    # resume
+        t_begin = int(state['t'])
+        _t = lambda x, dt_: torch.as_tensor(x, device=device, dtype=dt_).clone()
+        v = _t(state['v'], dtype); g = _t(state['g'], dtype)
+        last = _t(state['last'], torch.int64)
+        ring = [_t(x, torch.int64) for x in state['ring']]
+        counts = _t(state['counts'], torch.int64)
+        if state.get('np_rng') is not None:
+            np_rng.bit_generator.state = state['np_rng']
+        if state.get('t_gen') is not None:
+            t_gen.set_state(state['t_gen'])
+        if apl is not None:
+            a_apl, kc_rate = state['a_apl'], state['kc_rate']
+        if presyn is not None:
+            IA = _t(state['IA'], dtype); IB = _t(state['IB'], dtype)
+            gain = _t(state['gain'], dtype)
     if bin_steps:
-        nb = -(-nsteps // bin_steps)
+        nb = -(-(nsteps - t_begin) // bin_steps)
         if bin_groups is None:
             binned = torch.zeros((nb, n), dtype=torch.int32, device=device)
         else:
@@ -145,11 +189,17 @@ def run_trial(W, exc_idx, r_poi=150.0, params=P, seed=0, apl=None, t_stim=None,
                 gid[torch.as_tensor(np.asarray(ix, np.int64), device=device)] = k_
             binned = torch.zeros((nb, len(bin_groups)), dtype=torch.int32, device=device)
 
-    for t in range(nsteps):
-        free = (t - last) >= rfc_n                                   # 1
-        A = torch.where(free, g * a_coef, 0.0)                       # 2
-        v = torch.where(free, v0 + (v - v0 - A) * em + A * es, v)
-        g = torch.where(free, g * es, g)
+    global _decay_compiled
+    if compile:
+        if _decay_compiled is None:
+            _decay_compiled = torch.compile(_decay)
+        decay = _decay_compiled
+    else:
+        decay = _decay
+    t_dev = torch.zeros((), dtype=torch.int64, device=device)
+
+    for t in range(t_begin, nsteps):
+        v, g, free = decay(v, g, last, rfc_n, t_dev.fill_(t), v0, a_coef, em, es)  # 1-2
         if gap is not None:                                          # 2b
             vg = v[g_idx]
             dv = g_k * (torch.mv(g_C, vg) - g_deg * vg)
@@ -197,18 +247,29 @@ def run_trial(W, exc_idx, r_poi=150.0, params=P, seed=0, apl=None, t_stim=None,
                 rec_i.append(idx)
             if bin_steps:
                 if bin_groups is None:
-                    binned[t // bin_steps].index_add_(0, idx, torch.ones_like(idx, dtype=torch.int32))
+                    binned[(t - t_begin) // bin_steps].index_add_(0, idx, torch.ones_like(idx, dtype=torch.int32))
                 else:
                     gi = gid[idx]; gi = gi[gi >= 0]
-                    binned[t // bin_steps].index_add_(0, gi, torch.ones_like(gi, dtype=torch.int32))
+                    binned[(t - t_begin) // bin_steps].index_add_(0, gi, torch.ones_like(gi, dtype=torch.int32))
         ring[t % dly] = idx if has else empty
         if apl is not None:
             kc_rate = float(is_kc[idx].sum()) / dt if has else 0.0
 
+    st = None
+    if return_state:
+        st = dict(t=nsteps, v=v.clone(), g=g.clone(), last=last.clone(),
+                  ring=[x.clone() for x in ring], counts=counts.clone(),
+                  np_rng=np_rng.bit_generator.state, t_gen=t_gen.get_state())
+        if apl is not None:
+            st.update(a_apl=a_apl, kc_rate=kc_rate)
+        if presyn is not None:
+            st.update(IA=IA.clone(), IB=IB.clone(), gain=gain.clone())
     counts = counts.cpu().numpy()
-    if not record and not bin_steps:
+    if not record and not bin_steps and not return_state:
         return counts
     out = dict(counts=counts)
+    if st is not None:
+        out['state'] = st
     if record:
         out['t'] = torch.cat(rec_t).cpu().numpy() if rec_t else np.empty(0, np.int32)
         out['i'] = torch.cat(rec_i).cpu().numpy() if rec_i else np.empty(0, np.int64)
