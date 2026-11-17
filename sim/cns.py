@@ -34,6 +34,23 @@ from sim.lesion import select  # noqa: E402
 from sim.gap import build_gap  # noqa: E402
 
 SCALE, K_APL, K_PRESYN = 0.581, 0.1, 0.05
+# Week 4 day 3 calibration decisions (progress/week4/day3_results.md). Not the
+# cns_model defaults, so Week 4 day 1-2 results stay reproducible; pass
+# **W4_CALIB from day 4 on.
+GF_GAP_MV = 8.0
+# Week 4 day 3b: sign corrections for the two cell types that drive the
+# looming-ignited central-complex state (progress/week4/day3b_results.md).
+#   GLNO: MaleCNS consensus and prediction 'unclear' (-> +1); FlyWire predicts
+#         GABA (3/4) / glutamate (1/4), hemilineage LALv1.
+#   LPsP: MaleCNS predicts ACh (0.88); FlyWire known_nt = dopamine + glutamate,
+#         ACh-negative (Alekseyenko 2013; Wolff 2024 EASI-FISH). Glutamate -> -1.
+SIGN_FIX = {'GLNO': -1, 'LPsP': -1}
+# Two small all-to-all excitatory cliques (ACh, consistent in MaleCNS and
+# FlyWire) reverberate forever in a LIF model without adaptation: DNg33 L<->R
+# (~750 synapses each way) and the IN19B040 quartet. Scale only the
+# within-clique synapses (smallest gain that stops them, day 3b sweep).
+CLIQUE_GAIN = ({'DNg33', 'IN19B040'}, 0.3)
+W4_CALIB = dict(gf_gap=GF_GAP_MV, mn_glu=True, sign_fix=SIGN_FIX, clique_gain=CLIQUE_GAIN)
 
 LEG_SEGMENT = {   # functional type -> joint it moves (Azevedo et al. 2024 naming)
     'Pleural remotor/abductor MN': 'thorax-coxa', 'Tergopleural/Pleural promotor MN': 'thorax-coxa',
@@ -91,11 +108,23 @@ def _apl(meta, W):
     return W2, dict(kc_idx=kc_idx, w_kc=w_kc, k=K_APL, tau=0.01)
 
 
-def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True):
+def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True, gf_gap=None,
+              mn_glu=False, sign_fix=None, clique_gain=None):
     """Return dict(meta, W, gap, presyn, apl, vnc, info).
 
     scope : 'cns' (brain + VNC, Week 4) or 'brain' (Week 3 model, VNC masked).
     config: 'calib' (real wiring) or 'shuffle' (degree-preserving control).
+    gf_gap: None (Weeks 1-4 day 2) or a spikelet size in mV: adds rectifying
+            GF -> TTMn / PSI gap junctions (sim/gap.build_gf_gap, Week 4 day 3).
+            Added in both configs (like the eLN-PN junctions, not shuffled).
+    mn_glu: if True, every chemical output of a VNC motor neuron is
+            glutamatergic (-1). Fly motor neurons are glutamatergic; the
+            per-body prediction gives their few central synapses 'unclear'
+            (+1) or acetylcholine for most MNs (Week 4 day 3 sign audit).
+    sign_fix: optional {cell type: +1 / -1}; sets the sign of every chemical
+            output of neurons of that type (Week 4 day 3b: SIGN_FIX).
+    clique_gain: optional (types, g); synapses between two neurons of the same
+            listed type are scaled by g (Week 4 day 3b: CLIQUE_GAIN).
     """
     from scripts.w2d3_gap_malecns import cut_ln_pn
     from scripts.w2d4_word_trials import shuffle_W, GAP_KW
@@ -105,6 +134,33 @@ def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True
     meta, W1 = load(w_syn=1.0, monoamine='removed')
     vnc, _ = regions(meta)
     W = W1 * (P['w_syn'] * SCALE)
+    if mn_glu:
+        from scipy import sparse
+        is_mn = (meta.superclass.astype(str) == 'vnc_motor').to_numpy()
+        W = (W @ sparse.diags((~is_mn).astype(float))
+             - abs(W) @ sparse.diags(is_mn.astype(float))).tocsc()   # columns = presynaptic
+        W.eliminate_zeros()
+    if sign_fix:
+        from scipy import sparse
+        tt = meta.type.astype(str).to_numpy()
+        pos_, neg_, keep_ = np.zeros(len(tt)), np.zeros(len(tt)), np.ones(len(tt))
+        for typ, sg in sign_fix.items():
+            k = tt == typ
+            if not k.any():
+                raise ValueError(f'sign_fix: no neurons of type {typ}')
+            keep_[k] = 0
+            (pos_ if sg > 0 else neg_)[k] = 1
+        W = (W @ sparse.diags(keep_) + abs(W) @ sparse.diags(pos_)
+             - abs(W) @ sparse.diags(neg_)).tocsc()
+        W.eliminate_zeros()
+    if clique_gain:
+        types, gq = clique_gain
+        tt = meta.type.astype(str).to_numpy()
+        C = W.tocoo()
+        k = (tt[C.row] == tt[C.col]) & np.isin(tt[C.col], list(types))
+        d = C.data.copy(); d[k] *= gq
+        from scipy import sparse
+        W = sparse.csc_matrix((d, (C.row, C.col)), shape=W.shape)
     if scope == 'brain':
         W = _mask(W, lambda r, c: ~vnc[r] & ~vnc[c])
     elif scope != 'cns':
@@ -113,6 +169,11 @@ def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True
     ln, pn = select(meta, ACH_LN), select(meta, PN)
     W = cut_ln_pn(W, ln, pn)
     gap, ginfo = build_gap(W1, ln, pn, v_spike=0.002, **GAP_KW)
+    if gf_gap is not None and scope == 'cns':      # TTMn / PSI are VNC neurons
+        from sim.gap import build_gf_gap, merge_gap
+        gg, gginfo = build_gf_gap(meta, gf_gap, v_spike=0.002)
+        gap = merge_gap(gap, gg)
+        ginfo = dict(ginfo, gf=gginfo)
     if config == 'shuffle':
         W = shuffle_W(W)
     elif config != 'calib':
