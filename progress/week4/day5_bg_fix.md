@@ -2,7 +2,82 @@
 
 Follows `day5_background_diagnosis.md` and Charlie's decisions of 2026-11-18: bristle sensory neurons get 0 Hz background; the 1,040 `unknown_sensory | abdomen` neurons stay configurable until they are identified; the Day 5 background range is 1–3 Hz; looming is in about 1 of 6 episodes.
 
+**Update (2026-11-18, class_v2): Charlie's choice for the 1,040 abdominal neurons.** Abdominal O2 sensors get 0 Hz, and all other abdominal sensors get a fixed **1 Hz**, not the episode rate. Bristles stay at 0 Hz, and every other sensory neuron keeps the episode rate (uniform 1–3 Hz). This is the default for new specs (`bg_scheme` name `class_v2`). It is described in "Class_v2" below. The class_v1 sections that follow are kept as the record of the first version.
+
 Nothing under `sim/` changed.
+
+## Class_v2 (current default)
+**Code (`stimuli/mixtures.py`).**
+- **Scheme.** New specs carry `bg_scheme = {name: 'class_v2', bristle_hz, o2_hz, abdominal_hz}`. The defaults are `bristle_bg=0.0`, `o2_bg=0.0` and `abdominal_bg=1.0`. `abdominal_hz` is a fixed rate in Hz, or `'same'` (= the episode's `bg_hz`).
+- **O2 class.** `bg_class_masks(meta)['o2']` = the abdominal mask & `type` in `O2_TYPES = ('SAxx01', 'SNxx16')`. The source is `results/w4/abd_id/external_id.md` (BANC labels these types "abdomen_oxygenation_neuron"). The O2 class is defined inside the abdominal mask only.
+- **Blocks.**
+  - One block at `bg_hz` on every sensory neuron except bristles. The O2 class and the other abdominal neurons are also left out of it unless their rate equals `bg_hz`.
+  - Then a bristle block, an O2 block and an abdominal block, in that order, for each class whose rate is separate and > 0. A neuron at 0 Hz is in no block.
+  - Consequence: at an episode rate of exactly 1 Hz, the other abdominal neurons are in the main 1 Hz block, not a block of their own. Each neuron's rate is the same either way, but the Poisson draws differ from a split into two blocks.
+- **Old specs.**
+  - `scheme='class_v1'` (in `sample_episode` / `background_episode`) still makes class_v1 specs. `to_blocks` of a class_v1 spec is unchanged.
+  - Legacy specs (no `bg_scheme`) are unchanged.
+  - The scheme does not change any random draw in `sample_episode`: only the `bg_scheme` dict differs.
+- **Tests.** `tests/test_mixtures.py` (synthetic meta) checks the following:
+  - the default rates at episode rates 1, 1.7, 2.5 and 3 Hz: bristle 0, O2 0, other abdominal exactly 1 Hz, other sensory at the episode rate, non-sensory 0;
+  - the other class_v2 options;
+  - an SAxx01 neuron outside the abdominal mask is not O2;
+  - class_v1 blocks equal a frozen copy of the 9f5ef11 code;
+  - the scheme does not change the sampler draws;
+  - the legacy checks as before.
+
+**Masks on the real meta (`results/w4/bg_fix/checks.txt`).**
+- O2 = **18** (SAxx01 12, SNxx16 6). Rest-abdominal = **1,022**. Bristle = 2,206.
+- **One SAxx01 neuron is outside the abdominal mask:** bodyId 54011 (instance SAxx01_R, superclass `sensory_ascending`, class and subclass missing). It is sensory but not in the O2 class, so it keeps the episode rate.
+
+**Real-data checks** (`scripts/w4d5_bg_fix_checks.py <Day 4 mixtures.py (git e3bbd01)> <class_v1 mixtures.py (git 9f5ef11)>`; 19 PASS, 0 failed):
+- **Default class_v2 blocks.**
+  - At 3 Hz: `[(12666, 3.0), (1022, 1.0)]`.
+  - At 1 Hz: `[(13688, 1.0)]`.
+  - Both: bristle and O2 at 0, rest-abdominal at 1 Hz, other sensory at `bg_hz`, no non-sensory neuron covered.
+- **Class_v1 compatibility.**
+  - The 12 class_v1 specs saved with the verification runs give `to_blocks` identical to the 9f5ef11 code, 12 of 12.
+  - `background_episode` and `sample_episode` with `scheme='class_v1'` equal the 9f5ef11 functions (seeds 0–999 for the sampler).
+- **Looming share.** Still 803 / 5000 = 0.1606.
+- **T1 pilot.** Specs and blocks are identical, 12 of 12.
+
+**Verification runs (`scripts/w4d5_bg_fix_runs.py`, rows in `results/w4/bg_fix/verify.csv`).**
+- **Setup.** Background only, 1.0 s, seeds 0–2, `W4_CALIB`. The class_v2 default runs at episode rate 3 Hz (calib and shuffle) and 1 Hz (calib).
+- **Comparison runs.** For the 1 Hz comparison, the all-sensory runs were also done at 1 Hz (calib, seeds 0–2). Seeds 0 and 1 give the same numbers as the diagnosis rows `dose_calib_all_1Hz_s0/s1` in `results/w4/regression/bg_diag/dose.csv` (MN spikes 28 and 24, VNC non-sensory active 157 and 146).
+- **csv labels.** In `verify.csv` the scheme column is `v2` for the 3 Hz class_v2 rows, `v2_1Hz` / `legacy_1Hz` for the 1 Hz rows. A column `o2_spikes` was added; it is 0 in every class_v2 run.
+- **Earlier rows unchanged.** Re-tabulating did not change the earlier 18 rows. The driven mask is now taken from each spec's blocks.
+
+| cfg | background | episode rate | seed | MNs active | MN spikes | ÷ all-sensory (same rate, seed) | non-sens active (1 s) | non-sens / VNC / brain active per 100 ms |
+|---|---|---|---|---|---|---|---|---|
+| calib | class_v2 default | 3 Hz | 0 | 10 | 13 | 2.1% | 821 | 244 / 81 / 161 |
+| calib | class_v2 default | 3 Hz | 1 | 8 | 11 | 1.5% | 449 | 170 / 82 / 85 |
+| calib | class_v2 default | 3 Hz | 2 | 8 | 8 | 1.5% | 426 | 158 / 74 / 82 |
+| shuffle | class_v2 default | 3 Hz | 0 / 1 / 2 | 1 / 0 / 2 | 1 / 0 / 2 | — | 193 / 180 / 177 | 38 / 36 / 34 |
+| calib | class_v2 default | 1 Hz | 0 | 0 | 0 | 0% (all-sensory 28) | 130 | 30 / 17 / 14 |
+| calib | class_v2 default | 1 Hz | 1 | 0 | 0 | 0% (all-sensory 24) | 117 | 31 / 19 / 13 |
+| calib | class_v2 default | 1 Hz | 2 | 0 | 0 | n/a (all-sensory 0) | 112 | 27 / 17 / 9 |
+| calib | all sensory | 1 Hz | 0 / 1 / 2 | 15 / 16 / 0 | 28 / 24 / 0 | — | 312 / 285 / 269 | 99 / 95 / 87 |
+
+**Means over seeds 0–2 (calib, 3 Hz):**
+
+| background | MNs active | MN spikes | share of all-sensory MN spikes | non-sens active per 100 ms |
+|---|---|---|---|---|
+| all sensory | 92.7 | 631.7 | 100% | 503 |
+| bristle 0, abdominal same (class_v1) | 39.7 | 92.3 | 14.6% | 258 |
+| bristle 0, abdominal 0 (class_v1) | 11.0 | 14.7 | 2.3% | 183 |
+| **class_v2 default** (bristle 0, O2 0, other abdominal 1 Hz) | **8.7** | **10.7** | **1.7%** (1.5–2.1% per seed) | 191 |
+
+At 1 Hz, the class_v2 default gives 0 MN spikes in all three seeds; the all-sensory runs give a mean of 17.3.
+
+**Against the expectation.** The brief expected the result to lie between the abdominal-0 row (about 2%) and the abdominal-'same' row (about 15%), probably near the low end.
+- **It did not lie strictly between them.** At 3 Hz, the class_v2 default gives 8–13 MN spikes per seed, which is at or below the abdominal-0 row (14–16).
+- The per-seed numbers do not show that 1 Hz on the other 1,022 abdominal neurons adds measurable MN drive at a 3 Hz episode rate. The difference from abdominal 0 (mean 10.7 vs 14.7 MN spikes) is within seed-to-seed spread.
+- The runs are not paired: the block structure differs, so the Poisson draws differ even at the same seed.
+- **Not tested:** whether the abdominal 1 Hz block has an effect at a larger n or in paired runs.
+
+**Brain burst.** Calib class_v2 3 Hz seed 0 has 589 brain non-sensory neurons active over 1 s (verify.csv), similar to the two class_v1 runs with a burst bin. An ad hoc per-bin look shows a burst in bins 0.2–0.4 s; that per-bin count is not in a log. Not investigated.
+
+**Head bristles (still open).** The 932 head `BM*` mechanosensory bristle neurons are not in the bristle mask and still get the episode rate. Charlie has not decided.
 
 ## Code
 **`stimuli/mixtures.py`**
@@ -37,7 +112,7 @@ Nothing under `sim/` changed.
   - `taste bristle` (70, class missing).
 - **Head mechanosensory bristles are NOT in the mask (decision needed).** 932 head neurons have type `BM*`, all class `mechanosensory` with no subclass: BM_InOm 745, BM 69, BM_Taste 40, BM_vOcci_vPoOr 26, BM_Vib 22, BM_MaPa 15, BM_Vt_PoOc 8, BM_Hau 7. They are the same modality as the VNC tactile bristles. The brief defined the mask as VNC only, so they still get the episode's background. In the diagnosis, head-only background at 3 Hz drove 2–9 MNs, so they are not the MN driver; whether they should also get 0 Hz is Charlie's call.
 
-## Unit checks (`results/w4/bg_fix/checks.txt`; all 13 pass; `pytest tests/`: 14 pass, also with pyarrow blocked as in CI)
+## Unit checks, class_v1 (`results/w4/bg_fix/checks.txt` at the time: all 13 pass; it now holds the class_v2 run, 19 pass; `pytest tests/`: 14 pass, also with pyarrow blocked as in CI)
 - **Block structure.** With `abdominal_bg='same'`, there is one block of 13,706 neurons at 3 Hz and no bristle in it. With `abdominal_bg=0`, there is one block of 12,666 neurons and no abdominal neuron in any block. With a rate of 2 Hz, the abdominal group gets its own 1,040-neuron block. Every other sensory neuron is covered exactly once, and no non-sensory neuron is covered.
 - **Looming share** (new sampler, spec seeds 0–4999): **803 / 5000 = 0.1606**. The target is 1/6 = 0.1667 ± 0.02, and the binomial SE is 0.005.
   - The legacy sampler gives 2,083 / 5000 = 0.417, against 3/7 expected.
@@ -90,11 +165,11 @@ Nothing under `sim/` changed.
   - The three legacy calib runs do not show such a bin. Head background is the same in all schemes, so this looks like a seed-dependent brain event, not an effect of the VNC change. It was not investigated.
 
 ## Day 1 parity
-`python scripts/w4d1_torch_parity.py parity cns 0.1` (vinegar) gives 2,232 spikes in both torch and NumPy: 0 neurons differ, identical=True (`results/w4/w4d1_parity_cns.txt`). No `sim/` file changed.
+`python scripts/w4d1_torch_parity.py parity cns 0.1` (vinegar) gives 2,232 spikes in both torch and NumPy: 0 neurons differ, identical=True (`results/w4/w4d1_parity_cns.txt`). No `sim/` file changed. The result was the same when re-run after the class_v2 change.
 
 ## Assumptions and what is unverified
 - **Bristle mask follows the brief: VNC only.** The 932 head BM* bristle neurons and all gustatory "bristle" subclasses still get the episode background.
-- **The abdominal default stays `'same'`** until Charlie chooses. The verification shows that with 'same', 28–50 MNs are still active at 3 Hz (50–127 MN spikes), against 9–12 MNs (14–16 spikes) with 0.
+- **(class_v1, superseded by class_v2 above.) The abdominal default stays `'same'`** until Charlie chooses. The verification shows that with 'same', 28–50 MNs are still active at 3 Hz (50–127 MN spikes), against 9–12 MNs (14–16 spikes) with 0.
 - **Run coverage.** The verification is at 3 Hz only, the top of the new 1–3 Hz range. Lower rates and mixtures with words were not run with the new scheme. No full episode with the new sampler was simulated.
 - **Looming share** is the share of episodes containing looming. The share of time or of word slots was not set.
 - **Different random draws.** New specs use a different RNG draw order from Day 4 (one extra `rng.random()` for the looming decision). The same spec seed therefore gives different episodes under the new and legacy samplers. That is intended, and legacy specs are reproduced only with `legacy=True`.
