@@ -46,3 +46,22 @@ Brief: [tasks/T2_brief.md](tasks/T2_brief.md). Branch `perf/w4-t2-resume-test`.
 - Failure demo (scratch copy): dropping the ring restore makes the affected tests fail with 33 neurons differing (NumPy: 1 test; Torch: 2 tests).
 - Gaps, not fixed (no `sim/` changes): the state dicts are not interchangeable (NumPy stores the RNG as `rng`, Torch as `np_rng` and silently skips a missing key, from reading the code); `lif_numpy` returns the state only with `record=True`.
 - No file under `sim/` changed.
+
+## T3: step anatomy on the 5060 Ti (2026-11-18)
+
+Brief: [tasks/T3_brief.md](tasks/T3_brief.md). Branch `perf/w4-t3-anatomy`. Report: [perf/week04_day4.md](../../perf/week04_day4.md).
+
+**Built**
+- `bench/w4_anatomy.py`: instrumented copy of the `run_trial` step loop (bundle configuration; same helpers and statement order as `sim/lif_torch.py` 201-256) split into 11 phases. Passes per run: uninstrumented `run_trial`; host `perf_counter` only (phase wall table); `perf_counter` + CUDA events + NVTX (GPU span); per-op gated GPU exec (`torch.cuda._sleep` before each aten op, host-enqueue checked against the gate); per-phase GPU ops (`TorchDispatchMode`) and syncs (sync-debug warnings); nvidia-smi utilisation and clocks. Drift guard: exact spike counts vs `run_trial` over 300 steps from t = 0 (exit code 3 on failure), plus every repeat of the warm window. `--runs 5` aggregates median [min-max].
+- `bench/w4_anatomy_plot.py` (stacked bar PNG + site table), `bench/w4_nsys_timeline.py` (one step from an nsys SQLite export).
+- `bench/w4_overhead_plot.py`: T1 PNG redrawn for a 390 px screen (840 px wide, 9-11 pt); the T1 budget table HTML is byte-identical.
+- `perf/week04_day3.md`: the unmeasured "~20% utilisation" line now cites T3's measurement.
+
+**Findings**
+- Drift guard passed (3,710 spikes, 0 neurons differ; warm window 3,438 spikes in every repeat).
+- Sum of phase wall medians / steady step (same pass): 0.973 [0.964-0.979].
+- Top 3 phases by wall: presyn 0.324 ms (1 sync), synaptic 0.308 ms (1 sync), APL 0.161 ms (1 sync). Gather/scatter + spike phase = 63% of the step with 7 of 10 syncs; gather/scatter is kernel-bound (54 GPU ops, 0.30 ms GPU exec), the spike phase is sync-bound (5 syncs, 0.025 ms GPU exec).
+- GPU utilisation 19% [3-22%]; GPU exec of non-sync ops 0.56 ms = 0.34 [0.30-0.36] of the uninstrumented steady step (1.61 ms). Event span / wall is 1.00 by construction.
+- nsys 2024.6.2 (CUDA 12.8 toolkit) records NVTX but no CUDA activity under WSL with driver 13.3 (CUPTI_ERROR_INVALID_DEVICE); host-side timeline captured; install command for a newer nsys in the report, not run.
+- 13 event records per step cost ~0.25 ms; the events pass is 1.86 [1.72-2.05] ms (within 25% of T1's 1.65-1.73), so the wall table uses the host-only pass.
+- No file under `sim/` changed.
