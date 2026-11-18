@@ -1,0 +1,6 @@
+# CPU CI (.github/workflows/ci.yml). torch is installed separately from the
+# CPU wheel index: pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cpu
+numpy==2.5.5
+scipy==1.18.1
+pandas==3.1.1
+pytest==9.2.0
