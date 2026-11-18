@@ -14,7 +14,7 @@ Nothing under `sim/` changed.
 - **`background_episode(bg_hz, seed, T, legacy=False, bristle_bg, abdominal_bg)`** follows the same rules.
 - **`bg_class_masks(meta)`** defines three masks:
   - `sensory` = `sim.presyn.sensory_mask_malecns`;
-  - `bristle` = sensory & VNC (`sim.cns.regions`) & subclass `mechanosensory bristle`;
+  - `bristle` = sensory & VNC & subclass `mechanosensory bristle`. VNC uses the `sim.cns.regions` rule, copied into `mixtures._vnc` so that the module does not import `sim.cns` (its loader needs pyarrow, which CI does not install). The checks script asserts equality on the real meta;
   - `abdominal` = sensory & class `unknown_sensory` & subclass `abdomen`.
 - **`to_blocks` / `bg_blocks`.**
   - One background block at `bg_hz` on every sensory neuron except bristles. The abdominal group is also left out when its rate differs from `bg_hz`.
@@ -37,7 +37,7 @@ Nothing under `sim/` changed.
   - `taste bristle` (70, class missing).
 - **Head mechanosensory bristles are NOT in the mask (decision needed).** 932 head neurons have type `BM*`, all class `mechanosensory` with no subclass: BM_InOm 745, BM 69, BM_Taste 40, BM_vOcci_vPoOr 26, BM_Vib 22, BM_MaPa 15, BM_Vt_PoOc 8, BM_Hau 7. They are the same modality as the VNC tactile bristles. The brief defined the mask as VNC only, so they still get the episode's background. In the diagnosis, head-only background at 3 Hz drove 2–9 MNs, so they are not the MN driver; whether they should also get 0 Hz is Charlie's call.
 
-## Unit checks (`results/w4/bg_fix/checks.txt`; all 12 pass; `pytest tests/`: 14 pass)
+## Unit checks (`results/w4/bg_fix/checks.txt`; all 13 pass; `pytest tests/`: 14 pass, also with pyarrow blocked as in CI)
 - **Block structure.** With `abdominal_bg='same'`, there is one block of 13,706 neurons at 3 Hz and no bristle in it. With `abdominal_bg=0`, there is one block of 12,666 neurons and no abdominal neuron in any block. With a rate of 2 Hz, the abdominal group gets its own 1,040-neuron block. Every other sensory neuron is covered exactly once, and no non-sensory neuron is covered.
 - **Looming share** (new sampler, spec seeds 0–4999): **803 / 5000 = 0.1606**. The target is 1/6 = 0.1667 ± 0.02, and the binomial SE is 0.005.
   - The legacy sampler gives 2,083 / 5000 = 0.417, against 3/7 expected.

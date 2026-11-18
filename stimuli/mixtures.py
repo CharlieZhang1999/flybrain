@@ -155,17 +155,27 @@ def word_idx(meta, pos, word):
     return np.array([pos[b] for b in select_ids(meta, word)], dtype=np.int64)
 
 
+def _vnc(meta):
+    """VNC mask, the same rule as sim.cns.regions (copied so that this module does not
+    import sim.cns, whose MaleCNS loader needs pyarrow; equality on the real meta is
+    checked in scripts/w4d5_bg_fix_checks.py)."""
+    sc = meta.superclass.fillna('').astype(str)
+    nm = meta.somaNeuromere.fillna('').astype(str)
+    return (sc.str.startswith('vnc_')
+            | sc.isin(['ascending_neuron', 'sensory_ascending', 'sensory_ascending_tbc', 'efferent_ascending'])
+            | nm.str.match(r'^(T[123]|A\d+)')).to_numpy()
+
+
 def bg_class_masks(meta):
     """Boolean masks (over meta rows) used by the class_v1 background scheme.
 
     sensory    sim.presyn.sensory_mask_malecns (superclass contains 'sensory')
-    bristle    sensory & VNC (sim.cns.regions) & subclass == 'mechanosensory bristle'
+    bristle    sensory & VNC (_vnc = sim.cns.regions rule) & subclass == 'mechanosensory bristle'
     abdominal  sensory & class == 'unknown_sensory' & subclass == 'abdomen'
     """
     from sim.presyn import sensory_mask_malecns
-    from sim.cns import regions
     sens = sensory_mask_malecns(meta)
-    vnc, _ = regions(meta)
+    vnc = _vnc(meta)
     cl = meta['class'].astype(object).where(meta['class'].notna(), '').astype(str).to_numpy()
     sub = meta['subclass'].astype(object).where(meta['subclass'].notna(), '').astype(str).to_numpy()
     bristle = sens & vnc & (sub == 'mechanosensory bristle')

@@ -54,6 +54,7 @@ def main(legacy_path, specs_path=None):
 
     log('## 1. Class masks')
     log(f'sensory {sens.sum():,}; bristle {bri.sum():,}; abdominal {abd.sum():,}; overlap {(bri & abd).sum()}')
+    check('mixtures._vnc == sim.cns.regions VNC mask', np.array_equal(mx._vnc(meta), vnc))
     check('bristle = 2,206 and abdominal = 1,040 (diagnosis counts)', bri.sum() == 2206 and abd.sum() == 1040)
     s = meta[sens]
     sub = s.subclass.astype(str)
