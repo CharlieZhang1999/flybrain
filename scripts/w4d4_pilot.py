@@ -44,8 +44,9 @@ T = 2.0
 
 
 def specs():
-    out = [sample_episode(SPEC_SEED0 + k, T=T) for k in range(N_MIX)]
-    out += [background_episode(bg, seed, T=T) for bg, seed in BG_ONLY]
+    # legacy=True: the Day 4 sampler and uniform background (stimuli/mixtures.py, Day 5 change)
+    out = [sample_episode(SPEC_SEED0 + k, T=T, legacy=True) for k in range(N_MIX)]
+    out += [background_episode(bg, seed, T=T, legacy=True) for bg, seed in BG_ONLY]
     return out
 
 
@@ -104,7 +105,7 @@ def bgoff(cfg='calib', bg=5.0, t_off=1.5, seed=9003):
     from sim.presyn import sensory_mask_malecns
     m, pos = build(cfg)
     sens = sensory_mask_malecns(m['meta'])
-    spec = background_episode(bg, seed, T=T)
+    spec = background_episode(bg, seed, T=T, legacy=True)
     p = dict(P); p['t_run'] = T
     t0 = time.time()
     r = lif_torch.run_trial(m['W'], [], params=p, seed=seed, apl=m['apl'], gap=m['gap'],
