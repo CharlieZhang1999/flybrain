@@ -182,3 +182,32 @@ def test_bad_scheme_values():
         mx.background_episode(1.0, 0, o2_bg=-1)
     with pytest.raises(ValueError):
         mx.background_episode(1.0, 0, scheme='class_v3')
+
+
+def test_t_words_default_unchanged():
+    """t_words=None (default) gives the same specs as before: no new key, same draws."""
+    for s in range(200):
+        for kw in (dict(), dict(legacy=True), dict(scheme='class_v1', abdominal_bg='same')):
+            a = mx.sample_episode(s, **kw)
+            assert 't_words' not in a
+            b = mx.sample_episode(s, t_words=2.0, **kw)          # t_words = T: same draws and times
+            assert b.pop('t_words') == 2.0 and a == b
+
+
+def test_t_words_window():
+    """Day 5 dataset: T = 2.5 s, words in [0, 2.0] s, onset in [0, 1.7] s."""
+    for s in range(2000):
+        e = mx.sample_episode(s, T=2.5, t_words=2.0)
+        assert e['T'] == 2.5 and e['t_words'] == 2.0
+        for w in e['words']:
+            assert 0.0 <= w['onset'] <= 1.7 and w['onset'] < w['offset'] <= 2.0
+        assert mx.last_offset(e) <= 2.0
+        # the same draws as a 2.0 s episode: only T and t_words differ
+        f = mx.sample_episode(s, T=2.0)
+        assert {k: v for k, v in e.items() if k not in ('T', 't_words')} == {k: v for k, v in f.items() if k != 'T'}
+
+
+def test_t_words_bad_values():
+    for tw in (0.0, 0.3, 2.6):
+        with pytest.raises(ValueError):
+            mx.sample_episode(0, T=2.5, t_words=tw)
