@@ -29,7 +29,9 @@ steps (0.1 s) are run first with return_state=True, then the measured window
 same spikes.
 
 Usage (from the repo root, so this repo's sim/ is imported):
-  python bench/w4_overhead.py --bundle ~/flybench/flybrain/results/w4/cns_bundle_calib.npz
+  python bench/w4_overhead.py --bundle ~/flybench/flybrain/results/w4/cns_bundle_calib.npz [--runs 5]
+The whole suite runs --runs times (default 5) in one invocation; the report gives,
+for every value, the median across runs and the min-max across runs.
 Output: perf/results/w4/<host>_<timestamp>_overhead.json and .md
 (results/ is gitignored, so committed results live under perf/results/).
 """
@@ -186,7 +188,7 @@ def item3_syncops(device, reps=1000):
         out[f'mask_index_len{L}_us'] = stats(time_repeats(lambda: ix[r < 0.015], device, reps,
                                                           sync_after=False))
     v = torch.zeros(N_SIM, dtype=torch.float64, device=device)
-    for k in (20, 200):
+    for k in (1, 20, 100):     # the simulator assigns to ~17 spiking neurons per step
         idx = torch.randperm(N_SIM, device=device)[:k]
         out[f'setitem_scalar_n{N_SIM}_k{k}_us'] = stats(
             time_repeats(lambda: v.__setitem__(idx, 0.5), device, reps, sync_after=False))
@@ -488,150 +490,226 @@ def bench_method_sim(model, device, stim, bio=0.2, repeats=3):
     return out
 
 
+
+
 # ---------------------------------------------------------------- budget
-def budget(res, rng):
-    """Predicted ms/step = sum over aten ops of a unit cost, split by category.
+def units(micro):
+    """Unit costs (us) from one run's micro results, or from the across-run
+    aggregate (same shape; every value has a 'median').
 
     Every aten op pays the host dispatch cost c_disp (item 1 on cpu: Python ->
     aten -> tiny CPU kernel). Ops that launch GPU work also pay
     c_launch = c_enq - c_disp, where c_enq is item 1 on cuda with a final sync
-    (10,000 tiny kernels: the rate at which the GPU retires them, which is what a
-    step pays because every step ends its kernel chains in a sync). Sync-forcing /
-    copy ops pay, on top, their measured micro cost minus what dispatch+launch
-    already covers:
-      nonzero                     -> item 3 nonzero (n=165,122, 100 true) - c_enq
-      index (bool mask, short)    -> item 3 mask_index_len311 - 2 c_enq (lt + index);
-                                     used for both mask sites (drive, spikelets)
-      _local_scalar_dense         -> item 2 add_then_item - c_enq - c_disp (D2H + sync)
-      index_put_ with CPU scalar  -> item 3 setitem_scalar_k20 - setitem_tensor_k20
-      _to_copy H2D (as_tensor)    -> item 4 pageable_as_tensor_len10 - c_enq - c_disp
-    Not modelled: GPU execution time beyond the tiny-kernel rate, and stalls
-    (steps > STALL_MS); the measured side is reported both with and without them.
+    (10,000 tiny kernels: the rate at which the GPU retires them). Sync-forcing /
+    copy ops pay, on top, a directly measured total minus the dispatch + launch
+    already charged to the same ops; these extras are clamped at 0.
+      nonzero               median over the 3 sizes (0/100/2,000 true)       - c_enq
+      index (bool mask)     median over lengths 20 and 311                    - 2 c_enq (lt + index)
+      _local_scalar_dense   item 2 add_then_item                              - c_enq - c_disp
+      index_put_ (scalar)   median of v[idx] = 0.5 for 1/20/100 idx           - c_enq - c_disp (lift_fresh)
+      _to_copy H2D          median of pageable as_tensor of 10/100/1,000 ints - c_enq - c_disp
     """
-    m = res['micro']['cuda']
-    mc = res['micro']['cpu']
+    m, mc = micro['cuda'], micro['cpu']
+    med = lambda xs: statistics.median(xs)  # noqa: E731
     c_disp = mc['1_launch']['enqueue_us_per_op']['median']
-    c_enq = m['1_launch']['throughput_us_per_op_with_sync']['median']   # per tiny kernel, GPU-paced
-    c_launch = max(c_enq - c_disp, 0.0)
-    s3, s2, s4 = m['3_syncops'], m['2_sync'], m['4_h2d']
-    extra = {
-        'nonzero': s3[f'nonzero_n{N_SIM}_true100_us']['median'] - c_enq,
-        'index': s3['mask_index_len311_us']['median'] - 2 * c_enq,   # lt + index
-        '_local_scalar_dense': s2['add_then_item_us']['median'] - c_enq - c_disp,
-        'index_put_': (s3[f'setitem_scalar_n{N_SIM}_k20_us']['median']
-                       - s3[f'setitem_tensor_n{N_SIM}_k20_us']['median']),
-        '_to_copy': s4['pageable_as_tensor_len10_us']['median'] - c_enq - c_disp,
-    }
-    sim = res['sim']['cuda'][rng]
-    c = sim['counts_per_step']
-    # sync / copy op counts from the attribution tables
+    c_enq = m['1_launch']['throughput_us_per_op_with_sync']['median']
+    s2, s3, s4 = m['2_sync'], m['3_syncops'], m['4_h2d']
+    tot = dict(
+        nonzero=med([s3[f'nonzero_n{N_SIM}_true{k}_us']['median'] for k in (0, 100, 2000)]),
+        index=med([s3[f'mask_index_len{L}_us']['median'] for L in (20, 311)]),
+        _local_scalar_dense=s2['add_then_item_us']['median'],
+        index_put_=med([s3[f'setitem_scalar_n{N_SIM}_k{k}_us']['median'] for k in (1, 20, 100)]),
+        _to_copy=med([s4[f'pageable_as_tensor_len{L}_us']['median'] for L in (10, 100, 1000)]),
+    )
+    already = dict(nonzero=c_enq, index=2 * c_enq, _local_scalar_dense=c_enq + c_disp,
+                   index_put_=c_enq + c_disp, _to_copy=c_enq + c_disp)
+    extra = {k: max(tot[k] - already[k], 0.0) for k in tot}
+    clamped = [k for k in tot if tot[k] - already[k] < 0]
+    return dict(c_disp=c_disp, c_enq=c_enq, c_launch=max(c_enq - c_disp, 0.0),
+                launch_clamped=c_enq < c_disp, total=tot, extra=extra, clamped=clamped)
+
+
+def counts_of(sim_rng):
     syncs = collections.Counter()
-    for k, v in sim['syncs_by_op_line_per_step'].items():
+    for k, v in sim_rng['syncs_by_op_line_per_step'].items():
         syncs[k.split(' @ ')[0]] += v
-    h2d_n = sum(v for k, v in sim['h2d_by_op_line_per_step'].items())
+    c = sim_rng['counts_per_step']
+    return dict(aten_ops=c['aten_ops'], kernel_ops=c['kernel_ops'], syncs_by_op=dict(syncs),
+                h2d=sum(sim_rng['h2d_by_op_line_per_step'].values()))
+
+
+def budget(u, c):
+    """Predicted ms/step by category from unit costs u (us) and per-step counts c."""
+    s = c['syncs_by_op']
+    ex = u['extra']
     cats = collections.OrderedDict()
-    cats['python+dispatch'] = c['aten_ops'] * c_disp
-    cats['kernel launch'] = c['kernel_ops'] * c_launch
-    sync_us = 0.0
-    sync_detail = {}
-    for op, n in syncs.items():
-        if op == '_to_copy':
-            continue                      # costed as H2D below
-        if op == 'index_put_':
-            continue                      # scalar index_put_: hidden H2D + sync, own category
-        u = extra.get(op, extra['_local_scalar_dense'])
-        sync_detail[op] = dict(per_step=n, unit_us=round(u, 2))
-        sync_us += n * u
-    cats['sync round trips (D2H)'] = sync_us
-    sip = syncs.get('index_put_', 0.0)
-    cats['scalar index_put_ (hidden H2D+sync)'] = sip * extra['index_put_']
-    cats['as_tensor H2D (pageable)'] = h2d_n * extra['_to_copy'] if h2d_n else 0.0
-    # avoid double counting: hidden H2D of scalar index_put_ is seen as a sync, not a _to_copy
-    pred_ms = sum(cats.values()) / 1e3
-    tm = sim['timing']
-    meas, steady = tm['per_step_ms']['mean'], tm['steady_mean_ms']
-    return dict(rng=rng,
-                unit_costs_us=dict(c_disp=round(c_disp, 3), c_enq=round(c_enq, 3),
-                                   c_launch=round(c_launch, 3),
-                                   **{f'extra_{k}': round(v, 3) for k, v in extra.items()}),
-                counts_per_step=dict(aten_ops=c['aten_ops'], kernel_ops=c['kernel_ops'],
-                                     syncs_by_op=dict(syncs), h2d=h2d_n),
-                sync_detail=sync_detail,
-                category_ms={k: round(v / 1e3, 4) for k, v in cats.items()},
-                predicted_ms=round(pred_ms, 3), measured_ms_mean=meas,
-                measured_ms_median=tm['per_step_ms']['median'],
-                measured_ms_steady_mean=steady, stall_ms_per_step=tm['stall_ms_per_step'],
-                stall_fraction=tm['stall_fraction'],
-                ratio_pred_over_meas=round(pred_ms / meas, 3),
-                within_20pct=bool(abs(pred_ms / meas - 1) <= 0.20),
-                ratio_pred_over_steady=round(pred_ms / steady, 3),
-                within_20pct_steady=bool(abs(pred_ms / steady - 1) <= 0.20))
+    cats['python+dispatch'] = c['aten_ops'] * u['c_disp']
+    cats['kernel launch'] = c['kernel_ops'] * u['c_launch']
+    # D2H round trips; index_put_ and _to_copy syncs are costed in their own categories
+    cats['sync round trips (D2H)'] = sum(n * ex.get(op, ex['_local_scalar_dense'])
+                                         for op, n in s.items() if op not in ('index_put_', '_to_copy'))
+    cats['scalar index_put_ (hidden H2D+sync)'] = s.get('index_put_', 0.0) * ex['index_put_']
+    cats['as_tensor H2D (pageable)'] = c['h2d'] * ex['_to_copy']
+    cats = {k: round(v / 1e3, 4) for k, v in cats.items()}
+    return cats, round(sum(cats.values()), 3)
+
+
+# ---------------------------------------------------------------- aggregation
+def _rng(xs):
+    return dict(median=round(statistics.median(xs), 3), min=round(min(xs), 3), max=round(max(xs), 3),
+                max_over_min=round(max(xs) / min(xs), 2) if min(xs) > 0 else None, runs=xs)
+
+
+def aggregate(res):
+    runs = res['runs']
+    agg = dict(micro={}, sim={}, budget=[], variability=[])
+    # micro: median across runs of each per-run median
+    for d in runs[0]['micro']:
+        agg['micro'][d] = {}
+        for it, vals in runs[0]['micro'][d].items():
+            agg['micro'][d][it] = {}
+            for k, v in vals.items():
+                if isinstance(v, dict) and 'median' in v:
+                    xs = [r['micro'][d][it][k]['median'] for r in runs]
+                    p90 = [r['micro'][d][it][k]['p90'] for r in runs]
+                    a = _rng(xs)
+                    a['p90_median'] = round(statistics.median(p90), 3)
+                    a['runs_flagged_2x_within'] = sum(r['micro'][d][it][k]['varies_2x'] for r in runs)
+                    agg['micro'][d][it][k] = a
+                    if a['max_over_min'] and a['max_over_min'] > 2:
+                        agg['variability'].append(dict(what=f'{d} {it} {k} (us)', **{x: a[x] for x in (
+                            'median', 'min', 'max', 'max_over_min')}))
+    # simulator timing + counts
+    for d in runs[0]['sim']:
+        agg['sim'][d] = {}
+        for rng in ('torch', 'numpy'):
+            rs = [r['sim'][d][rng] for r in runs]
+            t = {k: _rng([x['timing'][k] if k in x['timing'] else x['timing']['per_step_ms'][k.split(':')[1]]
+                          for x in rs])
+                 for k in ('steady_mean_ms', 'stall_fraction', 'per_step_ms:mean', 'per_step_ms:median')}
+            cnt = {k: _rng([x['counts_per_step'][k] for x in rs]) for k in rs[0]['counts_per_step']}
+            agg['sim'][d][rng] = dict(timing=t, counts=cnt,
+                                      spikes_per_step=_rng([x['spikes_per_step_window'] for x in rs]))
+            for k, lab in (('stall_fraction', 'stall fraction'), ('per_step_ms:mean', 'all-steps mean ms/step'),
+                           ('steady_mean_ms', 'steady-state mean ms/step')):
+                a = t[k]
+                if a['max_over_min'] is None or a['max_over_min'] > 2:
+                    agg['variability'].append(dict(what=f'{d} rng={rng} {lab}', **{x: a[x] for x in (
+                        'median', 'min', 'max', 'max_over_min')}))
+    if 'bench_method' in runs[0]:
+        agg['bench_method'] = {rng: _rng([r['bench_method'][rng]['ms_per_step_incl_setup'] for r in runs])
+                               for rng in ('torch', 'numpy')}
+        agg['bench_method']['reference_ms_per_step_bench_pack'] = 3.327
+        for rng in ('torch', 'numpy'):
+            a = agg['bench_method'][rng]
+            if a['max_over_min'] > 2:
+                agg['variability'].append(dict(what=f'bench-method rng={rng} ms/step (setup incl.)',
+                                               **{x: a[x] for x in ('median', 'min', 'max', 'max_over_min')}))
+    # budget: aggregated units x median counts, plus per-run predictions
+    if 'cuda' in agg['sim'] and 'cpu' in agg['micro']:
+        ua = units(agg['micro'])
+        agg['units_us'] = {k: (round(v, 3) if isinstance(v, float) else
+                               ({kk: round(vv, 3) for kk, vv in v.items()} if isinstance(v, dict) else v))
+                           for k, v in ua.items()}
+        for rng in ('numpy', 'torch'):
+            per = []
+            for r in runs:
+                c = counts_of(r['sim']['cuda'][rng])
+                cats, pred = budget(units(r['micro']), c)
+                steady = r['sim']['cuda'][rng]['timing']['steady_mean_ms']
+                per.append(dict(predicted_ms=pred, steady_ms=steady, ratio=round(pred / steady, 3),
+                                categories=cats, counts=c))
+            cs = [p['counts'] for p in per]
+            cmed = dict(aten_ops=statistics.median([c['aten_ops'] for c in cs]),
+                        kernel_ops=statistics.median([c['kernel_ops'] for c in cs]),
+                        h2d=statistics.median([c['h2d'] for c in cs]),
+                        syncs_by_op={op: statistics.median([c['syncs_by_op'].get(op, 0.0) for c in cs])
+                                     for op in cs[0]['syncs_by_op']})
+            cats, pred = budget(ua, cmed)
+            st = agg['sim']['cuda'][rng]['timing']
+            agg['budget'].append(dict(
+                rng=rng, counts_median=cmed, category_ms_agg_units=cats, predicted_ms_agg_units=pred,
+                predicted_ms_per_run=_rng([p['predicted_ms'] for p in per]),
+                category_ms_per_run={k: _rng([p['categories'][k] for p in per]) for k in cats},
+                steady_ms=st['steady_mean_ms'], all_steps_ms=st['per_step_ms:mean'],
+                stall_fraction=st['stall_fraction'],
+                ratio_pred_over_steady_per_run=_rng([p['ratio'] for p in per]),
+                ratio_agg_units_over_steady_median=round(pred / st['steady_mean_ms']['median'], 3),
+                negative_category=any(v < 0 for p in per for v in p['categories'].values())
+                or any(v < 0 for v in cats.values())))
+            r_ = agg['budget'][-1]['ratio_pred_over_steady_per_run']
+            if r_['max_over_min'] > 2:
+                agg['variability'].append(dict(what=f'budget rng={rng} predicted/steady ratio',
+                                               **{x: r_[x] for x in ('median', 'min', 'max', 'max_over_min')}))
+    return agg
 
 
 # ---------------------------------------------------------------- report
+def _mmm(a, f='{:g}'):
+    return f"{f.format(a['median'])} [{f.format(a['min'])}-{f.format(a['max'])}]"
+
+
 def to_md(res):
-    L = [f"# Week 4 T1 overhead budget: {res['tag']}", '',
+    agg = res['agg']
+    n = len(res['runs'])
+    L = [f"# Week 4 T1 overhead budget: {res['tag']} ({n} runs in one invocation)", '',
+         'Every value: median across runs [min-max across runs]. Per run, each timing is itself the median '
+         'of >= 1,000 repeats (item 1: 100 batches of 10,000 ops; simulator: 1,990 steps).', '',
          '```', json.dumps(res['env'], indent=1), '```', '']
-    for d, m in res.get('micro', {}).items():
-        L += [f'## Micro-benchmarks ({d})', '', '| item | measurement | n | median | p90 | 2x flag |',
-              '|---|---|---|---|---|---|']
-        for item, vals in m.items():
-            for k, v in vals.items():
-                if isinstance(v, dict) and 'median' in v:
-                    L.append(f"| {item} | {k} | {v['n']} | {v['median']} | {v['p90']} | "
-                             f"{'**yes**' if v['varies_2x'] else 'no'} |")
-                elif not isinstance(v, dict):
-                    L.append(f'| {item} | {k} | | {v} | | |')
+    if agg.get('budget'):
+        L += ['## Budget (cuda, ms per 0.1-ms step)', '',
+              '| category | ' + ' | '.join(f"rng={b['rng']}" for b in agg['budget']) + ' |',
+              '|---|' + '---|' * len(agg['budget'])]
+        for k in agg['budget'][0]['category_ms_agg_units']:
+            L.append(f'| {k} | ' + ' | '.join(f"{b['category_ms_agg_units'][k]:.2f}" for b in agg['budget']) + ' |')
+        rows = [('**predicted, units = medians across runs**',
+                 lambda b: f"**{b['predicted_ms_agg_units']:.2f}**"),
+                ('predicted per run, median [min-max]', lambda b: _mmm(b['predicted_ms_per_run'], '{:.2f}')),
+                ('measured steady state (steps <= 5 ms)', lambda b: _mmm(b['steady_ms'], '{:.2f}')),
+                ('measured all steps', lambda b: _mmm(b['all_steps_ms'], '{:.2f}')),
+                ('stall fraction', lambda b: _mmm(b['stall_fraction'], '{:.3f}')),
+                ('predicted / steady, per run', lambda b: _mmm(b['ratio_pred_over_steady_per_run'], '{:.2f}')),
+                ('any negative category', lambda b: str(b['negative_category']))]
+        for lab, f in rows:
+            L.append(f'| {lab} | ' + ' | '.join(f(b) for b in agg['budget']) + ' |')
+        L += ['', 'Unit costs from the medians across runs (us):', '', '```',
+              json.dumps(agg['units_us'], indent=1), '```', '']
+    L += ['## Variability: values whose min-max across runs differs by more than 2x', '',
+          '| value | median | min | max | max/min |', '|---|---|---|---|---|']
+    L += [f"| {v['what']} | {v['median']} | {v['min']} | {v['max']} | {v['max_over_min']} |"
+          for v in agg['variability']]
+    L.append('')
+    for d, m in agg['micro'].items():
+        L += [f'## Micro-benchmarks ({d}), us', '',
+              '| item | measurement | median | min | max | max/min | p90 (median) | runs >2x within |',
+              '|---|---|---|---|---|---|---|---|']
+        for it, vals in m.items():
+            for k, a in vals.items():
+                L.append(f"| {it} | {k} | {a['median']} | {a['min']} | {a['max']} | {a['max_over_min']} | "
+                         f"{a['p90_median']} | {a['runs_flagged_2x_within']}/{n} |")
         L.append('')
-    for d, s in res.get('sim', {}).items():
-        L += [f'## Simulator per-step counts and timing ({d})', '']
+    for d, s in agg['sim'].items():
+        L += [f'## Simulator ({d})', '']
+        for rng, a in s.items():
+            L += [f'### rng={rng}', '', '```', json.dumps(dict(
+                spikes_per_step=a['spikes_per_step'], counts={k: v['median'] for k, v in a['counts'].items()},
+                timing={k: {x: v[x] for x in ('median', 'min', 'max')} for k, v in a['timing'].items()}),
+                indent=1), '```', '']
+        r0 = res['runs'][0]['sim'][d]
         for rng in ('torch', 'numpy'):
-            if rng not in s:
-                continue
-            r = s[rng]
-            L += [f'### rng={rng}', '', '```',
-                  json.dumps(dict(spikes_per_step=r['spikes_per_step_window'],
-                                  counts_per_step=r['counts_per_step'],
-                                  timing={k: v for k, v in r['timing'].items() if k != 'per_step_raw_ms'}),
-                             indent=1),
-                  '```', '', 'Syncs by op @ line (per step):', '', '```',
-                  json.dumps(r['syncs_by_op_line_per_step'], indent=1), '```',
-                  '', 'H2D by op @ line (per step):', '', '```',
-                  json.dumps(r['h2d_by_op_line_per_step'], indent=1), '```', '']
-    if 'bench_method' in res:
-        L += ['## Bench-pack method with main\'s sim/ (0.2 s, setup included)', '', '```',
-              json.dumps(res['bench_method'], indent=1), '```', '']
-    if 'budget' in res:
-        L += ['## Budget (cuda)', '']
-        for b in res['budget']:
-            L += [f"### rng={b['rng']}: predicted {b['predicted_ms']} ms vs measured mean "
-                  f"{b['measured_ms_mean']} ms (ratio {b['ratio_pred_over_meas']}), steady-state mean "
-                  f"{b['measured_ms_steady_mean']} ms (ratio {b['ratio_pred_over_steady']}); stalls "
-                  f"{b['stall_ms_per_step']} ms/step ({b['stall_fraction']:.1%} of steps)", '',
-                  '| category | ms/step |', '|---|---|']
-            L += [f'| {k} | {v} |' for k, v in b['category_ms'].items()]
-            L += ['', '```', json.dumps(dict(unit_costs_us=b['unit_costs_us'],
-                                             counts_per_step=b['counts_per_step']), indent=1), '```', '']
+            if r0[rng]['syncs_by_op_line_per_step']:
+                L += [f'Syncs by op @ line, rng={rng}, run 1 (per step):', '', '```',
+                      json.dumps(r0[rng]['syncs_by_op_line_per_step'], indent=1), '```', '']
+    if 'bench_method' in agg:
+        L += ["## Bench-pack method with main's sim/ (0.2 s, float64 eager, setup included, median of 3)", '',
+              f"rng='torch': {_mmm(agg['bench_method']['torch'], '{:.2f}')} ms/step; "
+              f"rng='numpy': {_mmm(agg['bench_method']['numpy'], '{:.2f}')} ms/step; "
+              f"2026-11-16 bench pack: 3.327 ms/step (rng='torch').", '']
     return '\n'.join(L)
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument('--bundle', default=str(ROOT / 'results' / 'w4' / 'cns_bundle_calib.npz'))
-    ap.add_argument('--devices', default='cuda,cpu')
-    ap.add_argument('--only', default='1,2,3,4,5,6,7,bench')
-    ap.add_argument('--steps', type=int, default=200)
-    ap.add_argument('--warm-steps', type=int, default=1000)
-    ap.add_argument('--reps', type=int, default=10, help='timed repeats of the --steps window')
-    ap.add_argument('--stim', default='looming')
-    ap.add_argument('--out', default=str(ROOT / 'perf' / 'results' / 'w4'))
-    a = ap.parse_args()
-    only = set(a.only.split(','))
-    devices = [d for d in a.devices.split(',') if d == 'cpu' or (d == 'cuda' and torch.cuda.is_available())]
-    outdir = Path(a.out); outdir.mkdir(parents=True, exist_ok=True)
-    tag = f'{socket.gethostname()}_{time.strftime("%Y%m%d-%H%M")}'
-    res = dict(tag=tag, env=env_info(), args=vars(a), micro={}, sim={})
-    print(json.dumps(res['env'], indent=1), flush=True)
+def one_run(a, devices, only, model):
+    run_res = dict(micro={}, sim={})
     for d in devices:
         m = {}
         if '1' in only:
@@ -644,10 +722,38 @@ def main():
             m['4_h2d'] = item4_h2d(d)
         if '5' in only and d == 'cuda':
             m['5_graph'] = item5_graph()
-        res['micro'][d] = m
+        run_res['micro'][d] = m
         print(f'micro {d}:', json.dumps({k: {kk: (vv['median'] if isinstance(vv, dict) and 'median' in vv
                                                   else vv) for kk, vv in v.items()} for k, v in m.items()}),
               flush=True)
+    if model is not None:
+        if '6' in only or '7' in only:
+            for d in devices:
+                run_res['sim'][d] = sim_section(model, d, a.steps, a.reps, a.stim, a.warm_steps)
+        if 'bench' in only and 'cuda' in devices:
+            run_res['bench_method'] = bench_method_sim(model, 'cuda', a.stim)
+    return run_res
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--bundle', default=str(ROOT / 'results' / 'w4' / 'cns_bundle_calib.npz'))
+    ap.add_argument('--devices', default='cuda,cpu')
+    ap.add_argument('--only', default='1,2,3,4,5,6,7,bench')
+    ap.add_argument('--runs', type=int, default=5, help='full repeats of the whole suite, aggregated')
+    ap.add_argument('--steps', type=int, default=200)
+    ap.add_argument('--warm-steps', type=int, default=1000)
+    ap.add_argument('--reps', type=int, default=10, help='timed repeats of the --steps window')
+    ap.add_argument('--stim', default='looming')
+    ap.add_argument('--out', default=str(ROOT / 'perf' / 'results' / 'w4'))
+    a = ap.parse_args()
+    only = set(a.only.split(','))
+    devices = [d for d in a.devices.split(',') if d == 'cpu' or (d == 'cuda' and torch.cuda.is_available())]
+    outdir = Path(a.out); outdir.mkdir(parents=True, exist_ok=True)
+    tag = f'{socket.gethostname()}_{time.strftime("%Y%m%d-%H%M")}'
+    res = dict(tag=tag, env=env_info(), args=vars(a), runs=[])
+    print(json.dumps(res['env'], indent=1), flush=True)
+    model = None
     if only & {'6', '7', 'bench'}:
         model = load_bundle(a.bundle)
         res['bundle'] = model['info']
@@ -657,16 +763,14 @@ def main():
                                    n_gap=int(len(model['gap']['idx'])),
                                    n_presyn=int(len(model['presyn']['idx'])),
                                    n_kc=int(len(model['apl']['kc_idx'])))
-        if '6' in only or '7' in only:
-            for d in devices:
-                res['sim'][d] = sim_section(model, d, a.steps, a.reps, a.stim, a.warm_steps)
-        if 'bench' in only and 'cuda' in devices:
-            res['bench_method'] = bench_method_sim(model, 'cuda', a.stim)
-            res['bench_method']['reference_ms_per_step_bench_pack'] = 3.327
-    if '7' in only and 'cuda' in res['sim'] and 'cuda' in res['micro'] and 'cpu' in res['micro']:
-        res['budget'] = [budget(res, rng) for rng in ('numpy', 'torch')]
-        for b in res['budget']:
-            print('budget', json.dumps(b), flush=True)
+    for i in range(a.runs):
+        print(f'=== run {i + 1}/{a.runs}', flush=True)
+        res['runs'].append(one_run(a, devices, only, model))
+    res['agg'] = aggregate(res)
+    for b in res['agg']['budget']:
+        print('budget', b['rng'], 'pred(agg units)', b['predicted_ms_agg_units'],
+              'pred per run', b['predicted_ms_per_run']['median'], 'steady', b['steady_ms']['median'],
+              'ratio per run', b['ratio_pred_over_steady_per_run'], flush=True)
     (outdir / f'{tag}_overhead.json').write_text(json.dumps(res, indent=1))
     (outdir / f'{tag}_overhead.md').write_text(to_md(res))
     print(f'saved {outdir / tag}_overhead.json and .md', flush=True)
