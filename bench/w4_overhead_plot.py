@@ -26,7 +26,8 @@ def main():
     rows = res['agg']['budget']
     n = len(res['runs'])
     cats = list(rows[0]['category_ms_agg_units'].keys())
-    fig, ax = plt.subplots(figsize=(8, 3.6), dpi=150)
+    # sized for a 390 px phone: 4.2 in at 200 dpi (840 px); 9-10 pt text stays >= 10 px at ~360 px
+    fig, ax = plt.subplots(figsize=(4.2, 4.7), dpi=200)
     ys = list(range(len(rows)))
     xmax = 0.0
     for y, b in zip(ys, rows):
@@ -35,29 +36,31 @@ def main():
             w = b['category_ms_agg_units'][c]
             if w > 0:
                 ax.barh(y, w, left=left, height=0.5, color=COLORS[i % len(COLORS)],
-                        edgecolor='white', linewidth=2, label=c if y == 0 else None)
-                if w > 0.15:
-                    ax.text(left + w / 2, y, f'{w:.2f}', ha='center', va='center', fontsize=8, color='white')
+                        edgecolor='white', linewidth=1.5, label=c if y == 0 else None)
+                if w > 0.3:
+                    ax.text(left + w / 2, y, f'{w:.2f}', ha='center', va='center', fontsize=9, color='white',
+                            fontweight='bold')
             left += w
         st, al = b['steady_ms']['median'], b['all_steps_ms']['median']
-        ax.plot([st, st], [y - 0.35, y + 0.35], color=INK, linewidth=2)
-        ax.plot([al, al], [y - 0.35, y + 0.35], color=INK, linewidth=1.2, linestyle=(0, (2, 2)))
-        ax.text(st, y + 0.42, f'measured steady {st:.2f} (all steps {al:.2f}, dashed)', ha='center',
-                va='bottom', fontsize=8, color=INK)
-        ax.text(left + 0.03, y - 0.05, f"predicted {b['predicted_ms_agg_units']:.2f}", ha='left',
-                va='center', fontsize=8, color=MUTED, bbox=dict(facecolor='white', edgecolor='none', pad=1))
+        ax.plot([st, st], [y - 0.32, y + 0.32], color=INK, linewidth=2)
+        ax.plot([al, al], [y - 0.32, y + 0.32], color=INK, linewidth=1.2, linestyle=(0, (2, 2)))
+        ax.text(0, y - 0.3, f"rng='{b['rng']}': predicted {b['predicted_ms_agg_units']:.2f}, "
+                f"steady {st:.2f}, all steps {al:.2f}", ha='left', va='bottom', fontsize=9, color=INK)
         xmax = max(xmax, left, st, al)
-    ax.set_yticks(ys, [f"rng='{b['rng']}'" for b in rows])
-    ax.set_xlabel(f'ms per 0.1-ms step, medians of {n} runs (RTX 5060 Ti, WSL, float64 eager)', color=MUTED)
-    ax.set_xlim(0, xmax * 1.3)
-    ax.set_ylim(-0.6, len(rows) - 0.2)
+    ax.set_yticks([])
+    ax.invert_yaxis()
+    ax.set_xlabel(f'ms per 0.1-ms step, medians of {n} runs\nsolid = measured steady, dashed = all steps',
+                  fontsize=9, color=MUTED)
+    ax.set_xlim(0, xmax * 1.05)
+    ax.set_ylim(len(rows) - 0.55, -0.75)
     for s in ('top', 'right', 'left'):
         ax.spines[s].set_visible(False)
     ax.spines['bottom'].set_color('#c9c8c2')
-    ax.tick_params(colors=MUTED, length=0)
+    ax.tick_params(axis='x', labelsize=9, colors=MUTED, length=0)
     ax.xaxis.grid(True, color='#ecebe6'); ax.set_axisbelow(True)
-    ax.set_title('Predicted GPU step cost by category vs measured', loc='left', fontsize=11, color=INK)
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.22), ncol=3, frameon=False, fontsize=8)
+    ax.set_title('Predicted GPU step cost vs measured', loc='left', fontsize=11, color=INK)
+    ax.legend(loc='upper left', bbox_to_anchor=(0, -0.24), ncol=1, frameon=False, fontsize=9,
+              handlelength=1.2)
     fig.tight_layout()
     fig.savefig(out, facecolor='white')
     print('saved', out)

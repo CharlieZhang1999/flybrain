@@ -1,0 +1,25 @@
+<table class="anatomy">
+<thead><tr><th>phase</th><th class="n">wall ms</th><th class="n">GPU exec ms</th><th class="n">syncs</th><th class="n">kernels</th></tr></thead>
+<tbody>
+<tr><td>presyn</td><td class="n">0.32 <span class="rg">[0.32–0.34]</span></td><td class="n">0.16</td><td class="n">1</td><td class="n">29</td></tr>
+<tr><td>synaptic</td><td class="n">0.31 <span class="rg">[0.31–0.42]</span></td><td class="n">0.15</td><td class="n">1</td><td class="n">25</td></tr>
+<tr><td>apl</td><td class="n">0.16 <span class="rg">[0.15–0.17]</span></td><td class="n">0.05</td><td class="n">1</td><td class="n">9</td></tr>
+<tr><td>threshold+nonzero</td><td class="n">0.15 <span class="rg">[0.14–0.21]</span></td><td class="n">0.01</td><td class="n">1</td><td class="n">3</td></tr>
+<tr><td>spikelets</td><td class="n">0.12 <span class="rg">[0.12–0.14]</span></td><td class="n">0.01</td><td class="n">1</td><td class="n">3</td></tr>
+<tr><td>drive</td><td class="n">0.12 <span class="rg">[0.11–0.13]</span></td><td class="n">0.03</td><td class="n">1</td><td class="n">6</td></tr>
+<tr><td>reset</td><td class="n">0.10 <span class="rg">[0.10–0.11]</span></td><td class="n">0.01</td><td class="n">2</td><td class="n">5</td></tr>
+<tr><td>decay</td><td class="n">0.10 <span class="rg">[0.09–0.11]</span></td><td class="n">0.08</td><td class="n">0</td><td class="n">14</td></tr>
+<tr><td>bookkeeping</td><td class="n">0.07 <span class="rg">[0.07–0.08]</span></td><td class="n">0.00</td><td class="n">2</td><td class="n">2</td></tr>
+<tr><td>gap</td><td class="n">0.07 <span class="rg">[0.07–0.08]</span></td><td class="n">0.06</td><td class="n">0</td><td class="n">9</td></tr>
+<tr><td>ring</td><td class="n">0.00 <span class="rg">[0.00–0.00]</span></td><td class="n">0.00</td><td class="n">0</td><td class="n">0</td></tr>
+<tr class="total"><td>Sum of phase medians</td><td class="n">1.52 <span class="rg">[1.49–1.74]</span></td><td class="n">0.56</td><td class="n">10</td><td class="n">105</td></tr>
+<tr><td>Steady step (≤ 5 ms), same pass</td><td class="n" colspan="4">1.57 <span class="rg">[1.52–1.81]</span></td></tr>
+<tr><td>Sum / steady</td><td class="n" colspan="4">0.97 <span class="rg">[0.96–0.98]</span></td></tr>
+<tr><td>Steady step, uninstrumented run_trial</td><td class="n" colspan="4">1.61 <span class="rg">[1.55–1.86]</span></td></tr>
+<tr><td>Steady step, with CUDA events + NVTX</td><td class="n" colspan="4">1.85 <span class="rg">[1.72–2.05]</span></td></tr>
+<tr><td>Share of stall steps (> 5 ms)</td><td class="n" colspan="4">7.8% <span class="rg">[2.1%–14.9%]</span></td></tr>
+<tr><td>GPU utilisation, nvidia-smi (%)</td><td class="n" colspan="4">19 <span class="rg">[3–22]</span></td></tr>
+<tr><td>GPU exec / wall (non-sync ops)</td><td class="n" colspan="4">0.34 <span class="rg">[0.30–0.36]</span></td></tr>
+</tbody>
+</table>
+<p class="note">Medians across 5 runs, [min–max] across runs. Wall: host perf_counter per phase, steady steps only. GPU exec: kernels of the non-sync ops timed with the host hidden (a GPU sleep before each op); the 10 sync ops are excluded. Kernels: aten ops that launch GPU work.</p>

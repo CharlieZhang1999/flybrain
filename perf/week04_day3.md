@@ -168,7 +168,9 @@ simulator step is stable** (1.56-1.78 ms). What varies is how many steps stall.
 - **Host-bound: held.**
   - With units = medians across runs, the prediction from micro-benchmarks is within 1.01-1.05x of
     the median steady-state step. Per run it is 1.04-1.55x, with a median of 1.10 / 1.24.
-  - GPU utilisation sampled by nvidia-smi at full clocks stays around 20%.
+  - GPU utilisation (measured later in T3: nvidia-smi `utilization.gpu`, 100 ms samples while
+    `run_trial` steps for >= 2 s) is 19% median, 3-22% across 5 runs; see
+    [week04_day4.md](week04_day4.md). (This line first said "around 20%" without a measurement.)
   - No single GPU kernel dominates: the same step does its real work on 6 CPU threads in 0.6 ms.
 - **Sync sites: partly held.**
   - As suspected, these sync: `int(lens.sum())` (2/step), `torch.nonzero` (1),
