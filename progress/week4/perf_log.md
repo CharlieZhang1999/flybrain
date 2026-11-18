@@ -30,3 +30,19 @@ Brief: [tasks/T1_brief.md](tasks/T1_brief.md); revision: [tasks/T1_revision.md](
 - Sync sites: `int(lens.sum())` x2, `nonzero`, APL `float(...)`, numpy-rng upload as suspected; `idx.numel()`/`pre.numel()` do not sync; not suspected: 4 scalar index assignments (hidden H2D + sync) and bool-mask indexing (1-2/step).
 - Regimes: many CUDA micro-benchmarks switch between a fast and a slow value from run to run (up to 16x); the steady step is stable (1.56-1.78 ms), but ~11 ms stalls hit 0.1-25% of steps. The 3.3 ms of 2026-11-16 is an all-steps number with setup, warm-up and stalls; main's `sim/` with the same method: 2.50 [1.95-2.74] ms/step (rng='torch'). Week 5 reports steady ms/step and stall fraction separately.
 - No file under `sim/` changed; `~/flybench/flybrain/results/w4/bench/*` untouched.
+
+## T2: save/resume parity test (2026-11-18)
+
+Brief: [tasks/T2_brief.md](tasks/T2_brief.md). Branch `perf/w4-t2-resume-test`.
+
+**Built**
+- `tests/test_resume_cpu.py`, 3 cases on the `tests/synth.py` network with blocks + gap + APL + presyn (seed 3, two overlapping blocks [0, 0.12) s and [0.06, 0.2) s), T = 0.2 s split at 0.1 s (step 1000, inside both blocks): NumPy split == NumPy single; Torch (CPU, float64, rng='numpy') split == Torch single; Torch split == NumPy single. Each asserts: split step inside a block and a non-empty delay ring in the saved state; the T0 activity guard (>= 150 non-sensory spikes); final cumulative counts equal; counts at split + new spikes = final counts; concatenated (t, i) records equal the single run's, in order.
+- `python tests/test_resume_cpu.py` prints the saved state at the split point for both simulators (block windows, ring slots with delivery step).
+
+**Findings**
+- Hypothesis confirmed: exact parity for both simulators and across them. Both docstrings agree on the contract: `counts` are cumulative over the chained trial, `t`/`i` hold only the new segment, `t` is the absolute step.
+- At the split, the ring holds 20 spikes in flight (identical in both simulators), in 14 of 18 slots.
+- Local (WSL, ~/flybench/.venv): 6 passed in 4.2 s; new tests 0.20 / 0.38 / 0.31 s.
+- Failure demo (scratch copy): dropping the ring restore makes the affected tests fail with 33 neurons differing (NumPy: 1 test; Torch: 2 tests).
+- Gaps, not fixed (no `sim/` changes): the state dicts are not interchangeable (NumPy stores the RNG as `rng`, Torch as `np_rng` and silently skips a missing key, from reading the code); `lif_numpy` returns the state only with `record=True`.
+- No file under `sim/` changed.
