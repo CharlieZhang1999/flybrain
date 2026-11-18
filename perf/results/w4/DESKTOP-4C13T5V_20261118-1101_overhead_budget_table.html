@@ -1,0 +1,17 @@
+<table class="budget">
+<thead><tr><th>ms per step</th><th class="n">numpy rng</th><th class="n">torch rng</th></tr></thead>
+<tbody>
+<tr><td>python+dispatch</td><td class="n">0.16</td><td class="n">0.16</td></tr>
+<tr><td>kernel launch</td><td class="n">1.00</td><td class="n">1.01</td></tr>
+<tr><td>sync round trips (D2H)</td><td class="n">0.38</td><td class="n">0.47</td></tr>
+<tr><td>scalar index_put_ (hidden H2D+sync)</td><td class="n">0.13</td><td class="n">0.13</td></tr>
+<tr><td>as_tensor H2D (pageable)</td><td class="n">0.02</td><td class="n">0.00</td></tr>
+<tr class="total"><td>Predicted (unit costs = medians of runs)</td><td class="n">1.70</td><td class="n">1.77</td></tr>
+<tr><td>Predicted per run, median [min–max]</td><td class="n">1.89 <span class="rg">[1.66–2.40]</span></td><td class="n">2.04 <span class="rg">[1.75–2.62]</span></td></tr>
+<tr><td>Measured, steady state (steps ≤ 5 ms)</td><td class="n">1.68 <span class="rg">[1.56–1.71]</span></td><td class="n">1.69 <span class="rg">[1.60–1.78]</span></td></tr>
+<tr><td>Measured, all steps</td><td class="n">2.70 <span class="rg">[1.68–3.90]</span></td><td class="n">2.31 <span class="rg">[2.00–3.73]</span></td></tr>
+<tr><td>Share of stall steps (~11 ms)</td><td class="n">11.0% <span class="rg">[0.1%–24.9%]</span></td><td class="n">6.6% <span class="rg">[3.7%–21.0%]</span></td></tr>
+<tr><td>Predicted / steady, per run</td><td class="n">1.10 <span class="rg">[1.06–1.44]</span></td><td class="n">1.24 <span class="rg">[1.04–1.55]</span></td></tr>
+</tbody>
+</table>
+<p class="note">Medians across 5 runs, [min–max] across runs. Categories use unit costs that are medians across runs and sizes.</p>
