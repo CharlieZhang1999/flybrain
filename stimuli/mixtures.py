@@ -35,8 +35,11 @@ Sampling rules (sample_episode, default = Day 5 scheme):
     replacement from the other modalities. Then one word uniformly within each
     modality;
   - rate uniform in [30, 150] Hz;
-  - onset uniform in [0, T - 0.3] s, duration uniform in [0.2, 1.0] s,
-    offset = min(onset + duration, T);
+  - onset uniform in [0, Tw - 0.3] s, duration uniform in [0.2, 1.0] s,
+    offset = min(onset + duration, Tw), where Tw = t_words if given, else T
+    (default). t_words < T leaves a word-free tail [Tw, T); the spec then also
+    stores t_words. t_words=None gives exactly the specs of before (no new key,
+    same draws);
   - background uniform in BG_HZ = [1, 3] Hz, with bg_scheme as above
     (scheme='class_v1' gives a class_v1 spec; o2_bg is then ignored).
   legacy=True reproduces the Day 4 (T1 pilot) sampler draw-for-draw: modalities
@@ -68,6 +71,7 @@ Usage:
   spec = sample_episode(123, abdominal_bg=0.0)     # abdominal group silent
   spec = sample_episode(123, scheme='class_v1', abdominal_bg='same')   # class_v1
   spec = sample_episode(4040, legacy=True)         # Day 4 / T1 pilot sampler
+  spec = sample_episode(7, T=2.5, t_words=2.0)     # Day 5 dataset: words in [0, 2.0] s of 2.5 s
   blocks = to_blocks(spec, meta, pos)
 """
 import numpy as np
@@ -135,26 +139,32 @@ def _word(rng, words, mod, T):
 
 def sample_episode(rng, words=WORDS, T=2.0, legacy=False, looming_p=LOOMING_P,
                    bg_range=BG_HZ, bristle_bg=BRISTLE_BG, abdominal_bg=ABDOMINAL_BG, o2_bg=O2_BG,
-                   scheme=SCHEME):
+                   scheme=SCHEME, t_words=None):
     """Sample one episode spec. rng: int seed or np.random.Generator.
 
     legacy=True: the Day 4 sampler, unchanged (looming_p, bg_range, bristle_bg,
     abdominal_bg, o2_bg and scheme are ignored). The background scheme does not
     change any random draw.
+    t_words: words are confined to [0, t_words] (None = T, the default). Applies to
+    the legacy sampler too. It changes no draw, only the onset range and the clip.
     """
     spec_seed = None
     if not isinstance(rng, np.random.Generator):
         spec_seed = int(rng)
         rng = np.random.default_rng(spec_seed)
+    if t_words is not None and not ONSET_MARGIN_S < float(t_words) <= float(T):
+        raise ValueError(f't_words must be in ({ONSET_MARGIN_S}, T={T}], got {t_words}')
+    Tw = T if t_words is None else float(t_words)
+    extra = {} if t_words is None else dict(t_words=Tw)
     mods = sorted({w['modality'] for w in words.values()})
     n = int(rng.integers(N_WORDS[0], N_WORDS[1] + 1))
     if legacy:
         if n > len(mods):
             raise ValueError(f'{n} words need {n} modalities, only {len(mods)} available')
-        picks = [_word(rng, words, mod, T) for mod in rng.choice(mods, size=n, replace=False)]
+        picks = [_word(rng, words, mod, Tw) for mod in rng.choice(mods, size=n, replace=False)]
         picks.sort(key=lambda d: (d['onset'], d['word']))
         return dict(T=float(T), seed=int(rng.integers(2 ** 31 - 1)), spec_seed=spec_seed,
-                    bg_hz=round(float(rng.uniform(*LEGACY_BG_HZ)), 3), words=picks)
+                    bg_hz=round(float(rng.uniform(*LEGACY_BG_HZ)), 3), words=picks, **extra)
 
     scheme = bg_scheme(bristle_bg, abdominal_bg, o2_bg, scheme)
     loom = words['looming']['modality'] if 'looming' in words else None
@@ -164,10 +174,10 @@ def sample_episode(rng, words=WORDS, T=2.0, legacy=False, looming_p=LOOMING_P,
     if k > len(others):
         raise ValueError(f'{n} words need {n} modalities, only {len(others) + with_loom} available')
     chosen = [str(m) for m in rng.choice(others, size=k, replace=False)] + ([loom] if with_loom else [])
-    picks = [_word(rng, words, mod, T) for mod in chosen]
+    picks = [_word(rng, words, mod, Tw) for mod in chosen]
     picks.sort(key=lambda d: (d['onset'], d['word']))
     return dict(T=float(T), seed=int(rng.integers(2 ** 31 - 1)), spec_seed=spec_seed,
-                bg_hz=round(float(rng.uniform(*bg_range)), 3), bg_scheme=scheme, words=picks)
+                bg_hz=round(float(rng.uniform(*bg_range)), 3), bg_scheme=scheme, words=picks, **extra)
 
 
 def background_episode(bg_hz, seed, T=2.0, legacy=False, bristle_bg=BRISTLE_BG,

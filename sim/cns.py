@@ -29,7 +29,6 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from sim.lif_numpy import P  # noqa: E402
-from sim.malecns import load  # noqa: E402
 from sim.lesion import select  # noqa: E402
 from sim.gap import build_gap  # noqa: E402
 
@@ -50,7 +49,18 @@ SIGN_FIX = {'GLNO': -1, 'LPsP': -1}
 # (~750 synapses each way) and the IN19B040 quartet. Scale only the
 # within-clique synapses (smallest gain that stops them, day 3b sweep).
 CLIQUE_GAIN = ({'DNg33', 'IN19B040'}, 0.3)
-W4_CALIB = dict(gf_gap=GF_GAP_MV, mn_glu=True, sign_fix=SIGN_FIX, clique_gain=CLIQUE_GAIN)
+# Week 4 day 5: a five-type GNG loop of strong reciprocal ACh excitation
+# (DNge027, GNG423, DNg21, DNg62, DNge044; 101 W entries) keeps firing after a
+# wind word ends (0.54 s, 1.05 s and >= 0.73 s to the end of the run in three
+# Day 5 episodes). No annotation or build error: it persists because the model
+# has no adaptation (progress/week4/day5_wind_loop_rootcause.md).
+# Unlike CLIQUE_GAIN it spans several types, so scale every synapse whose pre-
+# AND postsynaptic neuron are both in the set. 0.3: post-wind tail <= 0.09 s
+# in 3/3 wind episodes, non-wind ep000/ep019 spike-identical (T2c gain scan,
+# progress/week4/day5_burst_diagnosis.md; verification day5_loop_gain.md).
+LOOP_GAIN = ({'DNge027', 'GNG423', 'DNg21', 'DNg62', 'DNge044'}, 0.3)
+W4_CALIB = dict(gf_gap=GF_GAP_MV, mn_glu=True, sign_fix=SIGN_FIX, clique_gain=CLIQUE_GAIN,
+                loop_gain=LOOP_GAIN)
 
 LEG_SEGMENT = {   # functional type -> joint it moves (Azevedo et al. 2024 naming)
     'Pleural remotor/abductor MN': 'thorax-coxa', 'Tergopleural/Pleural promotor MN': 'thorax-coxa',
@@ -108,8 +118,22 @@ def _apl(meta, W):
     return W2, dict(kc_idx=kc_idx, w_kc=w_kc, k=K_APL, tau=0.01)
 
 
+def scale_set_edges(W, types_of, types, g):
+    """W with every entry whose row (post) and column (pre) neuron types are both
+    in `types` multiplied by g; all other entries unchanged. types_of: type per neuron."""
+    from scipy import sparse
+    L = np.isin(types_of, list(types))
+    missing = set(types) - set(types_of[L])
+    if missing:
+        raise ValueError(f'loop_gain: no neurons of type {sorted(missing)}')
+    C = W.tocoo()
+    k = L[C.row] & L[C.col]
+    d = C.data.copy(); d[k] *= g
+    return sparse.csc_matrix((d, (C.row, C.col)), shape=W.shape)
+
+
 def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True, gf_gap=None,
-              mn_glu=False, sign_fix=None, clique_gain=None):
+              mn_glu=False, sign_fix=None, clique_gain=None, loop_gain=None):
     """Return dict(meta, W, gap, presyn, apl, vnc, info).
 
     scope : 'cns' (brain + VNC, Week 4) or 'brain' (Week 3 model, VNC masked).
@@ -125,11 +149,16 @@ def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True
             output of neurons of that type (Week 4 day 3b: SIGN_FIX).
     clique_gain: optional (types, g); synapses between two neurons of the same
             listed type are scaled by g (Week 4 day 3b: CLIQUE_GAIN).
+    loop_gain: optional (types, g); synapses whose pre- and postsynaptic
+            neurons both belong to the listed types (same or different type)
+            are scaled by g (Week 4 day 5: LOOP_GAIN). Like clique_gain it acts
+            before the shuffle, so the shuffle control permutes the scaled W.
     """
     from scripts.w2d3_gap_malecns import cut_ln_pn
     from scripts.w2d4_word_trials import shuffle_W, GAP_KW
     from scripts.ckpt5_stageA import ACH_LN, PN
     from sim.presyn import build_presyn, sensory_mask_malecns
+    from sim.malecns import load        # needs pyarrow: imported here so CI can import sim.cns
 
     meta, W1 = load(w_syn=1.0, monoamine='removed')
     vnc, _ = regions(meta)
@@ -161,6 +190,8 @@ def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True
         d = C.data.copy(); d[k] *= gq
         from scipy import sparse
         W = sparse.csc_matrix((d, (C.row, C.col)), shape=W.shape)
+    if loop_gain:
+        W = scale_set_edges(W, meta.type.astype(str).to_numpy(), *loop_gain)
     if scope == 'brain':
         W = _mask(W, lambda r, c: ~vnc[r] & ~vnc[c])
     elif scope != 'cns':
