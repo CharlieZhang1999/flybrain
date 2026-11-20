@@ -116,7 +116,7 @@ The Orchestrator accepted this residual tail without further tuning. The ep023 t
 | non-wind Day 5 ep000 (looming+dry), ep001 (vinegar+hot+sound), ep019 (sound+bitter+looming+humid) | exact Day 5 specs | **spike-identical** to the saved Day 5 runs (170,706 / 100,645 / 185,681 spikes); DNge027 0 spikes | `analyze_mix.txt` |
 | bg-only class_v2 3 Hz | seeds 0–2, 1.0 s | **spike-identical** to `results/w4/bg_fix/runs/calib_v2_3Hz_s*` (42,564 / 42,171 / 41,897); metrics equal the verify.csv class_v2 rows (e.g. MN active 10 / 8 / 8) | `analyze_bg.txt` |
 | looming alone | 0–0.4 s at 150 Hz, no bg, T 1.0 s, seeds 0–2, old vs new | **spike-identical**; CNS silent from 0.5 s (last spike 0.4235–0.4278 s) | `analyze_loom.txt` |
-| wind alone | 0–0.5 s at 150 Hz, no bg, T 1.5 s, seeds 0–2, old vs new | old: about 400–460 brain neurons per bin persist to 1.12 s, 1.20 s and the end (1.5 s), with DNge027 last at offset + 0.60–1.00 s. **New:** silent from 0.6–0.7 s (last spike 0.555 / 0.597 / 0.606 s; DNge027 last at offset + 0.012–0.084 s) | `analyze_windalone.txt` |
+| wind alone | 0–0.5 s at 150 Hz, no bg, T 1.5 s, seeds 0–2, old vs new | old: about 400–460 brain neurons per bin persist to 1.12 s, 1.20 s and the end (1.5 s), with DNge027 last at offset + 0.59–1.00 s. **New:** silent from 0.6–0.7 s (last spike 0.555 / 0.597 / 0.606 s; DNge027 last at offset + 0.012–0.084 s) | `analyze_windalone.txt` |
 | Day 1 parity | `w4d1_torch_parity.py parity cns 0.1` | identical=True. It uses the `cns_model` defaults without W4_CALIB, so it is unaffected by construction | terminal |
 | pytest | `pytest tests/` | 30 passed | terminal |
 
@@ -127,7 +127,10 @@ The Orchestrator accepted this residual tail without further tuning. The ep023 t
   - These residual tails decay within 0.2–0.4 s, at about 2–9 DNge027 spikes per 100 ms over 2 cells. The old state ran at about 20–30 spikes per 100 ms until it stopped or the run ended.
   - **The Orchestrator accepted the residual tail** as Charlie's option A, without further tuning.
 - **H2** (non-wind spike-identical): **holds**, 3 of 3.
-- **H3** (bg-only and looming unchanged): **holds.** Both are spike-identical. Wind alone, which was never in the Week 3b word check, now returns to silence within about 0.1 s of offset.
+- **H3** (bg-only and looming unchanged): **holds, as tested.** Both are spike-identical. This was tested for bg-only at class_v2 3 Hz, 1.0 s, seeds 0–2 only.
+  - **Not identical in the full Day 5 run (T2f):** calib bg-only ep206 (2.33 Hz, 2.5 s) diverges from 2.33 s, because a spontaneous DNg62 spike at 2.322 s no longer recruits DNge044 and DNge027.
+  - **Still identical:** the other 9 calib and all 10 shuffle bg-only runs (`day5_results.md`).
+  - Wind alone, which was never in the Week 3b word check, now returns to silence within about 0.1 s of offset.
 - **Cost:**
   - wind-word MN output falls by 10–29% (median 15%);
   - DNge027 in the word runs at 28–40 Hz instead of 104–134 Hz. In ep033 it is only 5.7 Hz, so the wind loop barely ignites there;
