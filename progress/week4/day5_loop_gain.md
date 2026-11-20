@@ -127,7 +127,10 @@ The Orchestrator accepted this residual tail without further tuning. The ep023 t
   - These residual tails decay within 0.2–0.4 s, at about 2–9 DNge027 spikes per 100 ms over 2 cells. The old state ran at about 20–30 spikes per 100 ms until it stopped or the run ended.
   - **The Orchestrator accepted the residual tail** as Charlie's option A, without further tuning.
 - **H2** (non-wind spike-identical): **holds**, 3 of 3.
-- **H3** (bg-only and looming unchanged): **holds.** Both are spike-identical. Wind alone, which was never in the Week 3b word check, now returns to silence within about 0.1 s of offset.
+- **H3** (bg-only and looming unchanged): **holds, as tested.** Both are spike-identical. This was tested for bg-only at class_v2 3 Hz, 1.0 s, seeds 0–2 only.
+  - **Not identical in the full Day 5 run (T2f):** calib bg-only ep206 (2.33 Hz, 2.5 s) diverges from 2.33 s, because a spontaneous DNg62 spike at 2.322 s no longer recruits DNge044 and DNge027.
+  - **Still identical:** the other 9 calib and all 10 shuffle bg-only runs (`day5_results.md`).
+  - Wind alone, which was never in the Week 3b word check, now returns to silence within about 0.1 s of offset.
 - **Cost:**
   - wind-word MN output falls by 10–29% (median 15%);
   - DNge027 in the word runs at 28–40 Hz instead of 104–134 Hz. In ep033 it is only 5.7 Hz, so the wind loop barely ignites there;

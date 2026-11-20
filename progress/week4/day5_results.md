@@ -77,7 +77,11 @@ All 420 runs are present and valid (210 calib, 210 shuffle). Specs pass every A1
 - **Wind tails, calib** (102 wind words). The tail is the last DNge027 spike after offset.
   - **Distribution:** median 0.058 s; 8 above 0.2 s, 2 above 0.3 s.
   - **ep023:** 0.314 s, the same value as in T2e.
-  - **ep155:** 0.508 s (wind 0.24–1.21 s). Mold is on until 1.35 s, inside that tail.
+  - **ep155:** 0.508 s (wind 0.24–1.20 s).
+    - **The loop outlasts mold.** DNge027 and the LOOP5 loop keep firing until 1.71 s, 0.36 s after mold switches off at 1.354 s. DNge027 runs at about 41 Hz per cell after mold, against 34 Hz while mold was on.
+    - **Mold does not drive DNge027:** it fires 0 spikes in all 6 mold-without-wind episodes.
+    - **Other mold overlaps have short tails.** In the 6 other episodes where mold is on across the wind offset (ep034, 040, 099, 119, 162, 198), the tails run from −0.001 to 0.122 s.
+    - **So this is a genuine loop tail of about 0.5 s,** above the ≤ 0.31 s bound from the 30-spec check, and not a mold confound.
   - **Shuffle:** DNge027 never fires.
 - **Tails after each word type** (counts where no other word is on within 0.3 s of the offset):
   - **LOOP5 tail > 0.2 s:** only after wind, 2 of 21.
@@ -102,7 +106,7 @@ All 420 runs are present and valid (210 calib, 210 shuffle). Specs pass every A1
   - 79× in summed variance;
   - 1,382 vs 546 brain neurons active per episode (median).
 - **LOOP_GAIN residue:**
-  - **ep155:** the wind tail reaches 0.51 s, above the T2e bound of ≤ 0.31 s measured over 30 specs. A mold word overlaps that tail.
+  - **ep155:** the wind tail reaches 0.51 s, above the T2e bound of ≤ 0.31 s measured over 30 specs. The loop keeps firing for 0.36 s after the overlapping mold word ends, so this is a loop tail, not a confound.
   - **Persistence flag (rate-matched rule):** it flags 1 episode, ep033 calib (dry+bitter+wind, wind until 2.0 s).
   - **No persist run lasts more than 0.3 s.**
 - **AL bursts remain:** 52 eligible AL events across 42 calib mixtures, and 11 across 4 bg-only episodes (2.1–2.8 Hz). They are accepted, not fixed. In the Day 6 regression they will show up as brain activity with no motor consequence.
