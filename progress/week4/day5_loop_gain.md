@@ -116,7 +116,7 @@ The Orchestrator accepted this residual tail without further tuning. The ep023 t
 | non-wind Day 5 ep000 (looming+dry), ep001 (vinegar+hot+sound), ep019 (sound+bitter+looming+humid) | exact Day 5 specs | **spike-identical** to the saved Day 5 runs (170,706 / 100,645 / 185,681 spikes); DNge027 0 spikes | `analyze_mix.txt` |
 | bg-only class_v2 3 Hz | seeds 0–2, 1.0 s | **spike-identical** to `results/w4/bg_fix/runs/calib_v2_3Hz_s*` (42,564 / 42,171 / 41,897); metrics equal the verify.csv class_v2 rows (e.g. MN active 10 / 8 / 8) | `analyze_bg.txt` |
 | looming alone | 0–0.4 s at 150 Hz, no bg, T 1.0 s, seeds 0–2, old vs new | **spike-identical**; CNS silent from 0.5 s (last spike 0.4235–0.4278 s) | `analyze_loom.txt` |
-| wind alone | 0–0.5 s at 150 Hz, no bg, T 1.5 s, seeds 0–2, old vs new | old: about 400–460 brain neurons per bin persist to 1.12 s, 1.20 s and the end (1.5 s), with DNge027 last at offset + 0.60–1.00 s. **New:** silent from 0.6–0.7 s (last spike 0.555 / 0.597 / 0.606 s; DNge027 last at offset + 0.012–0.084 s) | `analyze_windalone.txt` |
+| wind alone | 0–0.5 s at 150 Hz, no bg, T 1.5 s, seeds 0–2, old vs new | old: about 400–460 brain neurons per bin persist to 1.12 s, 1.20 s and the end (1.5 s), with DNge027 last at offset + 0.59–1.00 s. **New:** silent from 0.6–0.7 s (last spike 0.555 / 0.597 / 0.606 s; DNge027 last at offset + 0.012–0.084 s) | `analyze_windalone.txt` |
 | Day 1 parity | `w4d1_torch_parity.py parity cns 0.1` | identical=True. It uses the `cns_model` defaults without W4_CALIB, so it is unaffected by construction | terminal |
 | pytest | `pytest tests/` | 30 passed | terminal |
 
