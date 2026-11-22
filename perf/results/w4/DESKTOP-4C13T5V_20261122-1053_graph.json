@@ -1,0 +1,2188 @@
+{
+ "tag": "DESKTOP-4C13T5V_20261122-1053",
+ "env": {
+  "host": "DESKTOP-4C13T5V",
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "torch": "2.11.0+cu128",
+  "numpy": "2.5.5",
+  "cpu_threads": 6,
+  "kernel": "6.18.58.1-microsoft-standard-WSL2",
+  "gpu": "NVIDIA GeForce RTX 5060 Ti",
+  "cc": "sm_120",
+  "cuda_runtime": "12.8",
+  "cudnn": 91900,
+  "driver": "610.88",
+  "wsl": true,
+  "wsl_version": "WSL version: 3.0.5.0\r\nKernel version: 6.18.58.1-1\r\nWSLg version: 1.0.79\r\nMSRDC version: 1.2.7391\r\nDirect3D version: 1.611.1-81528511\r\nDXCore version: 10.0.26100.1-240331-1435.ge-release\r\nWindows version: 10.0.26200.9974",
+  "triton": "3.6.0"
+ },
+ "args": {
+  "bundle": "/root/flybench/flybrain/results/w4/cns_bundle_calib.npz",
+  "runs": 5,
+  "warm": 1000,
+  "steps": 2000,
+  "default_caps_steps": 200,
+  "stim": "looming",
+  "only": null,
+  "parity_seeds": [
+   0,
+   1,
+   2
+  ],
+  "parity_steps": 10000,
+  "no_parity": false,
+  "no_sync_check": false,
+  "sync_check_only": false,
+  "out": "/mnt/c/Users/Charlie/Desktop/Workspace/flybrain/perf/results/w4"
+ },
+ "caps": {
+  "spike_cap": 60,
+  "syn_cap": 44483
+ },
+ "warmup_eager_steps": 3,
+ "torch_threads": 6,
+ "runs": [
+  {
+   "rows": {
+    "ref eager cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.5659,
+     "steady_median_ms": 1.501,
+     "window_ms_per_step": 1.6843,
+     "stall_fraction": 0.0145,
+     "stall_median_ms": 10.324,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0874,
+     "trial_wall_s": 6.38,
+     "overflow": null,
+     "graphs": null,
+     "spikes": 53023,
+     "peak_mem_mb": 403.9,
+     "mem_before_mb": 8.1,
+     "window_ms_per_step_no_events": 1.7443,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.4785,
+     "steady_median_ms": 1.1865,
+     "window_ms_per_step": 1.5483,
+     "stall_fraction": 0.0075,
+     "stall_median_ms": 10.266,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0317,
+     "trial_wall_s": 4.971,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 53023,
+     "peak_mem_mb": 406.2,
+     "mem_before_mb": 8.1,
+     "window_ms_per_step_no_events": 1.2709,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.487,
+     "steady_median_ms": 0.4464,
+     "window_ms_per_step": 0.487,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0409,
+     "trial_wall_s": 1.84,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 53023,
+     "peak_mem_mb": 422.5,
+     "mem_before_mb": 8.1,
+     "window_ms_per_step_no_events": 0.4604,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f64 default caps": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 7.422,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 7.423,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0404,
+     "trial_wall_s": 9.018,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 19526,
+     "peak_mem_mb": 571.7,
+     "mem_before_mb": 32.5,
+     "window_ms_per_step_no_events": 7.679,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f32": {
+     "steps": 2000,
+     "steady_mean_ms": 1.6065,
+     "steady_median_ms": 1.7854,
+     "window_ms_per_step": 1.694,
+     "stall_fraction": 0.009,
+     "stall_median_ms": 12.213,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.049,
+     "trial_wall_s": 4.944,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 51879,
+     "peak_mem_mb": 303.1,
+     "mem_before_mb": 32.5,
+     "window_ms_per_step_no_events": 1.6051,
+     "same_counts_both_trials": false
+    },
+    "fast graph cuda f32": {
+     "steps": 2000,
+     "steady_mean_ms": 0.433,
+     "steady_median_ms": 0.4334,
+     "window_ms_per_step": 0.433,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0255,
+     "trial_wall_s": 1.584,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 51879,
+     "peak_mem_mb": 311.3,
+     "mem_before_mb": 32.5,
+     "window_ms_per_step_no_events": 0.4357,
+     "same_counts_both_trials": false
+    },
+    "fast graph cuda f64 deterministic": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 9.0491,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 9.06,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0384,
+     "trial_wall_s": 10.956,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 19526,
+     "peak_mem_mb": 416.0,
+     "mem_before_mb": 48.8,
+     "window_ms_per_step_no_events": 8.7899,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f32 deterministic": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 9.2491,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 9.285,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0105,
+     "trial_wall_s": 11.516,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 19692,
+     "peak_mem_mb": 313.5,
+     "mem_before_mb": 65.0,
+     "window_ms_per_step_no_events": 8.5673,
+     "same_counts_both_trials": true
+    },
+    "fast eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.8179,
+     "steady_median_ms": 1.8354,
+     "window_ms_per_step": 1.8179,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 5.498,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "mem_before_mb": null,
+     "window_ms_per_step_no_events": 1.8179
+    },
+    "ref eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5924,
+     "steady_median_ms": 0.5694,
+     "window_ms_per_step": 0.5924,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 1.935,
+     "overflow": null,
+     "graphs": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "mem_before_mb": null,
+     "window_ms_per_step_no_events": 0.5924
+    }
+   },
+   "checks": {
+    "graph_vs_eager_f64_neurons_differing": 0,
+    "graph_vs_eager_f32_neurons_differing": 0
+   }
+  },
+  {
+   "rows": {
+    "ref eager cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.819,
+     "steady_median_ms": 1.8283,
+     "window_ms_per_step": 2.0783,
+     "stall_fraction": 0.0285,
+     "stall_median_ms": 11.041,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0132,
+     "trial_wall_s": 6.599,
+     "overflow": null,
+     "graphs": null,
+     "spikes": 53023,
+     "peak_mem_mb": 403.9,
+     "mem_before_mb": 81.2,
+     "window_ms_per_step_no_events": 1.8512,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.7516,
+     "steady_median_ms": 1.7715,
+     "window_ms_per_step": 1.7776,
+     "stall_fraction": 0.0025,
+     "stall_median_ms": 13.355,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0879,
+     "trial_wall_s": 5.257,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 53023,
+     "peak_mem_mb": 406.2,
+     "mem_before_mb": 81.2,
+     "window_ms_per_step_no_events": 1.7448,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4282,
+     "steady_median_ms": 0.4244,
+     "window_ms_per_step": 0.4282,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0917,
+     "trial_wall_s": 1.546,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 53023,
+     "peak_mem_mb": 414.4,
+     "mem_before_mb": 81.2,
+     "window_ms_per_step_no_events": 0.4222,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f64 default caps": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 7.5413,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 7.555,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0236,
+     "trial_wall_s": 9.18,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 19526,
+     "peak_mem_mb": 571.7,
+     "mem_before_mb": 97.5,
+     "window_ms_per_step_no_events": 7.6857,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f32": {
+     "steps": 2000,
+     "steady_mean_ms": 1.2122,
+     "steady_median_ms": 1.0539,
+     "window_ms_per_step": 1.2279,
+     "stall_fraction": 0.0015,
+     "stall_median_ms": 13.331,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0918,
+     "trial_wall_s": 4.379,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 51927,
+     "peak_mem_mb": 303.1,
+     "mem_before_mb": 97.5,
+     "window_ms_per_step_no_events": 1.8938,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f32": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5636,
+     "steady_median_ms": 0.4136,
+     "window_ms_per_step": 0.5636,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0918,
+     "trial_wall_s": 2.021,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 51927,
+     "peak_mem_mb": 311.3,
+     "mem_before_mb": 97.5,
+     "window_ms_per_step_no_events": 0.4467,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f64 deterministic": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 9.3305,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 9.351,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0059,
+     "trial_wall_s": 11.199,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 19526,
+     "peak_mem_mb": 416.0,
+     "mem_before_mb": 113.8,
+     "window_ms_per_step_no_events": 8.6113,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f32 deterministic": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 9.3359,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 9.363,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0007,
+     "trial_wall_s": 11.007,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 19692,
+     "peak_mem_mb": 313.5,
+     "mem_before_mb": 130.0,
+     "window_ms_per_step_no_events": 8.979,
+     "same_counts_both_trials": true
+    },
+    "fast eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.7933,
+     "steady_median_ms": 1.7215,
+     "window_ms_per_step": 1.7933,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 5.588,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "mem_before_mb": null,
+     "window_ms_per_step_no_events": 1.7933
+    },
+    "ref eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5234,
+     "steady_median_ms": 0.4961,
+     "window_ms_per_step": 0.5234,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 1.623,
+     "overflow": null,
+     "graphs": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "mem_before_mb": null,
+     "window_ms_per_step_no_events": 0.5234
+    }
+   },
+   "checks": {
+    "graph_vs_eager_f64_neurons_differing": 0,
+    "graph_vs_eager_f32_neurons_differing": 0
+   }
+  },
+  {
+   "rows": {
+    "ref eager cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.7307,
+     "steady_median_ms": 1.6836,
+     "window_ms_per_step": 1.7307,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0877,
+     "trial_wall_s": 5.431,
+     "overflow": null,
+     "graphs": null,
+     "spikes": 53023,
+     "peak_mem_mb": 403.9,
+     "mem_before_mb": 146.2,
+     "window_ms_per_step_no_events": 1.7906,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.7462,
+     "steady_median_ms": 1.8341,
+     "window_ms_per_step": 1.7462,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0446,
+     "trial_wall_s": 5.61,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 53023,
+     "peak_mem_mb": 406.2,
+     "mem_before_mb": 146.2,
+     "window_ms_per_step_no_events": 1.9112,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5969,
+     "steady_median_ms": 0.4479,
+     "window_ms_per_step": 0.5969,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0449,
+     "trial_wall_s": 2.123,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 53023,
+     "peak_mem_mb": 414.4,
+     "mem_before_mb": 146.2,
+     "window_ms_per_step_no_events": 0.631,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f64 default caps": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 7.0987,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 7.102,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0918,
+     "trial_wall_s": 8.951,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 19526,
+     "peak_mem_mb": 571.7,
+     "mem_before_mb": 162.5,
+     "window_ms_per_step_no_events": 7.6889,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f32": {
+     "steps": 2000,
+     "steady_mean_ms": 1.8469,
+     "steady_median_ms": 1.8459,
+     "window_ms_per_step": 1.8469,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0443,
+     "trial_wall_s": 6.671,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 51927,
+     "peak_mem_mb": 303.1,
+     "mem_before_mb": 162.5,
+     "window_ms_per_step_no_events": 2.0248,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f32": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4437,
+     "steady_median_ms": 0.4441,
+     "window_ms_per_step": 0.4437,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0007,
+     "trial_wall_s": 1.621,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 51927,
+     "peak_mem_mb": 311.3,
+     "mem_before_mb": 162.5,
+     "window_ms_per_step_no_events": 0.4438,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f64 deterministic": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 8.6227,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 8.628,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0881,
+     "trial_wall_s": 10.682,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 19526,
+     "peak_mem_mb": 416.0,
+     "mem_before_mb": 178.8,
+     "window_ms_per_step_no_events": 8.9625,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f32 deterministic": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 9.0684,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 9.098,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0311,
+     "trial_wall_s": 11.247,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 19692,
+     "peak_mem_mb": 313.5,
+     "mem_before_mb": 195.0,
+     "window_ms_per_step_no_events": 9.2077,
+     "same_counts_both_trials": true
+    },
+    "fast eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.6509,
+     "steady_median_ms": 1.6134,
+     "window_ms_per_step": 1.6509,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 5.377,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "mem_before_mb": null,
+     "window_ms_per_step_no_events": 1.6509
+    },
+    "ref eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5561,
+     "steady_median_ms": 0.5349,
+     "window_ms_per_step": 0.5561,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 1.667,
+     "overflow": null,
+     "graphs": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "mem_before_mb": null,
+     "window_ms_per_step_no_events": 0.5561
+    }
+   },
+   "checks": {
+    "graph_vs_eager_f64_neurons_differing": 0,
+    "graph_vs_eager_f32_neurons_differing": 0
+   }
+  },
+  {
+   "rows": {
+    "ref eager cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.7029,
+     "steady_median_ms": 1.7832,
+     "window_ms_per_step": 3.9391,
+     "stall_fraction": 0.261,
+     "stall_median_ms": 10.488,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0858,
+     "trial_wall_s": 9.754,
+     "overflow": null,
+     "graphs": null,
+     "spikes": 53023,
+     "peak_mem_mb": 403.9,
+     "mem_before_mb": 211.2,
+     "window_ms_per_step_no_events": 1.9792,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.927,
+     "steady_median_ms": 1.9266,
+     "window_ms_per_step": 2.0614,
+     "stall_fraction": 0.011,
+     "stall_median_ms": 14.544,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0068,
+     "trial_wall_s": 6.272,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 53023,
+     "peak_mem_mb": 406.2,
+     "mem_before_mb": 211.2,
+     "window_ms_per_step_no_events": 1.9308,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5245,
+     "steady_median_ms": 0.4373,
+     "window_ms_per_step": 0.5245,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0631,
+     "trial_wall_s": 1.788,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 53023,
+     "peak_mem_mb": 414.4,
+     "mem_before_mb": 211.2,
+     "window_ms_per_step_no_events": 0.425,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f64 default caps": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 7.4294,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 7.137,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0908,
+     "trial_wall_s": 9.089,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 19526,
+     "peak_mem_mb": 571.7,
+     "mem_before_mb": 227.5,
+     "window_ms_per_step_no_events": 7.7185,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f32": {
+     "steps": 2000,
+     "steady_mean_ms": 1.8904,
+     "steady_median_ms": 1.9026,
+     "window_ms_per_step": 2.8367,
+     "stall_fraction": 0.0755,
+     "stall_median_ms": 14.432,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0019,
+     "trial_wall_s": 7.899,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 51927,
+     "peak_mem_mb": 303.1,
+     "mem_before_mb": 227.5,
+     "window_ms_per_step_no_events": 1.8203,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f32": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4875,
+     "steady_median_ms": 0.4314,
+     "window_ms_per_step": 0.4875,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0325,
+     "trial_wall_s": 1.766,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 51927,
+     "peak_mem_mb": 311.3,
+     "mem_before_mb": 227.5,
+     "window_ms_per_step_no_events": 0.4283,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f64 deterministic": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 9.1389,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 9.148,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0264,
+     "trial_wall_s": 11.24,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 19526,
+     "peak_mem_mb": 416.0,
+     "mem_before_mb": 243.8,
+     "window_ms_per_step_no_events": 9.1176,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f32 deterministic": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 9.0457,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 9.077,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0333,
+     "trial_wall_s": 11.257,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 19692,
+     "peak_mem_mb": 313.5,
+     "mem_before_mb": 260.0,
+     "window_ms_per_step_no_events": 8.5839,
+     "same_counts_both_trials": true
+    },
+    "fast eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.7697,
+     "steady_median_ms": 1.7147,
+     "window_ms_per_step": 1.7697,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 5.429,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "mem_before_mb": null,
+     "window_ms_per_step_no_events": 1.7697
+    },
+    "ref eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5527,
+     "steady_median_ms": 0.5239,
+     "window_ms_per_step": 0.5527,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 1.73,
+     "overflow": null,
+     "graphs": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "mem_before_mb": null,
+     "window_ms_per_step_no_events": 0.5527
+    }
+   },
+   "checks": {
+    "graph_vs_eager_f64_neurons_differing": 0,
+    "graph_vs_eager_f32_neurons_differing": 0
+   }
+  },
+  {
+   "rows": {
+    "ref eager cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.8457,
+     "steady_median_ms": 1.7789,
+     "window_ms_per_step": 2.1108,
+     "stall_fraction": 0.03,
+     "stall_median_ms": 11.021,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0331,
+     "trial_wall_s": 10.963,
+     "overflow": null,
+     "graphs": null,
+     "spikes": 53023,
+     "peak_mem_mb": 403.9,
+     "mem_before_mb": 268.1,
+     "window_ms_per_step_no_events": 1.7412,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.8493,
+     "steady_median_ms": 1.8605,
+     "window_ms_per_step": 1.8874,
+     "stall_fraction": 0.0035,
+     "stall_median_ms": 13.988,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0371,
+     "trial_wall_s": 5.781,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 53023,
+     "peak_mem_mb": 406.2,
+     "mem_before_mb": 268.1,
+     "window_ms_per_step_no_events": 1.8406,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4476,
+     "steady_median_ms": 0.4474,
+     "window_ms_per_step": 0.4476,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0351,
+     "trial_wall_s": 1.62,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 53023,
+     "peak_mem_mb": 406.2,
+     "mem_before_mb": 268.1,
+     "window_ms_per_step_no_events": 0.4502,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f64 default caps": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 7.2397,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 7.231,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0739,
+     "trial_wall_s": 9.392,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 19526,
+     "peak_mem_mb": 571.7,
+     "mem_before_mb": 268.1,
+     "window_ms_per_step_no_events": 7.2269,
+     "same_counts_both_trials": true
+    },
+    "fast eager cuda f32": {
+     "steps": 2000,
+     "steady_mean_ms": 1.5431,
+     "steady_median_ms": 1.5219,
+     "window_ms_per_step": 1.597,
+     "stall_fraction": 0.006,
+     "stall_median_ms": 10.503,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0116,
+     "trial_wall_s": 4.637,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 51927,
+     "peak_mem_mb": 303.1,
+     "mem_before_mb": 268.1,
+     "window_ms_per_step_no_events": 1.3197,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f32": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4255,
+     "steady_median_ms": 0.4257,
+     "window_ms_per_step": 0.4255,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.044,
+     "trial_wall_s": 1.582,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 51927,
+     "peak_mem_mb": 303.1,
+     "mem_before_mb": 268.1,
+     "window_ms_per_step_no_events": 0.4386,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f64 deterministic": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 8.9107,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 8.928,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0548,
+     "trial_wall_s": 11.126,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 19526,
+     "peak_mem_mb": 407.9,
+     "mem_before_mb": 268.1,
+     "window_ms_per_step_no_events": 8.9812,
+     "same_counts_both_trials": true
+    },
+    "fast graph cuda f32 deterministic": {
+     "steps": 200,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 9.1362,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 9.167,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0223,
+     "trial_wall_s": 11.22,
+     "overflow": 0,
+     "graphs": 1,
+     "spikes": 19692,
+     "peak_mem_mb": 305.4,
+     "mem_before_mb": 268.1,
+     "window_ms_per_step_no_events": 8.7542,
+     "same_counts_both_trials": true
+    },
+    "fast eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 1.6388,
+     "steady_median_ms": 1.5866,
+     "window_ms_per_step": 1.6388,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 5.414,
+     "overflow": 0,
+     "graphs": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "mem_before_mb": null,
+     "window_ms_per_step_no_events": 1.6388
+    },
+    "ref eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5459,
+     "steady_median_ms": 0.5201,
+     "window_ms_per_step": 0.5459,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 1.676,
+     "overflow": null,
+     "graphs": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "mem_before_mb": null,
+     "window_ms_per_step_no_events": 0.5459
+    }
+   },
+   "checks": {
+    "graph_vs_eager_f64_neurons_differing": 0,
+    "graph_vs_eager_f32_neurons_differing": 0
+   }
+  }
+ ],
+ "sync_check": {
+  "fast_steady_loop": {
+   "steps": 200,
+   "raised": null,
+   "passed": true
+  },
+  "ops_per_step": {
+   "aten_ops": 173.0,
+   "kernel_ops": 150.0
+  },
+  "overflow": 0,
+  "positive_control_reference": {
+   "raised": "RuntimeError: called a synchronizing CUDA operation",
+   "passed": true
+  },
+  "passed": true
+ },
+ "agg": {
+  "rows": {
+   "ref eager cuda f64": {
+    "steady_mean_ms": {
+     "median": 1.7307,
+     "min": 1.5659,
+     "max": 1.8457,
+     "max_over_min": 1.18,
+     "runs": [
+      1.5659,
+      1.819,
+      1.7307,
+      1.7029,
+      1.8457
+     ]
+    },
+    "steady_median_ms": {
+     "median": 1.7789,
+     "min": 1.501,
+     "max": 1.8283,
+     "max_over_min": 1.22,
+     "runs": [
+      1.501,
+      1.8283,
+      1.6836,
+      1.7832,
+      1.7789
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 2.0783,
+     "min": 1.6843,
+     "max": 3.9391,
+     "max_over_min": 2.34,
+     "runs": [
+      1.6843,
+      2.0783,
+      1.7307,
+      3.9391,
+      2.1108
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 1.7906,
+     "min": 1.7412,
+     "max": 1.9792,
+     "max_over_min": 1.14,
+     "runs": [
+      1.7443,
+      1.8512,
+      1.7906,
+      1.9792,
+      1.7412
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0285,
+     "min": 0.0,
+     "max": 0.261,
+     "max_over_min": null,
+     "runs": [
+      0.0145,
+      0.0285,
+      0.0,
+      0.261,
+      0.03
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 403.9,
+     "min": 403.9,
+     "max": 403.9,
+     "max_over_min": 1.0,
+     "runs": [
+      403.9,
+      403.9,
+      403.9,
+      403.9,
+      403.9
+     ]
+    },
+    "mem_before_mb": {
+     "median": 146.2,
+     "min": 8.1,
+     "max": 268.1,
+     "max_over_min": 33.1,
+     "runs": [
+      8.1,
+      81.2,
+      146.2,
+      211.2,
+      268.1
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0858,
+     "min": 1.0132,
+     "max": 1.0877,
+     "max_over_min": 1.07,
+     "runs": [
+      1.0874,
+      1.0132,
+      1.0877,
+      1.0858,
+      1.0331
+     ]
+    },
+    "overflow_total": null,
+    "same_counts_both_trials": true,
+    "timer": "cuda events rescaled to host clock",
+    "graphs": null,
+    "steps": 2000
+   },
+   "fast eager cuda f64": {
+    "steady_mean_ms": {
+     "median": 1.7516,
+     "min": 1.4785,
+     "max": 1.927,
+     "max_over_min": 1.3,
+     "runs": [
+      1.4785,
+      1.7516,
+      1.7462,
+      1.927,
+      1.8493
+     ]
+    },
+    "steady_median_ms": {
+     "median": 1.8341,
+     "min": 1.1865,
+     "max": 1.9266,
+     "max_over_min": 1.62,
+     "runs": [
+      1.1865,
+      1.7715,
+      1.8341,
+      1.9266,
+      1.8605
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 1.7776,
+     "min": 1.5483,
+     "max": 2.0614,
+     "max_over_min": 1.33,
+     "runs": [
+      1.5483,
+      1.7776,
+      1.7462,
+      2.0614,
+      1.8874
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 1.8406,
+     "min": 1.2709,
+     "max": 1.9308,
+     "max_over_min": 1.52,
+     "runs": [
+      1.2709,
+      1.7448,
+      1.9112,
+      1.9308,
+      1.8406
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0035,
+     "min": 0.0,
+     "max": 0.011,
+     "max_over_min": null,
+     "runs": [
+      0.0075,
+      0.0025,
+      0.0,
+      0.011,
+      0.0035
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 406.2,
+     "min": 406.2,
+     "max": 406.2,
+     "max_over_min": 1.0,
+     "runs": [
+      406.2,
+      406.2,
+      406.2,
+      406.2,
+      406.2
+     ]
+    },
+    "mem_before_mb": {
+     "median": 146.2,
+     "min": 8.1,
+     "max": 268.1,
+     "max_over_min": 33.1,
+     "runs": [
+      8.1,
+      81.2,
+      146.2,
+      211.2,
+      268.1
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0371,
+     "min": 1.0068,
+     "max": 1.0879,
+     "max_over_min": 1.08,
+     "runs": [
+      1.0317,
+      1.0879,
+      1.0446,
+      1.0068,
+      1.0371
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "timer": "cuda events rescaled to host clock",
+    "graphs": null,
+    "steps": 2000
+   },
+   "fast graph cuda f64": {
+    "steady_mean_ms": {
+     "median": 0.487,
+     "min": 0.4282,
+     "max": 0.5969,
+     "max_over_min": 1.39,
+     "runs": [
+      0.487,
+      0.4282,
+      0.5969,
+      0.5245,
+      0.4476
+     ]
+    },
+    "steady_median_ms": {
+     "median": 0.4464,
+     "min": 0.4244,
+     "max": 0.4479,
+     "max_over_min": 1.06,
+     "runs": [
+      0.4464,
+      0.4244,
+      0.4479,
+      0.4373,
+      0.4474
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 0.487,
+     "min": 0.4282,
+     "max": 0.5969,
+     "max_over_min": 1.39,
+     "runs": [
+      0.487,
+      0.4282,
+      0.5969,
+      0.5245,
+      0.4476
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 0.4502,
+     "min": 0.4222,
+     "max": 0.631,
+     "max_over_min": 1.49,
+     "runs": [
+      0.4604,
+      0.4222,
+      0.631,
+      0.425,
+      0.4502
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 414.4,
+     "min": 406.2,
+     "max": 422.5,
+     "max_over_min": 1.04,
+     "runs": [
+      422.5,
+      414.4,
+      414.4,
+      414.4,
+      406.2
+     ]
+    },
+    "mem_before_mb": {
+     "median": 146.2,
+     "min": 8.1,
+     "max": 268.1,
+     "max_over_min": 33.1,
+     "runs": [
+      8.1,
+      81.2,
+      146.2,
+      211.2,
+      268.1
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0449,
+     "min": 1.0351,
+     "max": 1.0917,
+     "max_over_min": 1.05,
+     "runs": [
+      1.0409,
+      1.0917,
+      1.0449,
+      1.0631,
+      1.0351
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "timer": "cuda events rescaled to host clock",
+    "graphs": 1,
+    "steps": 2000
+   },
+   "fast eager cuda f64 default caps": {
+    "steady_mean_ms": null,
+    "steady_median_ms": null,
+    "window_ms_per_step": {
+     "median": 7.422,
+     "min": 7.0987,
+     "max": 7.5413,
+     "max_over_min": 1.06,
+     "runs": [
+      7.422,
+      7.5413,
+      7.0987,
+      7.4294,
+      7.2397
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 7.6857,
+     "min": 7.2269,
+     "max": 7.7185,
+     "max_over_min": 1.07,
+     "runs": [
+      7.679,
+      7.6857,
+      7.6889,
+      7.7185,
+      7.2269
+     ]
+    },
+    "stall_fraction": {
+     "median": 1.0,
+     "min": 1.0,
+     "max": 1.0,
+     "max_over_min": 1.0,
+     "runs": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 571.7,
+     "min": 571.7,
+     "max": 571.7,
+     "max_over_min": 1.0,
+     "runs": [
+      571.7,
+      571.7,
+      571.7,
+      571.7,
+      571.7
+     ]
+    },
+    "mem_before_mb": {
+     "median": 162.5,
+     "min": 32.5,
+     "max": 268.1,
+     "max_over_min": 8.25,
+     "runs": [
+      32.5,
+      97.5,
+      162.5,
+      227.5,
+      268.1
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0739,
+     "min": 1.0236,
+     "max": 1.0918,
+     "max_over_min": 1.07,
+     "runs": [
+      1.0404,
+      1.0236,
+      1.0918,
+      1.0908,
+      1.0739
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "timer": "cuda events rescaled to host clock",
+    "graphs": null,
+    "steps": 200
+   },
+   "fast eager cuda f32": {
+    "steady_mean_ms": {
+     "median": 1.6065,
+     "min": 1.2122,
+     "max": 1.8904,
+     "max_over_min": 1.56,
+     "runs": [
+      1.6065,
+      1.2122,
+      1.8469,
+      1.8904,
+      1.5431
+     ]
+    },
+    "steady_median_ms": {
+     "median": 1.7854,
+     "min": 1.0539,
+     "max": 1.9026,
+     "max_over_min": 1.81,
+     "runs": [
+      1.7854,
+      1.0539,
+      1.8459,
+      1.9026,
+      1.5219
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 1.694,
+     "min": 1.2279,
+     "max": 2.8367,
+     "max_over_min": 2.31,
+     "runs": [
+      1.694,
+      1.2279,
+      1.8469,
+      2.8367,
+      1.597
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 1.8203,
+     "min": 1.3197,
+     "max": 2.0248,
+     "max_over_min": 1.53,
+     "runs": [
+      1.6051,
+      1.8938,
+      2.0248,
+      1.8203,
+      1.3197
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.006,
+     "min": 0.0,
+     "max": 0.0755,
+     "max_over_min": null,
+     "runs": [
+      0.009,
+      0.0015,
+      0.0,
+      0.0755,
+      0.006
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 303.1,
+     "min": 303.1,
+     "max": 303.1,
+     "max_over_min": 1.0,
+     "runs": [
+      303.1,
+      303.1,
+      303.1,
+      303.1,
+      303.1
+     ]
+    },
+    "mem_before_mb": {
+     "median": 162.5,
+     "min": 32.5,
+     "max": 268.1,
+     "max_over_min": 8.25,
+     "runs": [
+      32.5,
+      97.5,
+      162.5,
+      227.5,
+      268.1
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0443,
+     "min": 1.0019,
+     "max": 1.0918,
+     "max_over_min": 1.09,
+     "runs": [
+      1.049,
+      1.0918,
+      1.0443,
+      1.0019,
+      1.0116
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": false,
+    "timer": "cuda events rescaled to host clock",
+    "graphs": null,
+    "steps": 2000
+   },
+   "fast graph cuda f32": {
+    "steady_mean_ms": {
+     "median": 0.4437,
+     "min": 0.4255,
+     "max": 0.5636,
+     "max_over_min": 1.32,
+     "runs": [
+      0.433,
+      0.5636,
+      0.4437,
+      0.4875,
+      0.4255
+     ]
+    },
+    "steady_median_ms": {
+     "median": 0.4314,
+     "min": 0.4136,
+     "max": 0.4441,
+     "max_over_min": 1.07,
+     "runs": [
+      0.4334,
+      0.4136,
+      0.4441,
+      0.4314,
+      0.4257
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 0.4437,
+     "min": 0.4255,
+     "max": 0.5636,
+     "max_over_min": 1.32,
+     "runs": [
+      0.433,
+      0.5636,
+      0.4437,
+      0.4875,
+      0.4255
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 0.4386,
+     "min": 0.4283,
+     "max": 0.4467,
+     "max_over_min": 1.04,
+     "runs": [
+      0.4357,
+      0.4467,
+      0.4438,
+      0.4283,
+      0.4386
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 311.3,
+     "min": 303.1,
+     "max": 311.3,
+     "max_over_min": 1.03,
+     "runs": [
+      311.3,
+      311.3,
+      311.3,
+      311.3,
+      303.1
+     ]
+    },
+    "mem_before_mb": {
+     "median": 162.5,
+     "min": 32.5,
+     "max": 268.1,
+     "max_over_min": 8.25,
+     "runs": [
+      32.5,
+      97.5,
+      162.5,
+      227.5,
+      268.1
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0325,
+     "min": 1.0007,
+     "max": 1.0918,
+     "max_over_min": 1.09,
+     "runs": [
+      1.0255,
+      1.0918,
+      1.0007,
+      1.0325,
+      1.044
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": false,
+    "timer": "cuda events rescaled to host clock",
+    "graphs": 1,
+    "steps": 2000
+   },
+   "fast graph cuda f64 deterministic": {
+    "steady_mean_ms": null,
+    "steady_median_ms": null,
+    "window_ms_per_step": {
+     "median": 9.0491,
+     "min": 8.6227,
+     "max": 9.3305,
+     "max_over_min": 1.08,
+     "runs": [
+      9.0491,
+      9.3305,
+      8.6227,
+      9.1389,
+      8.9107
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 8.9625,
+     "min": 8.6113,
+     "max": 9.1176,
+     "max_over_min": 1.06,
+     "runs": [
+      8.7899,
+      8.6113,
+      8.9625,
+      9.1176,
+      8.9812
+     ]
+    },
+    "stall_fraction": {
+     "median": 1.0,
+     "min": 1.0,
+     "max": 1.0,
+     "max_over_min": 1.0,
+     "runs": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 416.0,
+     "min": 407.9,
+     "max": 416.0,
+     "max_over_min": 1.02,
+     "runs": [
+      416.0,
+      416.0,
+      416.0,
+      416.0,
+      407.9
+     ]
+    },
+    "mem_before_mb": {
+     "median": 178.8,
+     "min": 48.8,
+     "max": 268.1,
+     "max_over_min": 5.49,
+     "runs": [
+      48.8,
+      113.8,
+      178.8,
+      243.8,
+      268.1
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0384,
+     "min": 1.0059,
+     "max": 1.0881,
+     "max_over_min": 1.08,
+     "runs": [
+      1.0384,
+      1.0059,
+      1.0881,
+      1.0264,
+      1.0548
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "timer": "cuda events rescaled to host clock",
+    "graphs": 1,
+    "steps": 200
+   },
+   "fast graph cuda f32 deterministic": {
+    "steady_mean_ms": null,
+    "steady_median_ms": null,
+    "window_ms_per_step": {
+     "median": 9.1362,
+     "min": 9.0457,
+     "max": 9.3359,
+     "max_over_min": 1.03,
+     "runs": [
+      9.2491,
+      9.3359,
+      9.0684,
+      9.0457,
+      9.1362
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 8.7542,
+     "min": 8.5673,
+     "max": 9.2077,
+     "max_over_min": 1.07,
+     "runs": [
+      8.5673,
+      8.979,
+      9.2077,
+      8.5839,
+      8.7542
+     ]
+    },
+    "stall_fraction": {
+     "median": 1.0,
+     "min": 1.0,
+     "max": 1.0,
+     "max_over_min": 1.0,
+     "runs": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 313.5,
+     "min": 305.4,
+     "max": 313.5,
+     "max_over_min": 1.03,
+     "runs": [
+      313.5,
+      313.5,
+      313.5,
+      313.5,
+      305.4
+     ]
+    },
+    "mem_before_mb": {
+     "median": 195.0,
+     "min": 65.0,
+     "max": 268.1,
+     "max_over_min": 4.12,
+     "runs": [
+      65.0,
+      130.0,
+      195.0,
+      260.0,
+      268.1
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0223,
+     "min": 1.0007,
+     "max": 1.0333,
+     "max_over_min": 1.03,
+     "runs": [
+      1.0105,
+      1.0007,
+      1.0311,
+      1.0333,
+      1.0223
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "timer": "cuda events rescaled to host clock",
+    "graphs": 1,
+    "steps": 200
+   },
+   "fast eager cpu f64": {
+    "steady_mean_ms": {
+     "median": 1.7697,
+     "min": 1.6388,
+     "max": 1.8179,
+     "max_over_min": 1.11,
+     "runs": [
+      1.8179,
+      1.7933,
+      1.6509,
+      1.7697,
+      1.6388
+     ]
+    },
+    "steady_median_ms": {
+     "median": 1.7147,
+     "min": 1.5866,
+     "max": 1.8354,
+     "max_over_min": 1.16,
+     "runs": [
+      1.8354,
+      1.7215,
+      1.6134,
+      1.7147,
+      1.5866
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 1.7697,
+     "min": 1.6388,
+     "max": 1.8179,
+     "max_over_min": 1.11,
+     "runs": [
+      1.8179,
+      1.7933,
+      1.6509,
+      1.7697,
+      1.6388
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 1.7697,
+     "min": 1.6388,
+     "max": 1.8179,
+     "max_over_min": 1.11,
+     "runs": [
+      1.8179,
+      1.7933,
+      1.6509,
+      1.7697,
+      1.6388
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": null,
+    "mem_before_mb": null,
+    "event_over_host_clock": null,
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "timer": "host perf_counter",
+    "graphs": null,
+    "steps": 2000
+   },
+   "ref eager cpu f64": {
+    "steady_mean_ms": {
+     "median": 0.5527,
+     "min": 0.5234,
+     "max": 0.5924,
+     "max_over_min": 1.13,
+     "runs": [
+      0.5924,
+      0.5234,
+      0.5561,
+      0.5527,
+      0.5459
+     ]
+    },
+    "steady_median_ms": {
+     "median": 0.5239,
+     "min": 0.4961,
+     "max": 0.5694,
+     "max_over_min": 1.15,
+     "runs": [
+      0.5694,
+      0.4961,
+      0.5349,
+      0.5239,
+      0.5201
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 0.5527,
+     "min": 0.5234,
+     "max": 0.5924,
+     "max_over_min": 1.13,
+     "runs": [
+      0.5924,
+      0.5234,
+      0.5561,
+      0.5527,
+      0.5459
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 0.5527,
+     "min": 0.5234,
+     "max": 0.5924,
+     "max_over_min": 1.13,
+     "runs": [
+      0.5924,
+      0.5234,
+      0.5561,
+      0.5527,
+      0.5459
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": null,
+    "mem_before_mb": null,
+    "event_over_host_clock": null,
+    "overflow_total": null,
+    "same_counts_both_trials": true,
+    "timer": "host perf_counter",
+    "graphs": null,
+    "steps": 2000
+   }
+  },
+  "checks": {
+   "graph_vs_eager_f64_neurons_differing": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "graph_vs_eager_f32_neurons_differing": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "variability": [
+   {
+    "what": "ref eager cuda f64 stall_fraction",
+    "median": 0.0285,
+    "min": 0.0,
+    "max": 0.261,
+    "max_over_min": null
+   },
+   {
+    "what": "fast eager cuda f64 stall_fraction",
+    "median": 0.0035,
+    "min": 0.0,
+    "max": 0.011,
+    "max_over_min": null
+   },
+   {
+    "what": "fast eager cuda f32 stall_fraction",
+    "median": 0.006,
+    "min": 0.0,
+    "max": 0.0755,
+    "max_over_min": null
+   }
+  ]
+ },
+ "parity": [
+  {
+   "seed": 0,
+   "steps": 10000,
+   "overflow_f64": [
+    0,
+    0
+   ],
+   "graph_vs_eager_f64_neurons_differing": 0,
+   "spikes_fast_f64": 186882,
+   "fast_f64_vs_ref_f64": {
+    "active": 3865,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     186882,
+     186882
+    ]
+   },
+   "overflow_f32": [
+    0,
+    0
+   ],
+   "graph_vs_eager_f32_neurons_differing": 481,
+   "spikes_fast_f32": 181771,
+   "fast_f32_vs_ref_f64": {
+    "active": 3989,
+    "rate_corr": 0.991399,
+    "neurons_differing": 3001,
+    "share_differing_of_active": 0.7523,
+    "spikes": [
+     181771,
+     186882
+    ]
+   },
+   "overflow_f32_det": [
+    0,
+    0
+   ],
+   "graph_vs_eager_f32_det_neurons_differing": 0,
+   "fast_f32_det_vs_ref_f64": {
+    "active": 3996,
+    "rate_corr": 0.998166,
+    "neurons_differing": 2959,
+    "share_differing_of_active": 0.7405,
+    "spikes": [
+     185510,
+     186882
+    ]
+   },
+   "ref_vs_ref": {
+    "active": 3865,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     186882,
+     186882
+    ]
+   }
+  },
+  {
+   "seed": 1,
+   "steps": 10000,
+   "overflow_f64": [
+    0,
+    0
+   ],
+   "graph_vs_eager_f64_neurons_differing": 0,
+   "spikes_fast_f64": 185731,
+   "fast_f64_vs_ref_f64": {
+    "active": 3887,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     185731,
+     185731
+    ]
+   },
+   "overflow_f32": [
+    0,
+    0
+   ],
+   "graph_vs_eager_f32_neurons_differing": 2866,
+   "spikes_fast_f32": 186112,
+   "fast_f32_vs_ref_f64": {
+    "active": 3992,
+    "rate_corr": 0.9989,
+    "neurons_differing": 2854,
+    "share_differing_of_active": 0.7149,
+    "spikes": [
+     186112,
+     185731
+    ]
+   },
+   "overflow_f32_det": [
+    0,
+    0
+   ],
+   "graph_vs_eager_f32_det_neurons_differing": 0,
+   "fast_f32_det_vs_ref_f64": {
+    "active": 3991,
+    "rate_corr": 0.997499,
+    "neurons_differing": 2901,
+    "share_differing_of_active": 0.7269,
+    "spikes": [
+     186897,
+     185731
+    ]
+   },
+   "ref_vs_ref": {
+    "active": 3887,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     185731,
+     185731
+    ]
+   }
+  },
+  {
+   "seed": 2,
+   "steps": 10000,
+   "overflow_f64": [
+    0,
+    0
+   ],
+   "graph_vs_eager_f64_neurons_differing": 0,
+   "spikes_fast_f64": 187225,
+   "fast_f64_vs_ref_f64": {
+    "active": 3870,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     187225,
+     187225
+    ]
+   },
+   "overflow_f32": [
+    0,
+    0
+   ],
+   "graph_vs_eager_f32_neurons_differing": 0,
+   "spikes_fast_f32": 187316,
+   "fast_f32_vs_ref_f64": {
+    "active": 3969,
+    "rate_corr": 0.999323,
+    "neurons_differing": 2760,
+    "share_differing_of_active": 0.6954,
+    "spikes": [
+     187316,
+     187225
+    ]
+   },
+   "overflow_f32_det": [
+    0,
+    0
+   ],
+   "graph_vs_eager_f32_det_neurons_differing": 0,
+   "fast_f32_det_vs_ref_f64": {
+    "active": 3969,
+    "rate_corr": 0.999323,
+    "neurons_differing": 2760,
+    "share_differing_of_active": 0.6954,
+    "spikes": [
+     187316,
+     187225
+    ]
+   },
+   "ref_vs_ref": {
+    "active": 3870,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     187225,
+     187225
+    ]
+   }
+  }
+ ]
+}
