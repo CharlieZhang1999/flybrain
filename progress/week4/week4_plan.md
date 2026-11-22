@@ -27,6 +27,7 @@ Simulate the whole male CNS (brain + ventral nerve cord) with the same calibrate
 | 6–7 | Week 4 write-up; README status; start ridge baseline if time | `progress/week4/week4_summary.md` ✔ (see week4_summary.md; ridge baseline in `scripts/w4d6_ridge_baseline.py`) |
 
 ## Weeks 5–6 (for orientation)
+Superseded: Week 5 onward follows the central plan ([Refined 12-week plan](https://claude.ai/artifact/RUjnZ67sWYM1AQnTVJ2Jeh), "Current schedule"): Week 5 = hidden-state dataset plus a 2-day behaviour sanity panel.
 - Week 5: decoders. Ridge on lagged brain bins (lags 0–100 ms) → pool rates at t+100 ms; R² per pool, held-out episodes. Inputs: all brain / DNs only / random 1% subset. Controls: shuffled connectome, shuffled time (circular shift). Then a small nonlinear model only if ridge leaves structure on the table.
 - Week 6: benchmark table (speed, R²), update the Connectome Explorer with VNC views and a motor-pool panel, write-up.
 

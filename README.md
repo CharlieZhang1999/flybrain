@@ -2,6 +2,8 @@
 
 A **connectome-constrained leaky integrate-and-fire (LIF) simulation of the *Drosophila* brain with a trained readout**, wired into a closed loop with a language model. It reproduces chetaslua's "fly brain to ChatGPT" demo on FlyWire and on the MaleCNS v1.0 male connectome, with the controls that demo did not ship. The full plan is in [docs/plan.md](docs/plan.md).
 
+Plan: [Refined 12-week plan: decoding animal minds](https://claude.ai/artifact/RUjnZ67sWYM1AQnTVJ2Jeh) (the project's only plan; `docs/plan.md` is kept as the history of weeks 1–4).
+
 This is not a fly that talks, and nothing here decodes intentions. Every neuron is the same two-variable LIF unit and all biology lives in the wiring. Words are stimuli we inject into annotated sensory neurons; "what the fly says" is the output of a linear classifier we trained on its spikes. The shuffled-connectome control below shows how much of the result comes from the wiring, and how much does not.
 
 ## Status
