@@ -104,3 +104,21 @@ Brief: [tasks/T5b_brief.md](tasks/T5b_brief.md). Branch `perf/w4-t5b-graph`. Rep
 - Parity, float64: graph == eager (0 neurons differ, 3 full trials + 5 timed trials), fast == reference on GPU (correlation 1.0, 0 neurons differ, 3 seeds). States differ bitwise (<= 1.7e-16) run to run, eager too (float atomics in `index_add_`), so count identity is observed, not guaranteed. Float32: counts not reproducible run to run; graph vs eager differ in 2 of 3 full trials; identical under `torch.use_deterministic_algorithms(True)`, which costs ~9 ms/step.
 - CUDA event times on this WSL box read 4-6% high against the host clock; spans are rescaled per trial.
 - Week 5 targets: fusion of the gather/scatter and decay/threshold chain (<= 0.25 ms/step), batching B trials in one graph (8 trials < 1 ms/step).
+
+## T4: compute roofline on the 5060 Ti (Day 5a, 2026-11-22)
+
+Brief: [tasks/T4_brief.md](tasks/T4_brief.md). Branch `perf/w4-t4-roofline`. Report: [perf/week04_day5.md](../../perf/week04_day5.md). PC (WSL, RTX 5060 Ti, torch 2.11.0+cu128, driver 610.88).
+
+**Built**
+- `bench/w4_roofline.py`: `torch.matmul` peaks for fp64 / fp32 (TF32 off) / tf32 / bf16 / fp16 at n = 1,024-8,192, 100 timed calls per size with one CUDA event pair each, median + p90 per size, peak = best size's median, `--runs 5`; same-session copy bandwidth (Day 2 method); TF32 flag check; LIF decay FLOP and byte count of `sim/lif_torch._decay` via `TorchDispatchMode` (eager) plus the fused lower bound; derived vendor spec with sources; nvidia-smi clocks/power after each size; host-clock diagnostics. Exit code 5 if a peak is > 10% over spec.
+- `bench/w4_roofline_plot.py`: log-log roofline (`perf/results/w4/roofline.png`, 840 px) and the HTML peak table the site embeds.
+- No change under `sim/`; no Triton kernel.
+
+**Findings**
+- Peaks, median [min-max] of 5 runs, TFLOP/s: fp16 47.67 [47.67-48.08], bf16 48.29 [48.24-48.64], tf32 24.05 [24.05-24.24], fp32 16.88 [16.87-17.27], fp64 0.347 [0.347-0.347]. % of the derived spec: 100.6 / 102.0 / 101.5 / 71.3 / 93.8. No OOM, no errors, nothing > 10% over spec.
+- NVIDIA publishes no per-dtype TFLOP/s for the 5060 Ti. Spec derived from the RTX Blackwell whitepaper (RTX 5070 per-SM rates, FP64 = FP32/64) x 36 SMs x 2.57 GHz; consistent with the published 759 AI TOPS. The card runs at 2.62-2.73 GHz under load, hence ~101% on the tensor dtypes; fp32 SIMT is power-limited at 180 W.
+- fp32 / fp64 = 48.6 (1/64 by spec). Ridge points at 382 GB/s: fp64 0.91, fp32 44, tf32 63, fp16 125, bf16 126 FLOP/byte.
+- LIF decay: 8 FLOP per neuron; fused 49 B (float64, 0.163 FLOP/B) / 33 B (float32, 0.242); eager 244 B / 140 B (14 aten ops). 5.6x below even the fp64 ridge: bandwidth/launch bound. Week 5 decay kernels: judge against 382 GB/s with fused byte counts.
+- Copy bandwidth re-measured: 385.9 [385.7-386.1] GB/s (Day 2: 382; NVIDIA: 448).
+- Clock: the raw CUDA event times repeat within 1%, while host wall / event sum moves between 0.90 and 1.09 across sessions and the idle-sleep ratio between 1.00 and 1.11. TFLOP/s use events unscaled (unlike T5b's host rescale). A first full run with the idle-sleep correction was discarded.
+- > 2x across runs: bf16 and fp16 at n = 1,024 only (bimodal, 15 vs 38-40 TFLOP/s); peaks vary <= 1.02x.
