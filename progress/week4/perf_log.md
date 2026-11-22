@@ -85,3 +85,22 @@ Brief: [tasks/T5a_brief.md](tasks/T5a_brief.md). Branch `perf/w4-t5a-syncfree`. 
 - Local: `pytest -q tests/` 41 passed in ~22 s; new tests ~17 s.
 - Gaps for T5b (unverified here): block windows are Python branches on the step number, so a CUDA graph is per set of active drives; no GPU sync check was possible (the dispatch counter cannot see syncs inside C++/CUDA kernels; use `torch.cuda.set_sync_debug_mode` there); hidden H2D from Python scalars in `where` / index assignments on CUDA unverified; graph-safe RNG for `t_gen` not set up; record buffer is steps x spike_cap x 8 bytes.
 - No other file under `sim/` changed.
+
+## T5b: CUDA graph + GPU timing of the sync-free step (Day 6 part 2, 2026-11-22)
+
+Brief: [tasks/T5b_brief.md](tasks/T5b_brief.md). Branch `perf/w4-t5b-graph`. Report: [perf/week04_day6.md](../../perf/week04_day6.md). PC (WSL, RTX 5060 Ti, torch 2.11.0+cu128).
+
+**Built**
+- `bench/w4_caps.py`: reference on the bundle (looming, rng='torch', float64, 10,000 steps, seeds 0-2); max spikes/step and max gathered synapses/step for W and Wp. Caps = ceil(1.5 x max): `spike_cap = 60`, `syn_cap = 44,483` (Wp needs 3,677).
+- `bench/w4_graph.py`: `graph_trial(sim)` (3 eager warm-up steps of the trial on a side stream, one `torch.cuda.graph` capture of `_Sim.step` per active-drive combination, the sim's generator registered with `CUDAGraph.register_generator_state`, one replay per step); timing rows (reference / fast eager / fast graph on cuda float64, float32 and deterministic variants, fast at default caps, fast and reference on cpu), 5 runs, per-step CUDA events rescaled to the host clock plus a second trial without events, peak GPU memory; sync check under `torch.cuda.set_sync_debug_mode('error')` with a positive control and ops per step; full-trial parity (seeds 0-2).
+- `bench/w4_graph_plot.py`: bar chart (840 px) and the HTML table the site embeds.
+- `tests/test_fast_cuda.py` (skipped without CUDA): sync-debug steady loop + positive control; graph == eager (counts, records, bins, v, g) for all options (2 graphs) and overlapping blocks (3 graphs).
+- No change under `sim/` was needed.
+
+**Findings**
+- GPU single trial beats the CPU: graph 0.49 [0.43-0.60] ms steady, 0.45 [0.42-0.63] ms all steps, vs CPU 0.64 ms (T1) and 0.55 [0.52-0.59] ms measured in the same session. Reference GPU 1.73 [1.57-1.85], fast eager GPU 1.75 [1.48-1.93], fast eager CPU 1.77 [1.64-1.82] ms.
+- Sync check passed (200 steady steps, nothing raised; the reference raises). Capture itself forbids syncs and succeeded. Fast step: 173 aten ops, 150 GPU ops per step (reference ~117/106), which is why eager is not faster than the reference.
+- Overflow 0 at the caps in every trial. Default caps: 7.7 ms/step, +166 MB.
+- Parity, float64: graph == eager (0 neurons differ, 3 full trials + 5 timed trials), fast == reference on GPU (correlation 1.0, 0 neurons differ, 3 seeds). States differ bitwise (<= 1.7e-16) run to run, eager too (float atomics in `index_add_`), so count identity is observed, not guaranteed. Float32: counts not reproducible run to run; graph vs eager differ in 2 of 3 full trials; identical under `torch.use_deterministic_algorithms(True)`, which costs ~9 ms/step.
+- CUDA event times on this WSL box read 4-6% high against the host clock; spans are rescaled per trial.
+- Week 5 targets: fusion of the gather/scatter and decay/threshold chain (<= 0.25 ms/step), batching B trials in one graph (8 trials < 1 ms/step).

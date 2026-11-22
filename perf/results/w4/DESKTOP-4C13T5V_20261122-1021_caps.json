@@ -1,0 +1,80 @@
+{
+ "tag": "DESKTOP-4C13T5V_20261122-1021",
+ "env": {
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 5060 Ti"
+ },
+ "args": {
+  "bundle": "/root/flybench/flybrain/results/w4/cns_bundle_calib.npz",
+  "stim": "looming",
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "t_run": 1.0,
+  "device": "cuda",
+  "out": "/mnt/c/Users/Charlie/Desktop/Workspace/flybrain/perf/results/w4"
+ },
+ "margin": 1.5,
+ "per_seed": [
+  {
+   "seed": 0,
+   "steps": 10000,
+   "wall_s": 24.99,
+   "spikes_total": 186882,
+   "max_spikes": 40,
+   "argmax_spikes_step": 5211,
+   "max_syn_W": 27517,
+   "argmax_syn_W_step": 3478,
+   "max_syn_Wp": 2451,
+   "argmax_syn_Wp_step": 9982,
+   "p99_spikes": 30.0,
+   "mean_spikes": 18.69,
+   "p99_syn_W": 16079.43000000001,
+   "mean_syn_W": 7477.8
+  },
+  {
+   "seed": 1,
+   "steps": 10000,
+   "wall_s": 36.02,
+   "spikes_total": 185731,
+   "max_spikes": 39,
+   "argmax_spikes_step": 6881,
+   "max_syn_W": 26021,
+   "argmax_syn_W_step": 658,
+   "max_syn_Wp": 1920,
+   "argmax_syn_Wp_step": 8266,
+   "p99_spikes": 30.0,
+   "mean_spikes": 18.57,
+   "p99_syn_W": 16719.120000000003,
+   "mean_syn_W": 7455.4
+  },
+  {
+   "seed": 2,
+   "steps": 10000,
+   "wall_s": 29.54,
+   "spikes_total": 187225,
+   "max_spikes": 40,
+   "argmax_spikes_step": 4164,
+   "max_syn_W": 29655,
+   "argmax_syn_W_step": 2842,
+   "max_syn_Wp": 1386,
+   "argmax_syn_Wp_step": 8705,
+   "p99_spikes": 30.0,
+   "mean_spikes": 18.72,
+   "p99_syn_W": 16156.790000000017,
+   "mean_syn_W": 7477.5
+  }
+ ],
+ "max_over_seeds": {
+  "max_spikes": 40,
+  "max_syn_W": 29655,
+  "max_syn_Wp": 2451
+ },
+ "caps": {
+  "spike_cap": 60,
+  "syn_cap": 44483,
+  "syn_cap_Wp_needed": 3677
+ }
+}
