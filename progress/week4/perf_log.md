@@ -65,3 +65,23 @@ Brief: [tasks/T3_brief.md](tasks/T3_brief.md). Branch `perf/w4-t3-anatomy`. Repo
 - nsys 2024.6.2 (CUDA 12.8 toolkit) records NVTX but no CUDA activity under WSL with driver 13.3 (CUPTI_ERROR_INVALID_DEVICE); host-side timeline captured; install command for a newer nsys in the report, not run.
 - 13 event records per step cost ~0.25 ms; the events pass is 1.86 [1.72-2.05] ms (within 25% of T1's 1.65-1.73), so the wall table uses the host-only pass.
 - No file under `sim/` changed.
+
+## T5a: sync-free step, CPU parity (Day 6 part 1, 2026-11-22)
+
+Brief: [tasks/T5a_brief.md](tasks/T5a_brief.md). Branch `perf/w4-t5a-syncfree`. Cloud container, CPU only (torch 2.15 locally; CI torch 2.11.0).
+
+**Built**
+- `sim/lif_torch_fast.py`: `run_trial` with the reference's signature and return contract plus `spike_cap` / `syn_cap`. The loop body is one method `_Sim.step(t, hits)` over preallocated tensors and a device step counter `t_dev`; Python branches only on static config (options on/off, block windows by step number). Defaults: `spike_cap = min(n, 4096)`, `syn_cap` = sum of the `spike_cap` largest out-degrees of W (cannot overflow unless spike_cap does); T5b sets both from the looming burst.
+- Sync sites removed: `nonzero` + `has` -> `torch.nonzero_static(spk, size=spike_cap, fill_value=n)` and mask updates (`where`); `int(lens.sum())` + `repeat_interleave` in the CSC gather -> fixed `syn_cap` gather (`searchsorted` over the column-length cumsum, sentinel column n of length 0, padding reads a dummy entry that adds 0.0 into a dropped row); `pre.numel()` -> ring as a padded `(dly, spike_cap)` tensor, presyn/synaptic updates always run; spikelet `gs.numel()` -> sentinel column of the gap matrix; APL `float(is_kc[idx].sum())` -> 0-d tensors `a_apl`, `kc_rate`; Poisson `ix[rand < p]` -> mask in `where`. `rng='numpy'` still draws on the host and uploads each step (parity mode only). Recording: device buffer `(steps, spike_cap)` compacted after the loop; binning on device.
+- Overflow: a device flag, read once after the loop; on overflow a `RuntimeWarning`, `lif_torch_fast.FALLBACKS += 1`, rerun with `lif_torch.run_trial`, `out['fallback'] = True` (dict results always carry `fallback`).
+- Save/resume: same state keys and formats as the reference (ring stored unpadded, APL scalars as floats), so states are interchangeable.
+- `tests/test_fast_cpu.py` (11 tests): parity x {off, all options, blocks} x {rng numpy, torch} (counts + t/i records exact, T0 activity guards); zero-sync counter; overflow via `spike_cap=1` and `syn_cap=5`; no fallback at default caps; resume (fast split == fast single, and reference state -> fast resume), split at step 1000 inside both blocks with spikes in flight.
+
+**Findings**
+- Hypothesis (b) confirmed: fast == reference spike for spike (counts and t/i) on CPU float64 with `rng='numpy'` in all 3 cases. With `rng='torch'` they are also identical in all 3 cases (same `torch.rand` calls on the same generator), so the test asserts exact equality there too; no correlation fallback was needed.
+- Zero syncs: over 200 steady steps (`rng='torch'`, gap + APL + presyn, drive on, binning + recording) the dispatch counter sees 0 of `aten::_local_scalar_dense`, `aten::nonzero`, `aten::item`, `aten::is_nonzero`, `aten::masked_select`, and 0 bool-mask `aten::index`/`index_put`; every step issues the same op sequence with the same output shapes. Positive control: the same counter sees `nonzero` and `_local_scalar_dense` in the reference.
+- Failure demo (uncommitted scratch edits): padding with neuron n-1 instead of the sentinel n -> all 6 parity tests fail (267 / 267 / 196 / 193 / 201 / 195 neurons differ); writing the ring one slot ahead -> the 3 numpy parity tests fail (116 / 68 / 67 neurons differ).
+- CPU timing (not a speed claim; Xeon 2.1 GHz, 4 threads, 2000 steps, median of 3): reference 0.11-0.24 ms/step, fast 0.37-0.69 ms/step at default caps, 0.24-0.51 ms/step at spike_cap 32 / syn_cap 512. The fast path is 2-4x slower on CPU: it does fixed-size work every step and CPU has no syncs to save. GPU timing and graph capture: T5b.
+- Local: `pytest -q tests/` 41 passed in ~22 s; new tests ~17 s.
+- Gaps for T5b (unverified here): block windows are Python branches on the step number, so a CUDA graph is per set of active drives; no GPU sync check was possible (the dispatch counter cannot see syncs inside C++/CUDA kernels; use `torch.cuda.set_sync_debug_mode` there); hidden H2D from Python scalars in `where` / index assignments on CUDA unverified; graph-safe RNG for `t_gen` not set up; record buffer is steps x spike_cap x 8 bytes.
+- No other file under `sim/` changed.
