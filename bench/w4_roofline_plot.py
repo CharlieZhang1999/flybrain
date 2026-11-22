@@ -9,8 +9,8 @@ and ridge values in the legend below the axes. Vertical lines: LIF decay (sim/li
 lower bound of the traffic, float64 and float32 (the eager values are in the
 table note).
 
-Sized for a 390 px phone: 4.2 in wide at 200 dpi (840 px), text >= 9.5 pt,
-i.e. >= 11 px when the image is scaled to ~350 px.
+Sized for a 390 px phone: 4.2 in wide at 200 dpi (840 px), text >= 10.5 pt,
+i.e. >= 10.5 px when the image is scaled to ~306 px (390 px screen).
 Needs only matplotlib:
   python bench/w4_roofline_plot.py perf/results/w4/<tag>_roofline.json
 Output: perf/results/w4/roofline.png and <tag>_roofline_table.html next to the JSON.
@@ -38,7 +38,7 @@ def main():
     x0, x1 = 0.01, 1000.0
     fig, ax = plt.subplots(figsize=(4.2, 5.6), dpi=200)
     ax.plot([x0, x1], [tb * x0, tb * x1], color=INK, linewidth=1.0, linestyle=(0, (4, 3)), zorder=1)
-    ax.text(20, tb * 20 / 2.2, f'{bw:.0f} GB/s', rotation=0, fontsize=9.5, color=INK, ha='left', va='top')
+    ax.text(20, tb * 20 / 2.2, f'{bw:.0f} GB/s', rotation=0, fontsize=10.5, color=INK, ha='left', va='top')
     names = [k for k in ORDER if A.get(k, {}).get('peak_tflops')]
     handles = []
     for k in names:
@@ -50,7 +50,7 @@ def main():
         ax.plot([r], [p], 'o', ms=6, color=COL[k], mec='white', mew=1.5, zorder=4)
         handles.append(Line2D([], [], color=COL[k], linewidth=2.0, linestyle=ls, marker='o', ms=5, mec='white',
                               label=f'{LABEL[k]}: {p:.3g} TFLOP/s, ridge {r:.3g}'))
-    leg = ax.legend(handles=handles, loc='upper left', bbox_to_anchor=(-0.17, -0.13), fontsize=9.5, frameon=True, framealpha=1.0,
+    leg = ax.legend(handles=handles, loc='upper left', bbox_to_anchor=(-0.17, -0.13), fontsize=10.5, frameon=True, framealpha=1.0,
                     edgecolor='#c9c8c2', handlelength=1.6, borderpad=0.5, labelspacing=0.35)
     for t in leg.get_texts():
         t.set_color(INK)
@@ -60,21 +60,21 @@ def main():
         ax.axvline(xi, color=MUTED, linewidth=1.2, linestyle=ls, zorder=2)
     y_lab = 0.5
     ax.text(dec['float64']['fused_flop_per_byte'] / 1.12, y_lab, f"LIF decay f64 {dec['float64']['fused_flop_per_byte']:.2f}",
-            rotation=90, ha='right', va='bottom', fontsize=9.5, color=INK)
+            rotation=90, ha='right', va='bottom', fontsize=10.5, color=INK)
     ax.text(dec['float32']['fused_flop_per_byte'] * 1.12, y_lab, f"f32 {dec['float32']['fused_flop_per_byte']:.2f}",
-            rotation=90, ha='left', va='bottom', fontsize=9.5, color=INK)
+            rotation=90, ha='left', va='bottom', fontsize=10.5, color=INK)
     ax.set_xscale('log'); ax.set_yscale('log')
     ax.set_xlim(x0, x1)
     ax.set_ylim(0.003, 200)
-    ax.set_xlabel('FLOP per byte (log)', fontsize=10, color=MUTED)
-    ax.set_ylabel('TFLOP/s (log)', fontsize=10, color=MUTED)
-    ax.tick_params(labelsize=9.5, colors=MUTED, length=0)
+    ax.set_xlabel('FLOP per byte (log)', fontsize=11, color=MUTED)
+    ax.set_ylabel('TFLOP/s (log)', fontsize=11, color=MUTED)
+    ax.tick_params(labelsize=10.5, colors=MUTED, length=0)
     for s in ('top', 'right'):
         ax.spines[s].set_visible(False)
     for s in ('left', 'bottom'):
         ax.spines[s].set_color('#c9c8c2')
     ax.grid(True, which='major', color=GRID); ax.set_axisbelow(True)
-    ax.set_title(f'Roofline, RTX 5060 Ti (median of {len(res["runs"])} runs)', loc='left', fontsize=11.5, color=INK)
+    ax.set_title(f'Roofline, RTX 5060 Ti (median of {len(res["runs"])} runs)', loc='left', fontsize=12, color=INK)
     fig.tight_layout()
     png = src.parent / 'roofline.png'
     fig.savefig(png, facecolor='white')
