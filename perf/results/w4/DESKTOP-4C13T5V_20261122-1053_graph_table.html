@@ -1,0 +1,15 @@
+<table class="graph">
+<thead><tr><th>run</th><th class="n">steady ms/step</th><th class="n">all steps ms/step</th><th class="n">stall steps</th><th class="n">peak GPU MB</th></tr></thead>
+<tbody>
+<tr><td>Reference, GPU</td><td class="n">1.73 <span class="rg">[1.57–1.85]</span></td><td class="n">1.79 <span class="rg">[1.74–1.98]</span></td><td class="n">2.9% <span class="rg">[0.0%–26.1%]</span></td><td class="n">404</td></tr>
+<tr><td>Sync-free, GPU eager</td><td class="n">1.75 <span class="rg">[1.48–1.93]</span></td><td class="n">1.84 <span class="rg">[1.27–1.93]</span></td><td class="n">0.4% <span class="rg">[0.0%–1.1%]</span></td><td class="n">406</td></tr>
+<tr><td>Sync-free, GPU graph</td><td class="n">0.49 <span class="rg">[0.43–0.60]</span></td><td class="n">0.45 <span class="rg">[0.42–0.63]</span></td><td class="n">0.0% <span class="rg">[0.0%–0.0%]</span></td><td class="n">414</td></tr>
+<tr><td>Sync-free, GPU graph, float32</td><td class="n">0.44 <span class="rg">[0.43–0.56]</span></td><td class="n">0.44 <span class="rg">[0.43–0.45]</span></td><td class="n">0.0% <span class="rg">[0.0%–0.0%]</span></td><td class="n">311</td></tr>
+<tr><td>Sync-free, GPU eager, float32</td><td class="n">1.61 <span class="rg">[1.21–1.89]</span></td><td class="n">1.82 <span class="rg">[1.32–2.02]</span></td><td class="n">0.6% <span class="rg">[0.0%–7.5%]</span></td><td class="n">303</td></tr>
+<tr><td>Sync-free, GPU eager, default caps (200 steps)</td><td class="n">–</td><td class="n">7.69 <span class="rg">[7.23–7.72]</span></td><td class="n">100.0% <span class="rg">[100.0%–100.0%]</span></td><td class="n">572</td></tr>
+<tr><td>Sync-free, GPU graph, deterministic (200 steps)</td><td class="n">–</td><td class="n">8.96 <span class="rg">[8.61–9.12]</span></td><td class="n">100.0% <span class="rg">[100.0%–100.0%]</span></td><td class="n">416</td></tr>
+<tr><td>Reference, CPU</td><td class="n">0.55 <span class="rg">[0.52–0.59]</span></td><td class="n">0.55 <span class="rg">[0.52–0.59]</span></td><td class="n">0.0% <span class="rg">[0.0%–0.0%]</span></td><td class="n">–</td></tr>
+<tr><td>Sync-free, CPU</td><td class="n">1.77 <span class="rg">[1.64–1.82]</span></td><td class="n">1.77 <span class="rg">[1.64–1.82]</span></td><td class="n">0.0% <span class="rg">[0.0%–0.0%]</span></td><td class="n">–</td></tr>
+</tbody>
+</table>
+<p class="note">Medians across 5 runs, [min–max] across runs; one trial per run of 2,000 steps after 1,000 warm-up steps, looming, float64 unless marked. Steady: mean of the steps ≤ 5 ms (GPU: CUDA events rescaled to the host clock, CPU: host clock). All steps: wall time / steps, stalls included, in a second trial without events (GPU). Rows marked 200 steps: every step takes over 5 ms, so they have no steady value and count as 100% stall steps by that rule. Peak GPU MB: allocated during setup and trial. Caps: 60 spikes and 44,483 synapses per step.</p>
