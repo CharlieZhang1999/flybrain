@@ -2,8 +2,8 @@
 """Bar chart of ms per step by row (reference / fast eager / fast graph, GPU and
 CPU) from a w4_graph.py JSON, plus the HTML table that the site embeds verbatim.
 
-Sized for a 390 px phone: 4.2 in wide at 200 dpi (840 px), 9-10 pt text, so
-text renders at >= 10 px when the image is scaled to ~360 px.
+Sized for a 390 px phone: 4.2 in wide at 200 dpi (840 px), 10.5-12 pt text, so
+text renders at >= 10 px when the image is scaled to ~300 px.
 Needs only matplotlib (run from a venv that has it):
   python bench/w4_graph_plot.py perf/results/w4/<tag>_graph.json
 Output: <tag>_graph_bars.png and <tag>_graph_table.html next to the JSON.
@@ -46,7 +46,7 @@ def main():
     med = [A[k]['steady_mean_ms']['median'] for k in names]
     lo = [m - A[k]['steady_mean_ms']['min'] for k, m in zip(names, med)]
     hi = [A[k]['steady_mean_ms']['max'] - m for k, m in zip(names, med)]
-    fig, ax = plt.subplots(figsize=(4.2, 4.0), dpi=200)
+    fig, ax = plt.subplots(figsize=(4.2, 4.4), dpi=200)
     y = list(range(len(names)))
     ax.barh(y, med, height=0.62, color=[color[k] for k in names], edgecolor='white', linewidth=1.2)
     ax.errorbar(med, y, xerr=[lo, hi], fmt='none', ecolor=INK, elinewidth=1.0, capsize=2.5)
@@ -54,22 +54,22 @@ def main():
         x = m + h + 0.04
         if x < CPU_MS + 0.04 < x + 0.25:     # keep the label clear of the CPU line
             x = CPU_MS + 0.05
-        ax.text(x, yy, f'{m:.2f}', ha='left', va='center', fontsize=9.5, color=INK)
+        ax.text(x, yy, f'{m:.2f}', ha='left', va='center', fontsize=11, color=INK)
     ax.axvline(CPU_MS, color=INK, linewidth=1.2, linestyle=(0, (4, 3)))
-    ax.text(CPU_MS + 0.03, -0.75, f'CPU {CPU_MS:.2f} ms (T1)', ha='left', va='bottom', fontsize=9, color=INK)
-    ax.set_yticks(y, [PLOT_LABEL[k] for k in names], fontsize=9.5, color=INK)
+    ax.text(CPU_MS + 0.03, -0.75, f'CPU {CPU_MS:.2f} ms (T1)', ha='left', va='bottom', fontsize=10.5, color=INK)
+    ax.set_yticks(y, [PLOT_LABEL[k] for k in names], fontsize=11, color=INK)
     ax.invert_yaxis()
     xmax = max(m + h for m, h in zip(med, hi))
     ax.set_xlim(0, xmax * 1.2)
     ax.set_ylim(len(names) - 0.5, -1.0)
-    ax.set_xlabel(f'ms per 0.1-ms step, steady (median of {n} runs)', fontsize=9, color=MUTED)
-    ax.tick_params(axis='x', labelsize=9, colors=MUTED, length=0)
+    ax.set_xlabel(f'ms per step, steady (median of {n} runs)', fontsize=10.5, color=MUTED)
+    ax.tick_params(axis='x', labelsize=10.5, colors=MUTED, length=0)
     ax.tick_params(axis='y', length=0)
     for s in ('top', 'right', 'left'):
         ax.spines[s].set_visible(False)
     ax.spines['bottom'].set_color('#c9c8c2')
     ax.xaxis.grid(True, color=GRID); ax.set_axisbelow(True)
-    ax.set_title('One trial, 165k neurons: time per step', loc='left', fontsize=11, color=INK)
+    ax.set_title('Time per step, one trial', loc='left', fontsize=12, color=INK)
     fig.tight_layout()
     png = src.with_name(src.stem + '_bars.png')
     fig.savefig(png, facecolor='white')
