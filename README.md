@@ -1,6 +1,8 @@
 # flybrain
 
-A **connectome-constrained leaky integrate-and-fire (LIF) simulation of the *Drosophila* brain with a trained readout**, wired into a closed loop with a language model. It reproduces chetaslua's "fly brain to ChatGPT" demo on FlyWire and on the MaleCNS v1.0 male connectome, with the controls that demo did not ship. The full plan is in [docs/plan.md](docs/plan.md).
+A **connectome-constrained leaky integrate-and-fire (LIF) simulation of the *Drosophila* brain with a trained readout**, wired into a closed loop with a language model. It reproduces chetaslua's "fly brain to ChatGPT" demo on FlyWire and on the MaleCNS v1.0 male connectome, with the controls that demo did not ship. The original plan and the history of weeks 1–4 are in [docs/plan.md](docs/plan.md).
+
+Plan: [Refined 12-week plan: decoding animal minds](https://claude.ai/artifact/RUjnZ67sWYM1AQnTVJ2Jeh) (the project's only plan; `docs/plan.md` is kept as the history of weeks 1–4).
 
 This is not a fly that talks, and nothing here decodes intentions. Every neuron is the same two-variable LIF unit and all biology lives in the wiring. Words are stimuli we inject into annotated sensory neurons; "what the fly says" is the output of a linear classifier we trained on its spikes. The shuffled-connectome control below shows how much of the result comes from the wiring, and how much does not.
 
@@ -78,7 +80,7 @@ readout/      linear decoders (Week 2)
 loop/         fly ↔ LLM loop: word and action readouts, prompt, LLM client, action codes, runner
 notebooks/    01_shiu_validation, 02_translator, 03_gpt_loop (load saved results; no long simulations)
 artifact/     Connectome Explorer (Week 2) and split-screen loop player (Week 3)
-docs/         plan, Week 1 and Week 3 reports
+docs/         plan history (weeks 1–4), Week 1 and Week 3 reports
 progress/     day-by-day results for each week
 results/      figures/ committed (incl. loop_demo.mp4), raw output ignored
 scripts/      setup and one script per experiment (w2d*, w3d*); w3d7_build_notebooks.py rebuilds the notebooks

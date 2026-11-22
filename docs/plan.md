@@ -1,5 +1,7 @@
 # Fly brain to ChatGPT: reproduction and MaleCNS upgrade plan
 
+> **Superseded (21 Nov 2026).** The project keeps one plan: [Refined 12-week plan: decoding animal minds](https://claude.ai/artifact/RUjnZ67sWYM1AQnTVJ2Jeh), section "Current schedule". This file is kept as the history of weeks 1–4 and is no longer updated. The perf/GPU track and the optional Minecraft demo are folded into that plan.
+
 Date: 2026-10-09. Companion to `BCI hands on learning roadmap.md`.
 
 ## 0. What chetaslua actually built (from the X post of 11 Sep 2026 and the 36kr write-up)
