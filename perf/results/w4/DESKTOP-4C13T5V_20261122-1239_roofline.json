@@ -1,0 +1,3403 @@
+{
+ "tag": "DESKTOP-4C13T5V_20261122-1239",
+ "env": {
+  "host": "DESKTOP-4C13T5V",
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "torch": "2.11.0+cu128",
+  "numpy": "2.5.5",
+  "cpu_threads": 6,
+  "kernel": "6.18.58.1-microsoft-standard-WSL2",
+  "gpu": "NVIDIA GeForce RTX 5060 Ti",
+  "cc": "sm_120",
+  "cuda_runtime": "12.8",
+  "cudnn": 91900,
+  "driver": "610.88",
+  "wsl": true,
+  "wsl_version": "WSL version: 3.0.5.0\r\nKernel version: 6.18.58.1-1\r\nWSLg version: 1.0.79\r\nMSRDC version: 1.2.7391\r\nDirect3D version: 1.611.1-81528511\r\nDXCore version: 10.0.26100.1-240331-1435.ge-release\r\nWindows version: 10.0.26200.9974",
+  "triton": "3.6.0",
+  "sms": 36,
+  "vram_gb": 15.9,
+  "l2_mb": 32.0,
+  "fp16_reduced_precision_reduction": true,
+  "bf16_reduced_precision_reduction": true,
+  "smi_clocks": "3090 MHz, 14001 MHz, 180.00 W"
+ },
+ "args": {
+  "runs": 5,
+  "sizes": [
+   1024,
+   2048,
+   4096,
+   8192
+  ],
+  "dtypes": [
+   "fp64",
+   "fp32",
+   "tf32",
+   "bf16",
+   "fp16"
+  ],
+  "reps": 100,
+  "warmup": 10,
+  "out": "/mnt/c/Users/Charlie/Desktop/Workspace/flybrain/perf/results/w4"
+ },
+ "spec": {
+  "sources": {
+   "product": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/#50-series (RTX 5060 Ti column: 4608 CUDA cores, boost 2.57 GHz, 759 AI TOPS, 448 GB/sec)",
+   "whitepaper": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf (Appendix C, Table 6, RTX 5070 column; FP64 = 1/64 FP32: GB202 section)"
+  },
+  "sms": 36,
+  "boost_ghz": 2.57,
+  "dense_flop_per_sm_per_clock": {
+   "fp64": 4,
+   "fp32": 256,
+   "tf32": 256,
+   "bf16": 512,
+   "fp16": 512
+  },
+  "tflops": {
+   "fp64": 0.37,
+   "fp32": 23.685,
+   "tf32": 23.685,
+   "bf16": 47.37,
+   "fp16": 47.37
+  },
+  "fp16_acc_tflops": 94.74,
+  "bandwidth_GBps": 448.0,
+  "note": "Derived, not published for the 5060 Ti: whitepaper RTX 5070 rates per SM per clock x 36 SMs x 2.57 GHz boost. FP64 = FP32 / 64 (whitepaper, GB202). torch fp16/bf16 matmul uses FP32 accumulate."
+ },
+ "bw_day2_GBps": 382.0,
+ "runs": [
+  {
+   "clock_event_over_host_sleep": 1.0047,
+   "smi_start": "2595 MHz, 3090 MHz, 22.25 W, 37, 0x0000000000000000",
+   "bandwidth": {
+    "GBps": 385.9,
+    "p90_GBps": 385.4,
+    "mb": 512,
+    "GBps_host": 387.4,
+    "event_scale": 0.9961
+   },
+   "dtypes": {
+    "fp64": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 6.4908,
+       "p90_ms": 6.4919,
+       "tflops_median": 0.331,
+       "tflops_p90": 0.331,
+       "tflops_median_hostscaled": 0.332,
+       "host_tflops": 0.332,
+       "event_scale": 0.9958,
+       "smi_after": "2767 MHz, 3090 MHz, 40.57 W, 41, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 20,
+       "median_ms": 49.4948,
+       "p90_ms": 49.5081,
+       "tflops_median": 0.347,
+       "tflops_p90": 0.347,
+       "tflops_median_hostscaled": 0.378,
+       "host_tflops": 0.378,
+       "event_scale": 0.9185,
+       "smi_after": "2752 MHz, 3090 MHz, 44.01 W, 42, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 10,
+       "median_ms": 395.6026,
+       "p90_ms": 395.6784,
+       "tflops_median": 0.347,
+       "tflops_p90": 0.347,
+       "tflops_median_hostscaled": 0.36,
+       "host_tflops": 0.36,
+       "event_scale": 0.9661,
+       "smi_after": "2752 MHz, 3090 MHz, 46.39 W, 47, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 10,
+       "median_ms": 3180.1821,
+       "p90_ms": 3191.6803,
+       "tflops_median": 0.346,
+       "tflops_p90": 0.344,
+       "tflops_median_hostscaled": 0.359,
+       "host_tflops": 0.359,
+       "event_scale": 0.9618,
+       "smi_after": "2752 MHz, 3090 MHz, 49.53 W, 45, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 0.347,
+     "peak_n": 2048
+    },
+    "fp32": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1554,
+       "p90_ms": 0.1554,
+       "tflops_median": 13.823,
+       "tflops_p90": 13.82,
+       "tflops_median_hostscaled": 13.629,
+       "host_tflops": 13.611,
+       "event_scale": 1.0142,
+       "smi_after": "2752 MHz, 3090 MHz, 49.78 W, 45, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 1.1036,
+       "p90_ms": 1.1089,
+       "tflops_median": 15.567,
+       "tflops_p90": 15.492,
+       "tflops_median_hostscaled": 15.528,
+       "host_tflops": 15.523,
+       "event_scale": 1.0025,
+       "smi_after": "2752 MHz, 3090 MHz, 71.01 W, 45, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 8.586,
+       "p90_ms": 8.598,
+       "tflops_median": 16.007,
+       "tflops_p90": 15.985,
+       "tflops_median_hostscaled": 16.002,
+       "host_tflops": 16.002,
+       "event_scale": 1.0003,
+       "smi_after": "2565 MHz, 3090 MHz, 180.35 W, 61, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 16,
+       "median_ms": 63.6838,
+       "p90_ms": 63.7766,
+       "tflops_median": 17.265,
+       "tflops_p90": 17.24,
+       "tflops_median_hostscaled": 17.605,
+       "host_tflops": 17.612,
+       "event_scale": 0.9807,
+       "smi_after": "2565 MHz, 3090 MHz, 178.02 W, 66, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 17.265,
+     "peak_n": 8192
+    },
+    "tf32": {
+     "allow_tf32": true,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1052,
+       "p90_ms": 0.1052,
+       "tflops_median": 20.416,
+       "tflops_p90": 20.41,
+       "tflops_median_hostscaled": 20.03,
+       "host_tflops": 19.953,
+       "event_scale": 1.0193,
+       "smi_after": "2565 MHz, 3090 MHz, 178.02 W, 66, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.8056,
+       "p90_ms": 0.8076,
+       "tflops_median": 21.325,
+       "tflops_p90": 21.272,
+       "tflops_median_hostscaled": 21.268,
+       "host_tflops": 21.246,
+       "event_scale": 1.0027,
+       "smi_after": "2565 MHz, 3090 MHz, 160.83 W, 66, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 5.7668,
+       "p90_ms": 5.7709,
+       "tflops_median": 23.833,
+       "tflops_p90": 23.816,
+       "tflops_median_hostscaled": 23.82,
+       "host_tflops": 23.817,
+       "event_scale": 1.0005,
+       "smi_after": "2707 MHz, 3090 MHz, 120.58 W, 59, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 22,
+       "median_ms": 45.3577,
+       "p90_ms": 45.3723,
+       "tflops_median": 24.241,
+       "tflops_p90": 24.233,
+       "tflops_median_hostscaled": 26.443,
+       "host_tflops": 26.443,
+       "event_scale": 0.9167,
+       "smi_after": "2692 MHz, 3090 MHz, 136.28 W, 60, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 24.241,
+     "peak_n": 8192
+    },
+    "bf16": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.056,
+       "p90_ms": 0.0561,
+       "tflops_median": 38.348,
+       "tflops_p90": 38.304,
+       "tflops_median_hostscaled": 40.462,
+       "host_tflops": 40.181,
+       "event_scale": 0.9478,
+       "smi_after": "2692 MHz, 3090 MHz, 125.30 W, 60, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.4103,
+       "p90_ms": 0.4104,
+       "tflops_median": 41.869,
+       "tflops_p90": 41.865,
+       "tflops_median_hostscaled": 45.455,
+       "host_tflops": 45.447,
+       "event_scale": 0.9211,
+       "smi_after": "2707 MHz, 3090 MHz, 114.85 W, 60, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 2.9068,
+       "p90_ms": 2.9099,
+       "tflops_median": 47.282,
+       "tflops_p90": 47.231,
+       "tflops_median_hostscaled": 51.536,
+       "host_tflops": 51.562,
+       "event_scale": 0.9174,
+       "smi_after": "2700 MHz, 3090 MHz, 107.71 W, 60, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 48,
+       "median_ms": 22.6055,
+       "p90_ms": 22.6177,
+       "tflops_median": 48.639,
+       "tflops_p90": 48.613,
+       "tflops_median_hostscaled": 49.851,
+       "host_tflops": 49.849,
+       "event_scale": 0.9757,
+       "smi_after": "2692 MHz, 3090 MHz, 127.34 W, 60, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 48.639,
+     "peak_n": 8192
+    },
+    "fp16": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.054,
+       "p90_ms": 0.0559,
+       "tflops_median": 39.78,
+       "tflops_p90": 38.414,
+       "tflops_median_hostscaled": 41.944,
+       "host_tflops": 41.481,
+       "event_scale": 0.9484,
+       "smi_after": "2692 MHz, 3090 MHz, 105.33 W, 60, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.3683,
+       "p90_ms": 0.3694,
+       "tflops_median": 46.648,
+       "tflops_p90": 46.511,
+       "tflops_median_hostscaled": 50.614,
+       "host_tflops": 50.556,
+       "event_scale": 0.9216,
+       "smi_after": "2692 MHz, 3090 MHz, 102.61 W, 60, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 2.871,
+       "p90_ms": 2.872,
+       "tflops_median": 47.871,
+       "tflops_p90": 47.854,
+       "tflops_median_hostscaled": 52.182,
+       "host_tflops": 52.179,
+       "event_scale": 0.9174,
+       "smi_after": "2715 MHz, 3090 MHz, 122.13 W, 64, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 47,
+       "median_ms": 22.8666,
+       "p90_ms": 22.8718,
+       "tflops_median": 48.084,
+       "tflops_p90": 48.073,
+       "tflops_median_hostscaled": 50.398,
+       "host_tflops": 50.396,
+       "event_scale": 0.9541,
+       "smi_after": "2655 MHz, 3090 MHz, 181.23 W, 66, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 48.084,
+     "peak_n": 8192
+    }
+   },
+   "smi_end": "2655 MHz, 3090 MHz, 181.23 W, 66, 0x0000000000000000"
+  },
+  {
+   "clock_event_over_host_sleep": 1.0,
+   "smi_start": "2760 MHz, 3090 MHz, 22.71 W, 49, 0x0000000000000000",
+   "bandwidth": {
+    "GBps": 385.7,
+    "p90_GBps": 197.9,
+    "mb": 512,
+    "GBps_host": 287.0,
+    "event_scale": 1.0006
+   },
+   "dtypes": {
+    "fp64": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 6.5206,
+       "p90_ms": 6.5226,
+       "tflops_median": 0.329,
+       "tflops_p90": 0.329,
+       "tflops_median_hostscaled": 0.335,
+       "host_tflops": 0.335,
+       "event_scale": 0.9821,
+       "smi_after": "2752 MHz, 3090 MHz, 48.44 W, 50, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 21,
+       "median_ms": 49.5161,
+       "p90_ms": 49.5245,
+       "tflops_median": 0.347,
+       "tflops_p90": 0.347,
+       "tflops_median_hostscaled": 0.361,
+       "host_tflops": 0.361,
+       "event_scale": 0.9612,
+       "smi_after": "2752 MHz, 3090 MHz, 47.67 W, 48, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 10,
+       "median_ms": 395.7204,
+       "p90_ms": 395.766,
+       "tflops_median": 0.347,
+       "tflops_p90": 0.347,
+       "tflops_median_hostscaled": 0.36,
+       "host_tflops": 0.36,
+       "event_scale": 0.9654,
+       "smi_after": "2752 MHz, 3090 MHz, 43.88 W, 43, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 10,
+       "median_ms": 3180.3512,
+       "p90_ms": 3191.9566,
+       "tflops_median": 0.346,
+       "tflops_p90": 0.344,
+       "tflops_median_hostscaled": 0.361,
+       "host_tflops": 0.362,
+       "event_scale": 0.9564,
+       "smi_after": "2730 MHz, 3090 MHz, 52.98 W, 61, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 0.347,
+     "peak_n": 2048
+    },
+    "fp32": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1559,
+       "p90_ms": 0.1574,
+       "tflops_median": 13.774,
+       "tflops_p90": 13.643,
+       "tflops_median_hostscaled": 14.038,
+       "host_tflops": 13.94,
+       "event_scale": 0.9812,
+       "smi_after": "2730 MHz, 3090 MHz, 52.98 W, 61, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 1.1261,
+       "p90_ms": 1.1394,
+       "tflops_median": 15.256,
+       "tflops_p90": 15.078,
+       "tflops_median_hostscaled": 15.725,
+       "host_tflops": 15.755,
+       "event_scale": 0.9702,
+       "smi_after": "2730 MHz, 3090 MHz, 78.28 W, 61, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 8.7861,
+       "p90_ms": 8.7969,
+       "tflops_median": 15.643,
+       "tflops_p90": 15.624,
+       "tflops_median_hostscaled": 16.15,
+       "host_tflops": 16.148,
+       "event_scale": 0.9686,
+       "smi_after": "2505 MHz, 3090 MHz, 180.19 W, 76, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 16,
+       "median_ms": 65.1891,
+       "p90_ms": 65.2955,
+       "tflops_median": 16.867,
+       "tflops_p90": 16.839,
+       "tflops_median_hostscaled": 17.637,
+       "host_tflops": 17.635,
+       "event_scale": 0.9563,
+       "smi_after": "2505 MHz, 3090 MHz, 177.22 W, 77, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 16.867,
+     "peak_n": 8192
+    },
+    "tf32": {
+     "allow_tf32": true,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1052,
+       "p90_ms": 0.1053,
+       "tflops_median": 20.416,
+       "tflops_p90": 20.393,
+       "tflops_median_hostscaled": 20.972,
+       "host_tflops": 20.847,
+       "event_scale": 0.9735,
+       "smi_after": "2505 MHz, 3090 MHz, 177.22 W, 77, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.8139,
+       "p90_ms": 0.8158,
+       "tflops_median": 21.108,
+       "tflops_p90": 21.06,
+       "tflops_median_hostscaled": 22.04,
+       "host_tflops": 22.021,
+       "event_scale": 0.9578,
+       "smi_after": "2505 MHz, 3090 MHz, 163.46 W, 77, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 5.8427,
+       "p90_ms": 5.8467,
+       "tflops_median": 23.523,
+       "tflops_p90": 23.507,
+       "tflops_median_hostscaled": 24.614,
+       "host_tflops": 24.611,
+       "event_scale": 0.9557,
+       "smi_after": "2670 MHz, 3090 MHz, 128.95 W, 71, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 22,
+       "median_ms": 45.7156,
+       "p90_ms": 45.7345,
+       "tflops_median": 24.051,
+       "tflops_p90": 24.041,
+       "tflops_median_hostscaled": 24.898,
+       "host_tflops": 24.897,
+       "event_scale": 0.966,
+       "smi_after": "2670 MHz, 3090 MHz, 144.22 W, 69, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 24.051,
+     "peak_n": 8192
+    },
+    "bf16": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.056,
+       "p90_ms": 0.0562,
+       "tflops_median": 38.348,
+       "tflops_p90": 38.228,
+       "tflops_median_hostscaled": 38.377,
+       "host_tflops": 38.097,
+       "event_scale": 0.9992,
+       "smi_after": "2670 MHz, 3090 MHz, 144.22 W, 69, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.4124,
+       "p90_ms": 0.4124,
+       "tflops_median": 41.66,
+       "tflops_p90": 41.66,
+       "tflops_median_hostscaled": 42.926,
+       "host_tflops": 42.907,
+       "event_scale": 0.9705,
+       "smi_after": "2670 MHz, 3090 MHz, 136.76 W, 69, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 2.9304,
+       "p90_ms": 2.9323,
+       "tflops_median": 46.901,
+       "tflops_p90": 46.87,
+       "tflops_median_hostscaled": 48.499,
+       "host_tflops": 48.501,
+       "event_scale": 0.9671,
+       "smi_after": "2670 MHz, 3090 MHz, 126.36 W, 69, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 45,
+       "median_ms": 22.7816,
+       "p90_ms": 22.7919,
+       "tflops_median": 48.263,
+       "tflops_p90": 48.241,
+       "tflops_median_hostscaled": 50.039,
+       "host_tflops": 50.04,
+       "event_scale": 0.9645,
+       "smi_after": "2670 MHz, 3090 MHz, 131.76 W, 68, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 48.263,
+     "peak_n": 8192
+    },
+    "fp16": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.056,
+       "p90_ms": 0.0561,
+       "tflops_median": 38.348,
+       "tflops_p90": 38.304,
+       "tflops_median_hostscaled": 39.338,
+       "host_tflops": 39.243,
+       "event_scale": 0.9748,
+       "smi_after": "2670 MHz, 3090 MHz, 131.76 W, 68, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.3714,
+       "p90_ms": 0.3715,
+       "tflops_median": 46.254,
+       "tflops_p90": 46.249,
+       "tflops_median_hostscaled": 48.664,
+       "host_tflops": 48.602,
+       "event_scale": 0.9505,
+       "smi_after": "2670 MHz, 3090 MHz, 126.05 W, 68, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 2.8832,
+       "p90_ms": 2.8914,
+       "tflops_median": 47.668,
+       "tflops_p90": 47.534,
+       "tflops_median_hostscaled": 50.422,
+       "host_tflops": 50.388,
+       "event_scale": 0.9454,
+       "smi_after": "2670 MHz, 3090 MHz, 147.64 W, 59, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 46,
+       "median_ms": 23.1627,
+       "p90_ms": 23.1666,
+       "tflops_median": 47.469,
+       "tflops_p90": 47.461,
+       "tflops_median_hostscaled": 50.243,
+       "host_tflops": 50.24,
+       "event_scale": 0.9448,
+       "smi_after": "2617 MHz, 3090 MHz, 177.19 W, 71, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 47.668,
+     "peak_n": 4096
+    }
+   },
+   "smi_end": "2617 MHz, 3090 MHz, 177.19 W, 71, 0x0000000000000000"
+  },
+  {
+   "clock_event_over_host_sleep": 1.0585,
+   "smi_start": "1500 MHz, 3090 MHz, 23.09 W, 51, 0x0000000000000000",
+   "bandwidth": {
+    "GBps": 386.1,
+    "p90_GBps": 385.2,
+    "mb": 512,
+    "GBps_host": 395.0,
+    "event_scale": 0.9455
+   },
+   "dtypes": {
+    "fp64": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 6.5574,
+       "p90_ms": 6.5585,
+       "tflops_median": 0.327,
+       "tflops_p90": 0.327,
+       "tflops_median_hostscaled": 0.347,
+       "host_tflops": 0.347,
+       "event_scale": 0.945,
+       "smi_after": "2737 MHz, 3090 MHz, 47.56 W, 54, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 21,
+       "median_ms": 49.8035,
+       "p90_ms": 49.8132,
+       "tflops_median": 0.345,
+       "tflops_p90": 0.345,
+       "tflops_median_hostscaled": 0.357,
+       "host_tflops": 0.357,
+       "event_scale": 0.9661,
+       "smi_after": "2737 MHz, 3090 MHz, 49.26 W, 51, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 10,
+       "median_ms": 395.735,
+       "p90_ms": 395.7962,
+       "tflops_median": 0.347,
+       "tflops_p90": 0.347,
+       "tflops_median_hostscaled": 0.363,
+       "host_tflops": 0.363,
+       "event_scale": 0.9575,
+       "smi_after": "2752 MHz, 3090 MHz, 45.05 W, 44, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 10,
+       "median_ms": 3180.3547,
+       "p90_ms": 3191.6943,
+       "tflops_median": 0.346,
+       "tflops_p90": 0.344,
+       "tflops_median_hostscaled": 0.362,
+       "host_tflops": 0.362,
+       "event_scale": 0.9557,
+       "smi_after": "2730 MHz, 3090 MHz, 53.48 W, 60, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 0.347,
+     "peak_n": 4096
+    },
+    "fp32": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1554,
+       "p90_ms": 0.1574,
+       "tflops_median": 13.82,
+       "tflops_p90": 13.643,
+       "tflops_median_hostscaled": 14.25,
+       "host_tflops": 14.1,
+       "event_scale": 0.9698,
+       "smi_after": "2730 MHz, 3090 MHz, 55.02 W, 60, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 1.1221,
+       "p90_ms": 1.1343,
+       "tflops_median": 15.311,
+       "tflops_p90": 15.146,
+       "tflops_median_hostscaled": 15.972,
+       "host_tflops": 15.98,
+       "event_scale": 0.9586,
+       "smi_after": "2730 MHz, 3090 MHz, 76.29 W, 60, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 8.8056,
+       "p90_ms": 8.8399,
+       "tflops_median": 15.608,
+       "tflops_p90": 15.548,
+       "tflops_median_hostscaled": 16.308,
+       "host_tflops": 16.303,
+       "event_scale": 0.9571,
+       "smi_after": "2490 MHz, 3090 MHz, 180.29 W, 75, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 16,
+       "median_ms": 65.1507,
+       "p90_ms": 65.265,
+       "tflops_median": 16.876,
+       "tflops_p90": 16.847,
+       "tflops_median_hostscaled": 17.635,
+       "host_tflops": 17.636,
+       "event_scale": 0.957,
+       "smi_after": "2505 MHz, 3090 MHz, 178.54 W, 75, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 16.876,
+     "peak_n": 8192
+    },
+    "tf32": {
+     "allow_tf32": true,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1052,
+       "p90_ms": 0.1053,
+       "tflops_median": 20.416,
+       "tflops_p90": 20.403,
+       "tflops_median_hostscaled": 20.921,
+       "host_tflops": 20.817,
+       "event_scale": 0.9759,
+       "smi_after": "2505 MHz, 3090 MHz, 178.54 W, 75, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.8158,
+       "p90_ms": 0.8169,
+       "tflops_median": 21.059,
+       "tflops_p90": 21.031,
+       "tflops_median_hostscaled": 21.944,
+       "host_tflops": 21.945,
+       "event_scale": 0.9596,
+       "smi_after": "2505 MHz, 3090 MHz, 163.12 W, 75, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 5.8406,
+       "p90_ms": 5.8448,
+       "tflops_median": 23.532,
+       "tflops_p90": 23.515,
+       "tflops_median_hostscaled": 24.577,
+       "host_tflops": 24.572,
+       "event_scale": 0.9575,
+       "smi_after": "2670 MHz, 3090 MHz, 127.54 W, 71, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 22,
+       "median_ms": 45.7068,
+       "p90_ms": 45.7276,
+       "tflops_median": 24.056,
+       "tflops_p90": 24.045,
+       "tflops_median_hostscaled": 25.035,
+       "host_tflops": 25.035,
+       "event_scale": 0.9609,
+       "smi_after": "2670 MHz, 3090 MHz, 144.29 W, 69, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 24.056,
+     "peak_n": 8192
+    },
+    "bf16": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.056,
+       "p90_ms": 0.0562,
+       "tflops_median": 38.326,
+       "tflops_p90": 38.217,
+       "tflops_median_hostscaled": 38.465,
+       "host_tflops": 38.125,
+       "event_scale": 0.9964,
+       "smi_after": "2670 MHz, 3090 MHz, 137.97 W, 69, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.4124,
+       "p90_ms": 0.4124,
+       "tflops_median": 41.66,
+       "tflops_p90": 41.657,
+       "tflops_median_hostscaled": 43.049,
+       "host_tflops": 42.999,
+       "event_scale": 0.9677,
+       "smi_after": "2670 MHz, 3090 MHz, 132.19 W, 69, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 2.9314,
+       "p90_ms": 2.9326,
+       "tflops_median": 46.885,
+       "tflops_p90": 46.866,
+       "tflops_median_hostscaled": 48.663,
+       "host_tflops": 48.651,
+       "event_scale": 0.9635,
+       "smi_after": "2670 MHz, 3090 MHz, 127.27 W, 62, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 45,
+       "median_ms": 22.7524,
+       "p90_ms": 22.7652,
+       "tflops_median": 48.325,
+       "tflops_p90": 48.298,
+       "tflops_median_hostscaled": 50.193,
+       "host_tflops": 50.193,
+       "event_scale": 0.9628,
+       "smi_after": "2670 MHz, 3090 MHz, 131.74 W, 68, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 48.325,
+     "peak_n": 8192
+    },
+    "fp16": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.137,
+       "p90_ms": 0.1471,
+       "tflops_median": 15.676,
+       "tflops_p90": 14.6,
+       "tflops_median_hostscaled": 11.188,
+       "host_tflops": 11.879,
+       "event_scale": 1.4011,
+       "smi_after": "2670 MHz, 3090 MHz, 127.11 W, 68, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.3714,
+       "p90_ms": 0.3724,
+       "tflops_median": 46.254,
+       "tflops_p90": 46.127,
+       "tflops_median_hostscaled": 47.804,
+       "host_tflops": 47.728,
+       "event_scale": 0.9676,
+       "smi_after": "2670 MHz, 3090 MHz, 124.43 W, 68, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 2.8833,
+       "p90_ms": 2.8906,
+       "tflops_median": 47.668,
+       "tflops_p90": 47.547,
+       "tflops_median_hostscaled": 49.473,
+       "host_tflops": 49.44,
+       "event_scale": 0.9635,
+       "smi_after": "2670 MHz, 3090 MHz, 143.58 W, 64, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 45,
+       "median_ms": 23.1606,
+       "p90_ms": 23.1646,
+       "tflops_median": 47.473,
+       "tflops_p90": 47.465,
+       "tflops_median_hostscaled": 52.741,
+       "host_tflops": 52.737,
+       "event_scale": 0.9001,
+       "smi_after": "2617 MHz, 3090 MHz, 179.61 W, 71, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 47.668,
+     "peak_n": 4096
+    }
+   },
+   "smi_end": "2617 MHz, 3090 MHz, 179.61 W, 71, 0x0000000000000000"
+  },
+  {
+   "clock_event_over_host_sleep": 1.1111,
+   "smi_start": "2745 MHz, 3090 MHz, 24.44 W, 52, 0x0000000000000000",
+   "bandwidth": {
+    "GBps": 385.9,
+    "p90_GBps": 198.3,
+    "mb": 512,
+    "GBps_host": 361.9,
+    "event_scale": 0.9007
+   },
+   "dtypes": {
+    "fp64": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 6.5574,
+       "p90_ms": 6.5595,
+       "tflops_median": 0.327,
+       "tflops_p90": 0.327,
+       "tflops_median_hostscaled": 0.352,
+       "host_tflops": 0.352,
+       "event_scale": 0.9302,
+       "smi_after": "2737 MHz, 3090 MHz, 49.33 W, 54, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 20,
+       "median_ms": 49.8075,
+       "p90_ms": 49.8144,
+       "tflops_median": 0.345,
+       "tflops_p90": 0.345,
+       "tflops_median_hostscaled": 0.361,
+       "host_tflops": 0.361,
+       "event_scale": 0.956,
+       "smi_after": "2737 MHz, 3090 MHz, 49.14 W, 51, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 10,
+       "median_ms": 395.8417,
+       "p90_ms": 395.9171,
+       "tflops_median": 0.347,
+       "tflops_p90": 0.347,
+       "tflops_median_hostscaled": 0.366,
+       "host_tflops": 0.366,
+       "event_scale": 0.9499,
+       "smi_after": "2752 MHz, 3090 MHz, 45.03 W, 44, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 10,
+       "median_ms": 3180.3092,
+       "p90_ms": 3181.4518,
+       "tflops_median": 0.346,
+       "tflops_p90": 0.346,
+       "tflops_median_hostscaled": 0.365,
+       "host_tflops": 0.366,
+       "event_scale": 0.9469,
+       "smi_after": "2730 MHz, 3090 MHz, 51.70 W, 60, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 0.347,
+     "peak_n": 4096
+    },
+    "fp32": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1554,
+       "p90_ms": 0.1574,
+       "tflops_median": 13.823,
+       "tflops_p90": 13.643,
+       "tflops_median_hostscaled": 14.372,
+       "host_tflops": 14.259,
+       "event_scale": 0.9618,
+       "smi_after": "2730 MHz, 3090 MHz, 51.70 W, 60, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 1.1221,
+       "p90_ms": 1.1323,
+       "tflops_median": 15.311,
+       "tflops_p90": 15.173,
+       "tflops_median_hostscaled": 16.082,
+       "host_tflops": 16.098,
+       "event_scale": 0.952,
+       "smi_after": "2677 MHz, 3090 MHz, 76.57 W, 60, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 8.8025,
+       "p90_ms": 8.8368,
+       "tflops_median": 15.614,
+       "tflops_p90": 15.553,
+       "tflops_median_hostscaled": 16.426,
+       "host_tflops": 16.42,
+       "event_scale": 0.9505,
+       "smi_after": "2497 MHz, 3090 MHz, 180.58 W, 75, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 16,
+       "median_ms": 65.1424,
+       "p90_ms": 65.2482,
+       "tflops_median": 16.879,
+       "tflops_p90": 16.851,
+       "tflops_median_hostscaled": 17.811,
+       "host_tflops": 17.814,
+       "event_scale": 0.9476,
+       "smi_after": "2505 MHz, 3090 MHz, 180.01 W, 77, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 16.879,
+     "peak_n": 8192
+    },
+    "tf32": {
+     "allow_tf32": true,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1556,
+       "p90_ms": 0.1717,
+       "tflops_median": 13.804,
+       "tflops_p90": 12.509,
+       "tflops_median_hostscaled": 14.313,
+       "host_tflops": 15.948,
+       "event_scale": 0.9645,
+       "smi_after": "2505 MHz, 3090 MHz, 175.57 W, 77, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.8159,
+       "p90_ms": 0.8169,
+       "tflops_median": 21.057,
+       "tflops_p90": 21.031,
+       "tflops_median_hostscaled": 22.159,
+       "host_tflops": 22.158,
+       "event_scale": 0.9503,
+       "smi_after": "2505 MHz, 3090 MHz, 159.99 W, 77, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 5.8406,
+       "p90_ms": 5.8427,
+       "tflops_median": 23.532,
+       "tflops_p90": 23.523,
+       "tflops_median_hostscaled": 24.808,
+       "host_tflops": 24.808,
+       "event_scale": 0.9486,
+       "smi_after": "2670 MHz, 3090 MHz, 128.68 W, 71, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 23,
+       "median_ms": 45.713,
+       "p90_ms": 45.7234,
+       "tflops_median": 24.052,
+       "tflops_p90": 24.047,
+       "tflops_median_hostscaled": 25.359,
+       "host_tflops": 25.359,
+       "event_scale": 0.9485,
+       "smi_after": "2670 MHz, 3090 MHz, 141.79 W, 69, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 24.052,
+     "peak_n": 8192
+    },
+    "bf16": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.056,
+       "p90_ms": 0.0562,
+       "tflops_median": 38.326,
+       "tflops_p90": 38.236,
+       "tflops_median_hostscaled": 38.431,
+       "host_tflops": 38.351,
+       "event_scale": 0.9973,
+       "smi_after": "2670 MHz, 3090 MHz, 141.79 W, 69, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.4124,
+       "p90_ms": 0.4131,
+       "tflops_median": 41.66,
+       "tflops_p90": 41.589,
+       "tflops_median_hostscaled": 43.719,
+       "host_tflops": 43.676,
+       "event_scale": 0.9529,
+       "smi_after": "2670 MHz, 3090 MHz, 135.26 W, 69, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 2.9314,
+       "p90_ms": 2.9324,
+       "tflops_median": 46.885,
+       "tflops_p90": 46.868,
+       "tflops_median_hostscaled": 49.398,
+       "host_tflops": 49.392,
+       "event_scale": 0.9491,
+       "smi_after": "2670 MHz, 3090 MHz, 126.71 W, 69, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 46,
+       "median_ms": 22.7939,
+       "p90_ms": 22.8021,
+       "tflops_median": 48.237,
+       "tflops_p90": 48.22,
+       "tflops_median_hostscaled": 50.847,
+       "host_tflops": 50.852,
+       "event_scale": 0.9487,
+       "smi_after": "2670 MHz, 3090 MHz, 131.50 W, 67, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 48.237,
+     "peak_n": 8192
+    },
+    "fp16": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1384,
+       "p90_ms": 0.1447,
+       "tflops_median": 15.52,
+       "tflops_p90": 14.842,
+       "tflops_median_hostscaled": 11.149,
+       "host_tflops": 12.412,
+       "event_scale": 1.392,
+       "smi_after": "2670 MHz, 3090 MHz, 131.50 W, 67, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.3714,
+       "p90_ms": 0.3721,
+       "tflops_median": 46.254,
+       "tflops_p90": 46.17,
+       "tflops_median_hostscaled": 48.517,
+       "host_tflops": 48.454,
+       "event_scale": 0.9534,
+       "smi_after": "2670 MHz, 3090 MHz, 124.38 W, 67, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 2.8833,
+       "p90_ms": 2.8847,
+       "tflops_median": 47.667,
+       "tflops_p90": 47.644,
+       "tflops_median_hostscaled": 50.209,
+       "host_tflops": 50.194,
+       "event_scale": 0.9494,
+       "smi_after": "2655 MHz, 3090 MHz, 144.21 W, 71, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 45,
+       "median_ms": 23.1605,
+       "p90_ms": 23.1633,
+       "tflops_median": 47.474,
+       "tflops_p90": 47.468,
+       "tflops_median_hostscaled": 50.04,
+       "host_tflops": 50.038,
+       "event_scale": 0.9487,
+       "smi_after": "2617 MHz, 3090 MHz, 180.00 W, 71, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 47.667,
+     "peak_n": 4096
+    }
+   },
+   "smi_end": "2617 MHz, 3090 MHz, 174.33 W, 71, 0x0000000000000000"
+  },
+  {
+   "clock_event_over_host_sleep": 1.0542,
+   "smi_start": "2745 MHz, 3090 MHz, 24.60 W, 54, 0x0000000000000000",
+   "bandwidth": {
+    "GBps": 385.8,
+    "p90_GBps": 198.0,
+    "mb": 512,
+    "GBps_host": 318.2,
+    "event_scale": 0.9491
+   },
+   "dtypes": {
+    "fp64": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 6.5564,
+       "p90_ms": 6.5574,
+       "tflops_median": 0.328,
+       "tflops_p90": 0.327,
+       "tflops_median_hostscaled": 0.345,
+       "host_tflops": 0.345,
+       "event_scale": 0.9506,
+       "smi_after": "2737 MHz, 3090 MHz, 48.11 W, 54, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 21,
+       "median_ms": 49.808,
+       "p90_ms": 49.8122,
+       "tflops_median": 0.345,
+       "tflops_p90": 0.345,
+       "tflops_median_hostscaled": 0.363,
+       "host_tflops": 0.363,
+       "event_scale": 0.9502,
+       "smi_after": "2737 MHz, 3090 MHz, 49.38 W, 51, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 10,
+       "median_ms": 395.7839,
+       "p90_ms": 395.8705,
+       "tflops_median": 0.347,
+       "tflops_p90": 0.347,
+       "tflops_median_hostscaled": 0.366,
+       "host_tflops": 0.366,
+       "event_scale": 0.9485,
+       "smi_after": "2752 MHz, 3090 MHz, 45.15 W, 44, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 10,
+       "median_ms": 3180.5667,
+       "p90_ms": 3181.1801,
+       "tflops_median": 0.346,
+       "tflops_p90": 0.346,
+       "tflops_median_hostscaled": 0.365,
+       "host_tflops": 0.365,
+       "event_scale": 0.9482,
+       "smi_after": "2730 MHz, 3090 MHz, 53.16 W, 60, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 0.347,
+     "peak_n": 4096
+    },
+    "fp32": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1554,
+       "p90_ms": 0.1574,
+       "tflops_median": 13.823,
+       "tflops_p90": 13.646,
+       "tflops_median_hostscaled": 14.378,
+       "host_tflops": 14.275,
+       "event_scale": 0.9614,
+       "smi_after": "2730 MHz, 3090 MHz, 53.16 W, 60, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 1.1296,
+       "p90_ms": 1.1394,
+       "tflops_median": 15.208,
+       "tflops_p90": 15.078,
+       "tflops_median_hostscaled": 16.008,
+       "host_tflops": 16.089,
+       "event_scale": 0.95,
+       "smi_after": "2715 MHz, 3090 MHz, 70.07 W, 60, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 8.7783,
+       "p90_ms": 8.7919,
+       "tflops_median": 15.657,
+       "tflops_p90": 15.632,
+       "tflops_median_hostscaled": 16.507,
+       "host_tflops": 16.504,
+       "event_scale": 0.9485,
+       "smi_after": "2505 MHz, 3090 MHz, 180.49 W, 75, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 16,
+       "median_ms": 65.102,
+       "p90_ms": 65.2123,
+       "tflops_median": 16.889,
+       "tflops_p90": 16.86,
+       "tflops_median_hostscaled": 17.811,
+       "host_tflops": 17.811,
+       "event_scale": 0.9483,
+       "smi_after": "2505 MHz, 3090 MHz, 180.00 W, 77, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 16.889,
+     "peak_n": 8192
+    },
+    "tf32": {
+     "allow_tf32": true,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1052,
+       "p90_ms": 0.1052,
+       "tflops_median": 20.416,
+       "tflops_p90": 20.41,
+       "tflops_median_hostscaled": 21.151,
+       "host_tflops": 21.066,
+       "event_scale": 0.9653,
+       "smi_after": "2505 MHz, 3090 MHz, 174.43 W, 77, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.8158,
+       "p90_ms": 0.8169,
+       "tflops_median": 21.058,
+       "tflops_p90": 21.031,
+       "tflops_median_hostscaled": 22.151,
+       "host_tflops": 22.129,
+       "event_scale": 0.9507,
+       "smi_after": "2505 MHz, 3090 MHz, 166.44 W, 77, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 5.8406,
+       "p90_ms": 5.8447,
+       "tflops_median": 23.532,
+       "tflops_p90": 23.515,
+       "tflops_median_hostscaled": 24.803,
+       "host_tflops": 24.8,
+       "event_scale": 0.9488,
+       "smi_after": "2670 MHz, 3090 MHz, 128.65 W, 71, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 23,
+       "median_ms": 45.7182,
+       "p90_ms": 45.7266,
+       "tflops_median": 24.05,
+       "tflops_p90": 24.045,
+       "tflops_median_hostscaled": 25.362,
+       "host_tflops": 25.362,
+       "event_scale": 0.9483,
+       "smi_after": "2670 MHz, 3090 MHz, 143.85 W, 69, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 24.05,
+     "peak_n": 8192
+    },
+    "bf16": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1394,
+       "p90_ms": 0.1513,
+       "tflops_median": 15.404,
+       "tflops_p90": 14.196,
+       "tflops_median_hostscaled": 10.997,
+       "host_tflops": 10.662,
+       "event_scale": 1.4008,
+       "smi_after": "2670 MHz, 3090 MHz, 138.29 W, 69, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.4124,
+       "p90_ms": 0.4125,
+       "tflops_median": 41.66,
+       "tflops_p90": 41.647,
+       "tflops_median_hostscaled": 43.713,
+       "host_tflops": 43.68,
+       "event_scale": 0.953,
+       "smi_after": "2670 MHz, 3090 MHz, 132.62 W, 69, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 2.9324,
+       "p90_ms": 2.9345,
+       "tflops_median": 46.87,
+       "tflops_p90": 46.836,
+       "tflops_median_hostscaled": 49.401,
+       "host_tflops": 49.474,
+       "event_scale": 0.9488,
+       "smi_after": "2685 MHz, 3090 MHz, 120.99 W, 69, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 46,
+       "median_ms": 22.7673,
+       "p90_ms": 22.7836,
+       "tflops_median": 48.294,
+       "tflops_p90": 48.259,
+       "tflops_median_hostscaled": 50.936,
+       "host_tflops": 50.939,
+       "event_scale": 0.9481,
+       "smi_after": "2662 MHz, 3090 MHz, 130.65 W, 67, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 48.294,
+     "peak_n": 8192
+    },
+    "fp16": {
+     "allow_tf32": false,
+     "sizes": {
+      "1024": {
+       "n": 1024,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.1372,
+       "p90_ms": 0.1438,
+       "tflops_median": 15.647,
+       "tflops_p90": 14.929,
+       "tflops_median_hostscaled": 11.426,
+       "host_tflops": 12.358,
+       "event_scale": 1.3694,
+       "smi_after": "2662 MHz, 3090 MHz, 130.65 W, 67, 0x0000000000000000"
+      },
+      "2048": {
+       "n": 2048,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 0.3713,
+       "p90_ms": 0.3714,
+       "tflops_median": 46.266,
+       "tflops_p90": 46.254,
+       "tflops_median_hostscaled": 48.533,
+       "host_tflops": 48.465,
+       "event_scale": 0.9533,
+       "smi_after": "2662 MHz, 3090 MHz, 125.32 W, 67, 0x0000000000000000"
+      },
+      "4096": {
+       "n": 4096,
+       "reps": 100,
+       "warmup": 50,
+       "median_ms": 2.8832,
+       "p90_ms": 2.8853,
+       "tflops_median": 47.669,
+       "tflops_p90": 47.633,
+       "tflops_median_hostscaled": 50.235,
+       "host_tflops": 50.217,
+       "event_scale": 0.9489,
+       "smi_after": "2662 MHz, 3090 MHz, 145.42 W, 71, 0x0000000000000000"
+      },
+      "8192": {
+       "n": 8192,
+       "reps": 100,
+       "warmup": 45,
+       "median_ms": 23.1605,
+       "p90_ms": 23.1636,
+       "tflops_median": 47.473,
+       "tflops_p90": 47.467,
+       "tflops_median_hostscaled": 50.083,
+       "host_tflops": 50.082,
+       "event_scale": 0.9479,
+       "smi_after": "2617 MHz, 3090 MHz, 179.99 W, 71, 0x0000000000000000"
+      }
+     },
+     "skipped": {},
+     "error": null,
+     "peak_tflops": 47.669,
+     "peak_n": 4096
+    }
+   },
+   "smi_end": "2617 MHz, 3090 MHz, 179.99 W, 71, 0x0000000000000000"
+  }
+ ],
+ "decay": {
+  "float64": {
+   "n": 100000,
+   "aten_ops": 14,
+   "ops": [
+    "aten.sub.Tensor",
+    "aten.ge.Tensor",
+    "aten.mul.Tensor",
+    "aten.scalar_tensor.default",
+    "aten.where.self",
+    "aten.sub.Tensor",
+    "aten.sub.Tensor",
+    "aten.mul.Tensor",
+    "aten.add.Tensor",
+    "aten.mul.Tensor",
+    "aten.add.Tensor",
+    "aten.where.self",
+    "aten.mul.Tensor",
+    "aten.where.self"
+   ],
+   "flops_per_neuron": 8.0,
+   "eager_bytes_per_neuron": 244.0002,
+   "eager_read_per_neuron": 147.0002,
+   "eager_write_per_neuron": 97.0001,
+   "eager_flop_per_byte": 0.03279,
+   "fused_bytes_per_neuron": 49.0001,
+   "fused_read_per_neuron": 32.0001,
+   "fused_write_per_neuron": 17.0,
+   "fused_flop_per_byte": 0.16327
+  },
+  "float32": {
+   "n": 100000,
+   "aten_ops": 14,
+   "ops": [
+    "aten.sub.Tensor",
+    "aten.ge.Tensor",
+    "aten.mul.Tensor",
+    "aten.scalar_tensor.default",
+    "aten.where.self",
+    "aten.sub.Tensor",
+    "aten.sub.Tensor",
+    "aten.mul.Tensor",
+    "aten.add.Tensor",
+    "aten.mul.Tensor",
+    "aten.add.Tensor",
+    "aten.where.self",
+    "aten.mul.Tensor",
+    "aten.where.self"
+   ],
+   "flops_per_neuron": 8.0,
+   "eager_bytes_per_neuron": 140.0002,
+   "eager_read_per_neuron": 87.0001,
+   "eager_write_per_neuron": 53.0,
+   "eager_flop_per_byte": 0.05714,
+   "fused_bytes_per_neuron": 33.0001,
+   "fused_read_per_neuron": 24.0001,
+   "fused_write_per_neuron": 9.0,
+   "fused_flop_per_byte": 0.24242
+  }
+ },
+ "tf32_check": {
+  "fp32": 3.336090481893801e-07,
+  "tf32": 0.0002940723978356156
+ },
+ "agg": {
+  "dtypes": {
+   "fp64": {
+    "peak_tflops": {
+     "median": 0.347,
+     "min": 0.347,
+     "max": 0.347,
+     "max_over_min": 1.0,
+     "runs": [
+      0.347,
+      0.347,
+      0.347,
+      0.347,
+      0.347
+     ]
+    },
+    "peak_n": [
+     2048,
+     2048,
+     4096,
+     4096,
+     4096
+    ],
+    "errors": [],
+    "skipped": [],
+    "sizes": {
+     "1024": {
+      "tflops_median": {
+       "median": 0.328,
+       "min": 0.327,
+       "max": 0.331,
+       "max_over_min": 1.01,
+       "runs": [
+        0.331,
+        0.329,
+        0.327,
+        0.327,
+        0.328
+       ]
+      },
+      "tflops_p90": {
+       "median": 0.327,
+       "min": 0.327,
+       "max": 0.331,
+       "max_over_min": 1.01,
+       "runs": [
+        0.331,
+        0.329,
+        0.327,
+        0.327,
+        0.327
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 0.345,
+       "min": 0.332,
+       "max": 0.352,
+       "max_over_min": 1.06,
+       "runs": [
+        0.332,
+        0.335,
+        0.347,
+        0.352,
+        0.345
+       ]
+      },
+      "host_tflops": {
+       "median": 0.345,
+       "min": 0.332,
+       "max": 0.352,
+       "max_over_min": 1.06,
+       "runs": [
+        0.332,
+        0.335,
+        0.347,
+        0.352,
+        0.345
+       ]
+      },
+      "event_scale": {
+       "median": 0.951,
+       "min": 0.93,
+       "max": 0.996,
+       "max_over_min": 1.07,
+       "runs": [
+        0.9958,
+        0.9821,
+        0.945,
+        0.9302,
+        0.9506
+       ]
+      }
+     },
+     "2048": {
+      "tflops_median": {
+       "median": 0.345,
+       "min": 0.345,
+       "max": 0.347,
+       "max_over_min": 1.01,
+       "runs": [
+        0.347,
+        0.347,
+        0.345,
+        0.345,
+        0.345
+       ]
+      },
+      "tflops_p90": {
+       "median": 0.345,
+       "min": 0.345,
+       "max": 0.347,
+       "max_over_min": 1.01,
+       "runs": [
+        0.347,
+        0.347,
+        0.345,
+        0.345,
+        0.345
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 0.361,
+       "min": 0.357,
+       "max": 0.378,
+       "max_over_min": 1.06,
+       "runs": [
+        0.378,
+        0.361,
+        0.357,
+        0.361,
+        0.363
+       ]
+      },
+      "host_tflops": {
+       "median": 0.361,
+       "min": 0.357,
+       "max": 0.378,
+       "max_over_min": 1.06,
+       "runs": [
+        0.378,
+        0.361,
+        0.357,
+        0.361,
+        0.363
+       ]
+      },
+      "event_scale": {
+       "median": 0.956,
+       "min": 0.918,
+       "max": 0.966,
+       "max_over_min": 1.05,
+       "runs": [
+        0.9185,
+        0.9612,
+        0.9661,
+        0.956,
+        0.9502
+       ]
+      }
+     },
+     "4096": {
+      "tflops_median": {
+       "median": 0.347,
+       "min": 0.347,
+       "max": 0.347,
+       "max_over_min": 1.0,
+       "runs": [
+        0.347,
+        0.347,
+        0.347,
+        0.347,
+        0.347
+       ]
+      },
+      "tflops_p90": {
+       "median": 0.347,
+       "min": 0.347,
+       "max": 0.347,
+       "max_over_min": 1.0,
+       "runs": [
+        0.347,
+        0.347,
+        0.347,
+        0.347,
+        0.347
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 0.363,
+       "min": 0.36,
+       "max": 0.366,
+       "max_over_min": 1.02,
+       "runs": [
+        0.36,
+        0.36,
+        0.363,
+        0.366,
+        0.366
+       ]
+      },
+      "host_tflops": {
+       "median": 0.363,
+       "min": 0.36,
+       "max": 0.366,
+       "max_over_min": 1.02,
+       "runs": [
+        0.36,
+        0.36,
+        0.363,
+        0.366,
+        0.366
+       ]
+      },
+      "event_scale": {
+       "median": 0.958,
+       "min": 0.949,
+       "max": 0.966,
+       "max_over_min": 1.02,
+       "runs": [
+        0.9661,
+        0.9654,
+        0.9575,
+        0.9499,
+        0.9485
+       ]
+      }
+     },
+     "8192": {
+      "tflops_median": {
+       "median": 0.346,
+       "min": 0.346,
+       "max": 0.346,
+       "max_over_min": 1.0,
+       "runs": [
+        0.346,
+        0.346,
+        0.346,
+        0.346,
+        0.346
+       ]
+      },
+      "tflops_p90": {
+       "median": 0.344,
+       "min": 0.344,
+       "max": 0.346,
+       "max_over_min": 1.01,
+       "runs": [
+        0.344,
+        0.344,
+        0.344,
+        0.346,
+        0.346
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 0.362,
+       "min": 0.359,
+       "max": 0.365,
+       "max_over_min": 1.02,
+       "runs": [
+        0.359,
+        0.361,
+        0.362,
+        0.365,
+        0.365
+       ]
+      },
+      "host_tflops": {
+       "median": 0.362,
+       "min": 0.359,
+       "max": 0.366,
+       "max_over_min": 1.02,
+       "runs": [
+        0.359,
+        0.362,
+        0.362,
+        0.366,
+        0.365
+       ]
+      },
+      "event_scale": {
+       "median": 0.956,
+       "min": 0.947,
+       "max": 0.962,
+       "max_over_min": 1.02,
+       "runs": [
+        0.9618,
+        0.9564,
+        0.9557,
+        0.9469,
+        0.9482
+       ]
+      }
+     }
+    },
+    "spec_tflops": 0.37,
+    "pct_of_spec": 93.8,
+    "pct_of_spec_range": [
+     93.8,
+     93.8
+    ],
+    "ridge_flop_per_byte_382": 0.908,
+    "runs_over_110pct": []
+   },
+   "fp32": {
+    "peak_tflops": {
+     "median": 16.879,
+     "min": 16.867,
+     "max": 17.265,
+     "max_over_min": 1.02,
+     "runs": [
+      17.265,
+      16.867,
+      16.876,
+      16.879,
+      16.889
+     ]
+    },
+    "peak_n": [
+     8192,
+     8192,
+     8192,
+     8192,
+     8192
+    ],
+    "errors": [],
+    "skipped": [],
+    "sizes": {
+     "1024": {
+      "tflops_median": {
+       "median": 13.823,
+       "min": 13.774,
+       "max": 13.823,
+       "max_over_min": 1.0,
+       "runs": [
+        13.823,
+        13.774,
+        13.82,
+        13.823,
+        13.823
+       ]
+      },
+      "tflops_p90": {
+       "median": 13.643,
+       "min": 13.643,
+       "max": 13.82,
+       "max_over_min": 1.01,
+       "runs": [
+        13.82,
+        13.643,
+        13.643,
+        13.643,
+        13.646
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 14.25,
+       "min": 13.629,
+       "max": 14.378,
+       "max_over_min": 1.05,
+       "runs": [
+        13.629,
+        14.038,
+        14.25,
+        14.372,
+        14.378
+       ]
+      },
+      "host_tflops": {
+       "median": 14.1,
+       "min": 13.611,
+       "max": 14.275,
+       "max_over_min": 1.05,
+       "runs": [
+        13.611,
+        13.94,
+        14.1,
+        14.259,
+        14.275
+       ]
+      },
+      "event_scale": {
+       "median": 0.97,
+       "min": 0.961,
+       "max": 1.014,
+       "max_over_min": 1.05,
+       "runs": [
+        1.0142,
+        0.9812,
+        0.9698,
+        0.9618,
+        0.9614
+       ]
+      }
+     },
+     "2048": {
+      "tflops_median": {
+       "median": 15.311,
+       "min": 15.208,
+       "max": 15.567,
+       "max_over_min": 1.02,
+       "runs": [
+        15.567,
+        15.256,
+        15.311,
+        15.311,
+        15.208
+       ]
+      },
+      "tflops_p90": {
+       "median": 15.146,
+       "min": 15.078,
+       "max": 15.492,
+       "max_over_min": 1.03,
+       "runs": [
+        15.492,
+        15.078,
+        15.146,
+        15.173,
+        15.078
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 15.972,
+       "min": 15.528,
+       "max": 16.082,
+       "max_over_min": 1.04,
+       "runs": [
+        15.528,
+        15.725,
+        15.972,
+        16.082,
+        16.008
+       ]
+      },
+      "host_tflops": {
+       "median": 15.98,
+       "min": 15.523,
+       "max": 16.098,
+       "max_over_min": 1.04,
+       "runs": [
+        15.523,
+        15.755,
+        15.98,
+        16.098,
+        16.089
+       ]
+      },
+      "event_scale": {
+       "median": 0.959,
+       "min": 0.95,
+       "max": 1.002,
+       "max_over_min": 1.06,
+       "runs": [
+        1.0025,
+        0.9702,
+        0.9586,
+        0.952,
+        0.95
+       ]
+      }
+     },
+     "4096": {
+      "tflops_median": {
+       "median": 15.643,
+       "min": 15.608,
+       "max": 16.007,
+       "max_over_min": 1.03,
+       "runs": [
+        16.007,
+        15.643,
+        15.608,
+        15.614,
+        15.657
+       ]
+      },
+      "tflops_p90": {
+       "median": 15.624,
+       "min": 15.548,
+       "max": 15.985,
+       "max_over_min": 1.03,
+       "runs": [
+        15.985,
+        15.624,
+        15.548,
+        15.553,
+        15.632
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 16.308,
+       "min": 16.002,
+       "max": 16.507,
+       "max_over_min": 1.03,
+       "runs": [
+        16.002,
+        16.15,
+        16.308,
+        16.426,
+        16.507
+       ]
+      },
+      "host_tflops": {
+       "median": 16.303,
+       "min": 16.002,
+       "max": 16.504,
+       "max_over_min": 1.03,
+       "runs": [
+        16.002,
+        16.148,
+        16.303,
+        16.42,
+        16.504
+       ]
+      },
+      "event_scale": {
+       "median": 0.957,
+       "min": 0.949,
+       "max": 1.0,
+       "max_over_min": 1.05,
+       "runs": [
+        1.0003,
+        0.9686,
+        0.9571,
+        0.9505,
+        0.9485
+       ]
+      }
+     },
+     "8192": {
+      "tflops_median": {
+       "median": 16.879,
+       "min": 16.867,
+       "max": 17.265,
+       "max_over_min": 1.02,
+       "runs": [
+        17.265,
+        16.867,
+        16.876,
+        16.879,
+        16.889
+       ]
+      },
+      "tflops_p90": {
+       "median": 16.851,
+       "min": 16.839,
+       "max": 17.24,
+       "max_over_min": 1.02,
+       "runs": [
+        17.24,
+        16.839,
+        16.847,
+        16.851,
+        16.86
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 17.637,
+       "min": 17.605,
+       "max": 17.811,
+       "max_over_min": 1.01,
+       "runs": [
+        17.605,
+        17.637,
+        17.635,
+        17.811,
+        17.811
+       ]
+      },
+      "host_tflops": {
+       "median": 17.636,
+       "min": 17.612,
+       "max": 17.814,
+       "max_over_min": 1.01,
+       "runs": [
+        17.612,
+        17.635,
+        17.636,
+        17.814,
+        17.811
+       ]
+      },
+      "event_scale": {
+       "median": 0.956,
+       "min": 0.948,
+       "max": 0.981,
+       "max_over_min": 1.03,
+       "runs": [
+        0.9807,
+        0.9563,
+        0.957,
+        0.9476,
+        0.9483
+       ]
+      }
+     }
+    },
+    "spec_tflops": 23.685,
+    "pct_of_spec": 71.3,
+    "pct_of_spec_range": [
+     71.2,
+     72.9
+    ],
+    "ridge_flop_per_byte_382": 44.186,
+    "runs_over_110pct": []
+   },
+   "tf32": {
+    "peak_tflops": {
+     "median": 24.052,
+     "min": 24.05,
+     "max": 24.241,
+     "max_over_min": 1.01,
+     "runs": [
+      24.241,
+      24.051,
+      24.056,
+      24.052,
+      24.05
+     ]
+    },
+    "peak_n": [
+     8192,
+     8192,
+     8192,
+     8192,
+     8192
+    ],
+    "errors": [],
+    "skipped": [],
+    "sizes": {
+     "1024": {
+      "tflops_median": {
+       "median": 20.416,
+       "min": 13.804,
+       "max": 20.416,
+       "max_over_min": 1.48,
+       "runs": [
+        20.416,
+        20.416,
+        20.416,
+        13.804,
+        20.416
+       ]
+      },
+      "tflops_p90": {
+       "median": 20.403,
+       "min": 12.509,
+       "max": 20.41,
+       "max_over_min": 1.63,
+       "runs": [
+        20.41,
+        20.393,
+        20.403,
+        12.509,
+        20.41
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 20.921,
+       "min": 14.313,
+       "max": 21.151,
+       "max_over_min": 1.48,
+       "runs": [
+        20.03,
+        20.972,
+        20.921,
+        14.313,
+        21.151
+       ]
+      },
+      "host_tflops": {
+       "median": 20.817,
+       "min": 15.948,
+       "max": 21.066,
+       "max_over_min": 1.32,
+       "runs": [
+        19.953,
+        20.847,
+        20.817,
+        15.948,
+        21.066
+       ]
+      },
+      "event_scale": {
+       "median": 0.974,
+       "min": 0.965,
+       "max": 1.019,
+       "max_over_min": 1.06,
+       "runs": [
+        1.0193,
+        0.9735,
+        0.9759,
+        0.9645,
+        0.9653
+       ]
+      }
+     },
+     "2048": {
+      "tflops_median": {
+       "median": 21.059,
+       "min": 21.057,
+       "max": 21.325,
+       "max_over_min": 1.01,
+       "runs": [
+        21.325,
+        21.108,
+        21.059,
+        21.057,
+        21.058
+       ]
+      },
+      "tflops_p90": {
+       "median": 21.031,
+       "min": 21.031,
+       "max": 21.272,
+       "max_over_min": 1.01,
+       "runs": [
+        21.272,
+        21.06,
+        21.031,
+        21.031,
+        21.031
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 22.04,
+       "min": 21.268,
+       "max": 22.159,
+       "max_over_min": 1.04,
+       "runs": [
+        21.268,
+        22.04,
+        21.944,
+        22.159,
+        22.151
+       ]
+      },
+      "host_tflops": {
+       "median": 22.021,
+       "min": 21.246,
+       "max": 22.158,
+       "max_over_min": 1.04,
+       "runs": [
+        21.246,
+        22.021,
+        21.945,
+        22.158,
+        22.129
+       ]
+      },
+      "event_scale": {
+       "median": 0.958,
+       "min": 0.95,
+       "max": 1.003,
+       "max_over_min": 1.06,
+       "runs": [
+        1.0027,
+        0.9578,
+        0.9596,
+        0.9503,
+        0.9507
+       ]
+      }
+     },
+     "4096": {
+      "tflops_median": {
+       "median": 23.532,
+       "min": 23.523,
+       "max": 23.833,
+       "max_over_min": 1.01,
+       "runs": [
+        23.833,
+        23.523,
+        23.532,
+        23.532,
+        23.532
+       ]
+      },
+      "tflops_p90": {
+       "median": 23.515,
+       "min": 23.507,
+       "max": 23.816,
+       "max_over_min": 1.01,
+       "runs": [
+        23.816,
+        23.507,
+        23.515,
+        23.523,
+        23.515
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 24.614,
+       "min": 23.82,
+       "max": 24.808,
+       "max_over_min": 1.04,
+       "runs": [
+        23.82,
+        24.614,
+        24.577,
+        24.808,
+        24.803
+       ]
+      },
+      "host_tflops": {
+       "median": 24.611,
+       "min": 23.817,
+       "max": 24.808,
+       "max_over_min": 1.04,
+       "runs": [
+        23.817,
+        24.611,
+        24.572,
+        24.808,
+        24.8
+       ]
+      },
+      "event_scale": {
+       "median": 0.956,
+       "min": 0.949,
+       "max": 1.0,
+       "max_over_min": 1.05,
+       "runs": [
+        1.0005,
+        0.9557,
+        0.9575,
+        0.9486,
+        0.9488
+       ]
+      }
+     },
+     "8192": {
+      "tflops_median": {
+       "median": 24.052,
+       "min": 24.05,
+       "max": 24.241,
+       "max_over_min": 1.01,
+       "runs": [
+        24.241,
+        24.051,
+        24.056,
+        24.052,
+        24.05
+       ]
+      },
+      "tflops_p90": {
+       "median": 24.045,
+       "min": 24.041,
+       "max": 24.233,
+       "max_over_min": 1.01,
+       "runs": [
+        24.233,
+        24.041,
+        24.045,
+        24.047,
+        24.045
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 25.359,
+       "min": 24.898,
+       "max": 26.443,
+       "max_over_min": 1.06,
+       "runs": [
+        26.443,
+        24.898,
+        25.035,
+        25.359,
+        25.362
+       ]
+      },
+      "host_tflops": {
+       "median": 25.359,
+       "min": 24.897,
+       "max": 26.443,
+       "max_over_min": 1.06,
+       "runs": [
+        26.443,
+        24.897,
+        25.035,
+        25.359,
+        25.362
+       ]
+      },
+      "event_scale": {
+       "median": 0.949,
+       "min": 0.917,
+       "max": 0.966,
+       "max_over_min": 1.05,
+       "runs": [
+        0.9167,
+        0.966,
+        0.9609,
+        0.9485,
+        0.9483
+       ]
+      }
+     }
+    },
+    "spec_tflops": 23.685,
+    "pct_of_spec": 101.5,
+    "pct_of_spec_range": [
+     101.5,
+     102.3
+    ],
+    "ridge_flop_per_byte_382": 62.963,
+    "runs_over_110pct": []
+   },
+   "bf16": {
+    "peak_tflops": {
+     "median": 48.294,
+     "min": 48.237,
+     "max": 48.639,
+     "max_over_min": 1.01,
+     "runs": [
+      48.639,
+      48.263,
+      48.325,
+      48.237,
+      48.294
+     ]
+    },
+    "peak_n": [
+     8192,
+     8192,
+     8192,
+     8192,
+     8192
+    ],
+    "errors": [],
+    "skipped": [],
+    "sizes": {
+     "1024": {
+      "tflops_median": {
+       "median": 38.326,
+       "min": 15.404,
+       "max": 38.348,
+       "max_over_min": 2.49,
+       "runs": [
+        38.348,
+        38.348,
+        38.326,
+        38.326,
+        15.404
+       ]
+      },
+      "tflops_p90": {
+       "median": 38.228,
+       "min": 14.196,
+       "max": 38.304,
+       "max_over_min": 2.7,
+       "runs": [
+        38.304,
+        38.228,
+        38.217,
+        38.236,
+        14.196
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 38.431,
+       "min": 10.997,
+       "max": 40.462,
+       "max_over_min": 3.68,
+       "runs": [
+        40.462,
+        38.377,
+        38.465,
+        38.431,
+        10.997
+       ]
+      },
+      "host_tflops": {
+       "median": 38.125,
+       "min": 10.662,
+       "max": 40.181,
+       "max_over_min": 3.77,
+       "runs": [
+        40.181,
+        38.097,
+        38.125,
+        38.351,
+        10.662
+       ]
+      },
+      "event_scale": {
+       "median": 0.997,
+       "min": 0.948,
+       "max": 1.401,
+       "max_over_min": 1.48,
+       "runs": [
+        0.9478,
+        0.9992,
+        0.9964,
+        0.9973,
+        1.4008
+       ]
+      }
+     },
+     "2048": {
+      "tflops_median": {
+       "median": 41.66,
+       "min": 41.66,
+       "max": 41.869,
+       "max_over_min": 1.01,
+       "runs": [
+        41.869,
+        41.66,
+        41.66,
+        41.66,
+        41.66
+       ]
+      },
+      "tflops_p90": {
+       "median": 41.657,
+       "min": 41.589,
+       "max": 41.865,
+       "max_over_min": 1.01,
+       "runs": [
+        41.865,
+        41.66,
+        41.657,
+        41.589,
+        41.647
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 43.713,
+       "min": 42.926,
+       "max": 45.455,
+       "max_over_min": 1.06,
+       "runs": [
+        45.455,
+        42.926,
+        43.049,
+        43.719,
+        43.713
+       ]
+      },
+      "host_tflops": {
+       "median": 43.676,
+       "min": 42.907,
+       "max": 45.447,
+       "max_over_min": 1.06,
+       "runs": [
+        45.447,
+        42.907,
+        42.999,
+        43.676,
+        43.68
+       ]
+      },
+      "event_scale": {
+       "median": 0.953,
+       "min": 0.921,
+       "max": 0.971,
+       "max_over_min": 1.05,
+       "runs": [
+        0.9211,
+        0.9705,
+        0.9677,
+        0.9529,
+        0.953
+       ]
+      }
+     },
+     "4096": {
+      "tflops_median": {
+       "median": 46.885,
+       "min": 46.87,
+       "max": 47.282,
+       "max_over_min": 1.01,
+       "runs": [
+        47.282,
+        46.901,
+        46.885,
+        46.885,
+        46.87
+       ]
+      },
+      "tflops_p90": {
+       "median": 46.868,
+       "min": 46.836,
+       "max": 47.231,
+       "max_over_min": 1.01,
+       "runs": [
+        47.231,
+        46.87,
+        46.866,
+        46.868,
+        46.836
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 49.398,
+       "min": 48.499,
+       "max": 51.536,
+       "max_over_min": 1.06,
+       "runs": [
+        51.536,
+        48.499,
+        48.663,
+        49.398,
+        49.401
+       ]
+      },
+      "host_tflops": {
+       "median": 49.392,
+       "min": 48.501,
+       "max": 51.562,
+       "max_over_min": 1.06,
+       "runs": [
+        51.562,
+        48.501,
+        48.651,
+        49.392,
+        49.474
+       ]
+      },
+      "event_scale": {
+       "median": 0.949,
+       "min": 0.917,
+       "max": 0.967,
+       "max_over_min": 1.05,
+       "runs": [
+        0.9174,
+        0.9671,
+        0.9635,
+        0.9491,
+        0.9488
+       ]
+      }
+     },
+     "8192": {
+      "tflops_median": {
+       "median": 48.294,
+       "min": 48.237,
+       "max": 48.639,
+       "max_over_min": 1.01,
+       "runs": [
+        48.639,
+        48.263,
+        48.325,
+        48.237,
+        48.294
+       ]
+      },
+      "tflops_p90": {
+       "median": 48.259,
+       "min": 48.22,
+       "max": 48.613,
+       "max_over_min": 1.01,
+       "runs": [
+        48.613,
+        48.241,
+        48.298,
+        48.22,
+        48.259
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 50.193,
+       "min": 49.851,
+       "max": 50.936,
+       "max_over_min": 1.02,
+       "runs": [
+        49.851,
+        50.039,
+        50.193,
+        50.847,
+        50.936
+       ]
+      },
+      "host_tflops": {
+       "median": 50.193,
+       "min": 49.849,
+       "max": 50.939,
+       "max_over_min": 1.02,
+       "runs": [
+        49.849,
+        50.04,
+        50.193,
+        50.852,
+        50.939
+       ]
+      },
+      "event_scale": {
+       "median": 0.963,
+       "min": 0.948,
+       "max": 0.976,
+       "max_over_min": 1.03,
+       "runs": [
+        0.9757,
+        0.9645,
+        0.9628,
+        0.9487,
+        0.9481
+       ]
+      }
+     }
+    },
+    "spec_tflops": 47.37,
+    "pct_of_spec": 102.0,
+    "pct_of_spec_range": [
+     101.8,
+     102.7
+    ],
+    "ridge_flop_per_byte_382": 126.424,
+    "runs_over_110pct": []
+   },
+   "fp16": {
+    "peak_tflops": {
+     "median": 47.668,
+     "min": 47.667,
+     "max": 48.084,
+     "max_over_min": 1.01,
+     "runs": [
+      48.084,
+      47.668,
+      47.668,
+      47.667,
+      47.669
+     ]
+    },
+    "peak_n": [
+     8192,
+     4096,
+     4096,
+     4096,
+     4096
+    ],
+    "errors": [],
+    "skipped": [],
+    "sizes": {
+     "1024": {
+      "tflops_median": {
+       "median": 15.676,
+       "min": 15.52,
+       "max": 39.78,
+       "max_over_min": 2.56,
+       "runs": [
+        39.78,
+        38.348,
+        15.676,
+        15.52,
+        15.647
+       ]
+      },
+      "tflops_p90": {
+       "median": 14.929,
+       "min": 14.6,
+       "max": 38.414,
+       "max_over_min": 2.63,
+       "runs": [
+        38.414,
+        38.304,
+        14.6,
+        14.842,
+        14.929
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 11.426,
+       "min": 11.149,
+       "max": 41.944,
+       "max_over_min": 3.76,
+       "runs": [
+        41.944,
+        39.338,
+        11.188,
+        11.149,
+        11.426
+       ]
+      },
+      "host_tflops": {
+       "median": 12.412,
+       "min": 11.879,
+       "max": 41.481,
+       "max_over_min": 3.49,
+       "runs": [
+        41.481,
+        39.243,
+        11.879,
+        12.412,
+        12.358
+       ]
+      },
+      "event_scale": {
+       "median": 1.369,
+       "min": 0.948,
+       "max": 1.401,
+       "max_over_min": 1.48,
+       "runs": [
+        0.9484,
+        0.9748,
+        1.4011,
+        1.392,
+        1.3694
+       ]
+      }
+     },
+     "2048": {
+      "tflops_median": {
+       "median": 46.254,
+       "min": 46.254,
+       "max": 46.648,
+       "max_over_min": 1.01,
+       "runs": [
+        46.648,
+        46.254,
+        46.254,
+        46.254,
+        46.266
+       ]
+      },
+      "tflops_p90": {
+       "median": 46.249,
+       "min": 46.127,
+       "max": 46.511,
+       "max_over_min": 1.01,
+       "runs": [
+        46.511,
+        46.249,
+        46.127,
+        46.17,
+        46.254
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 48.533,
+       "min": 47.804,
+       "max": 50.614,
+       "max_over_min": 1.06,
+       "runs": [
+        50.614,
+        48.664,
+        47.804,
+        48.517,
+        48.533
+       ]
+      },
+      "host_tflops": {
+       "median": 48.465,
+       "min": 47.728,
+       "max": 50.556,
+       "max_over_min": 1.06,
+       "runs": [
+        50.556,
+        48.602,
+        47.728,
+        48.454,
+        48.465
+       ]
+      },
+      "event_scale": {
+       "median": 0.953,
+       "min": 0.922,
+       "max": 0.968,
+       "max_over_min": 1.05,
+       "runs": [
+        0.9216,
+        0.9505,
+        0.9676,
+        0.9534,
+        0.9533
+       ]
+      }
+     },
+     "4096": {
+      "tflops_median": {
+       "median": 47.668,
+       "min": 47.667,
+       "max": 47.871,
+       "max_over_min": 1.0,
+       "runs": [
+        47.871,
+        47.668,
+        47.668,
+        47.667,
+        47.669
+       ]
+      },
+      "tflops_p90": {
+       "median": 47.633,
+       "min": 47.534,
+       "max": 47.854,
+       "max_over_min": 1.01,
+       "runs": [
+        47.854,
+        47.534,
+        47.547,
+        47.644,
+        47.633
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 50.235,
+       "min": 49.473,
+       "max": 52.182,
+       "max_over_min": 1.05,
+       "runs": [
+        52.182,
+        50.422,
+        49.473,
+        50.209,
+        50.235
+       ]
+      },
+      "host_tflops": {
+       "median": 50.217,
+       "min": 49.44,
+       "max": 52.179,
+       "max_over_min": 1.06,
+       "runs": [
+        52.179,
+        50.388,
+        49.44,
+        50.194,
+        50.217
+       ]
+      },
+      "event_scale": {
+       "median": 0.949,
+       "min": 0.917,
+       "max": 0.964,
+       "max_over_min": 1.05,
+       "runs": [
+        0.9174,
+        0.9454,
+        0.9635,
+        0.9494,
+        0.9489
+       ]
+      }
+     },
+     "8192": {
+      "tflops_median": {
+       "median": 47.473,
+       "min": 47.469,
+       "max": 48.084,
+       "max_over_min": 1.01,
+       "runs": [
+        48.084,
+        47.469,
+        47.473,
+        47.474,
+        47.473
+       ]
+      },
+      "tflops_p90": {
+       "median": 47.467,
+       "min": 47.461,
+       "max": 48.073,
+       "max_over_min": 1.01,
+       "runs": [
+        48.073,
+        47.461,
+        47.465,
+        47.468,
+        47.467
+       ]
+      },
+      "tflops_median_hostscaled": {
+       "median": 50.243,
+       "min": 50.04,
+       "max": 52.741,
+       "max_over_min": 1.05,
+       "runs": [
+        50.398,
+        50.243,
+        52.741,
+        50.04,
+        50.083
+       ]
+      },
+      "host_tflops": {
+       "median": 50.24,
+       "min": 50.038,
+       "max": 52.737,
+       "max_over_min": 1.05,
+       "runs": [
+        50.396,
+        50.24,
+        52.737,
+        50.038,
+        50.082
+       ]
+      },
+      "event_scale": {
+       "median": 0.948,
+       "min": 0.9,
+       "max": 0.954,
+       "max_over_min": 1.06,
+       "runs": [
+        0.9541,
+        0.9448,
+        0.9001,
+        0.9487,
+        0.9479
+       ]
+      }
+     }
+    },
+    "spec_tflops": 47.37,
+    "pct_of_spec": 100.6,
+    "pct_of_spec_range": [
+     100.6,
+     101.5
+    ],
+    "ridge_flop_per_byte_382": 124.785,
+    "runs_over_110pct": []
+   }
+  },
+  "variability": [
+   {
+    "what": "bf16 n=1024 tflops_median",
+    "median": 38.326,
+    "min": 15.404,
+    "max": 38.348,
+    "max_over_min": 2.49
+   },
+   {
+    "what": "fp16 n=1024 tflops_median",
+    "median": 15.676,
+    "min": 15.52,
+    "max": 39.78,
+    "max_over_min": 2.56
+   }
+  ],
+  "over_spec": [],
+  "clock_event_over_host_sleep": {
+   "median": 1.0542,
+   "min": 1.0,
+   "max": 1.1111,
+   "max_over_min": 1.11,
+   "runs": [
+    1.0047,
+    1.0,
+    1.0585,
+    1.1111,
+    1.0542
+   ]
+  },
+  "event_scale": {
+   "median": 0.9564,
+   "min": 0.9001,
+   "max": 1.4011,
+   "max_over_min": 1.56,
+   "runs": [
+    0.9958,
+    0.9185,
+    0.9661,
+    0.9618,
+    1.0142,
+    1.0025,
+    1.0003,
+    0.9807,
+    1.0193,
+    1.0027,
+    1.0005,
+    0.9167,
+    0.9478,
+    0.9211,
+    0.9174,
+    0.9757,
+    0.9484,
+    0.9216,
+    0.9174,
+    0.9541,
+    0.9821,
+    0.9612,
+    0.9654,
+    0.9564,
+    0.9812,
+    0.9702,
+    0.9686,
+    0.9563,
+    0.9735,
+    0.9578,
+    0.9557,
+    0.966,
+    0.9992,
+    0.9705,
+    0.9671,
+    0.9645,
+    0.9748,
+    0.9505,
+    0.9454,
+    0.9448,
+    0.945,
+    0.9661,
+    0.9575,
+    0.9557,
+    0.9698,
+    0.9586,
+    0.9571,
+    0.957,
+    0.9759,
+    0.9596,
+    0.9575,
+    0.9609,
+    0.9964,
+    0.9677,
+    0.9635,
+    0.9628,
+    1.4011,
+    0.9676,
+    0.9635,
+    0.9001,
+    0.9302,
+    0.956,
+    0.9499,
+    0.9469,
+    0.9618,
+    0.952,
+    0.9505,
+    0.9476,
+    0.9645,
+    0.9503,
+    0.9486,
+    0.9485,
+    0.9973,
+    0.9529,
+    0.9491,
+    0.9487,
+    1.392,
+    0.9534,
+    0.9494,
+    0.9487,
+    0.9506,
+    0.9502,
+    0.9485,
+    0.9482,
+    0.9614,
+    0.95,
+    0.9485,
+    0.9483,
+    0.9653,
+    0.9507,
+    0.9488,
+    0.9483,
+    1.4008,
+    0.953,
+    0.9488,
+    0.9481,
+    1.3694,
+    0.9533,
+    0.9489,
+    0.9479,
+    0.9961,
+    1.0006,
+    0.9455,
+    0.9007,
+    0.9491
+   ]
+  },
+  "copy_GBps": {
+   "median": 385.9,
+   "min": 385.7,
+   "max": 386.1,
+   "max_over_min": 1.0,
+   "runs": [
+    385.9,
+    385.7,
+    386.1,
+    385.9,
+    385.8
+   ]
+  },
+  "fp32_over_fp64": 48.6
+ }
+}
