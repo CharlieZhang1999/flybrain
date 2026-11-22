@@ -10,7 +10,9 @@ lower bound of the traffic, float64 and float32 (the eager values are in the
 table note).
 
 Sized for a 390 px phone: 4.2 in wide at 200 dpi (840 px), text >= 10.5 pt,
-i.e. >= 10.5 px when the image is scaled to ~306 px (390 px screen).
+i.e. >= 10.5 px when the image is scaled to ~306 px (390 px screen). Log-axis
+ticks are plain decimals (0.01, 0.1, 1, ...), not 10^k: the superscript
+exponents of mathtext labels render at ~70% of the tick size (~7 px at 390 px).
 Needs only matplotlib:
   python bench/w4_roofline_plot.py perf/results/w4/<tag>_roofline.json
 Output: perf/results/w4/roofline.png and <tag>_roofline_table.html next to the JSON.
@@ -23,6 +25,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
+from matplotlib.ticker import FuncFormatter, LogLocator, NullFormatter  # noqa: E402
 
 INK, MUTED, GRID = '#1f1f1e', '#52514e', '#ecebe6'
 COL = {'fp16': '#2a78d6', 'bf16': '#eb6834', 'tf32': '#1baf7a', 'fp32': '#eda100', 'fp64': '#e87ba4'}
@@ -68,6 +71,10 @@ def main():
     ax.set_ylim(0.003, 200)
     ax.set_xlabel('FLOP per byte (log)', fontsize=11, color=MUTED)
     ax.set_ylabel('TFLOP/s (log)', fontsize=11, color=MUTED)
+    for axis in (ax.xaxis, ax.yaxis):                 # plain decimal labels, one per decade, no minor labels
+        axis.set_major_locator(LogLocator(base=10, numticks=12))
+        axis.set_major_formatter(FuncFormatter(lambda v, _: f'{v:g}'))
+        axis.set_minor_formatter(NullFormatter())
     ax.tick_params(labelsize=10.5, colors=MUTED, length=0)
     for s in ('top', 'right'):
         ax.spines[s].set_visible(False)

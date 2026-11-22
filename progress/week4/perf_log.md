@@ -122,3 +122,19 @@ Brief: [tasks/T4_brief.md](tasks/T4_brief.md). Branch `perf/w4-t4-roofline`. Rep
 - Copy bandwidth re-measured: 385.9 [385.7-386.1] GB/s (Day 2: 382; NVIDIA: 448).
 - Clock: the raw CUDA event times repeat within 1%, while host wall / event sum moves between 0.90 and 1.09 across sessions and the idle-sleep ratio between 1.00 and 1.11. TFLOP/s use events unscaled (unlike T5b's host rescale). A first full run with the idle-sleep correction was discarded.
 - > 2x across runs: bf16 and fp16 at n = 1,024 only (bimodal, 15 vs 38-40 TFLOP/s); peaks vary <= 1.02x.
+
+## T6: Week 4 perf write-up (Day 7, 2026-11-22)
+
+Brief: [tasks/T6_brief.md](tasks/T6_brief.md). Branch `perf/w4-t6-writeup`. Report: [perf/week04.md](../../perf/week04.md). No new experiment.
+
+**Built**
+- `perf/week04.md`: five-line summary, device table, one section and chart per day (Day 3-6, existing PNGs), what held / what didn't, Week 5 targets with numbers and sources, open issues, gaps in the brief.
+- `bench/w4_summary_table.py` (stdlib only): formats the device table from `DESKTOP-4C13T5V_20261122-1053_graph.json` (Day 6) and `DESKTOP-4C13T5V_20261116-2309.json` (Day 2) into `perf/results/w4/week04_device_table.{md,html}`; the site embeds the HTML verbatim.
+- Day 2 bench results committed unchanged from `~/flybench/flybrain/results/w4/bench/`: `DESKTOP-4C13T5V_20261116-2308.{json,md}` (382 GB/s copy), `..._2309.{json,md}` and `..._2311.{json,md}` (eager vs torch.compile, source of the compile row). The two profiler traces of 2309 (26 / 24 MB) are not committed.
+- `bench/w4_roofline_plot.py`: log-axis ticks as plain decimals (0.01 ... 1000) instead of mathtext 10^k, whose superscripts rendered ~7 px at 390 px. `perf/results/w4/roofline.png` re-rendered from the committed roofline JSON (matplotlib 3.11.2, `~/flybench/t1-plot`); a second render is byte-identical; the table HTML is byte-identical to the committed one.
+
+**Findings**
+- 44 vs 47 tests: `tests/test_fast_cuda.py` has 3 tests skipped without CUDA (`reason='needs CUDA'`). CI (main, run 45075378257): "44 passed, 3 skipped". WSL venv with the 5060 Ti: 47 passed; with `CUDA_VISIBLE_DEVICES=""`: 44 passed, 3 skipped. Expected behaviour, nothing fixed.
+- No two reports disagree beyond their stated ranges on the same measurement. Closest: Day 2 copy 382.0 GB/s (p90 374.1) vs Day 5 385.9 [385.7-386.1], two sessions, 1% apart; CPU "0.64 ms (T1)" in the Day 6 report vs T1's medians 0.60 / 0.62 with ranges up to 0.65.
+- Brief gaps: `perf/week04_plan.md` does not exist and `docs/plan.md` has no §3b; `bench/w4_bench.py` (Day 2 code) is still only on the PC.
+- No file under `sim/` changed.
