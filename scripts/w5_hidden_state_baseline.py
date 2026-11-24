@@ -31,7 +31,8 @@ Design (all choices fixed here)
 Usage
   python scripts/w5_hidden_state_baseline.py          # all rows (~10 min, 4 cores)
 Output (results/w5/hidden_state/baseline/)
-  summary.md, results.json, confusion_<row>.csv, pred_<row>.npz (held-out predictions)
+  summary.md, results.json, confusion_<row>.csv, pred_<row>.npz (held-out predictions),
+  row_<row>.json (per-row cache: a re-run after a restart skips finished rows), log.txt (appended)
 """
 import json
 import sys
@@ -78,19 +79,26 @@ def labels():
 
 
 def brain_inputs(cfg, inp_idx, mask, n):
-    """(N_EP, NB, n_inputs) spike counts per 50 ms bin (float32). n: number of model neurons."""
+    """(N_EP, NB, n_active) spike counts per 50 ms bin (float32) over the input neurons that
+    spike at least once in this cfg (all episodes; a label-free filter that only drops silent
+    columns, to keep memory small). n: number of model neurons."""
     col = -np.ones(n, np.int64)
     col[inp_idx] = np.arange(len(inp_idx))
-    X = np.zeros((N_EP, NB, len(inp_idx)), np.float32)
+    eps = []
     for k in range(N_EP):
         with np.load(DS / 'activity' / f'ep{k:03d}_{cfg}.npz') as d:
             t, i = d['t'], d['i']
         if np.isin(i, mask).any():
             raise RuntimeError(f'ep{k:03d}_{cfg}: decoder-mask neurons in the activity file')
         c = col[i.astype(np.int64)]
-        b = np.minimum(t // int(round(BIN_S / STEP)), NB - 1)
         ok = c >= 0
-        np.add.at(X[k], (b[ok], c[ok]), 1.0)
+        eps.append((np.minimum(t[ok] // int(round(BIN_S / STEP)), NB - 1), c[ok]))
+    active = np.unique(np.concatenate([c for _, c in eps]))
+    pos = -np.ones(len(inp_idx), np.int64)
+    pos[active] = np.arange(len(active))
+    X = np.zeros((N_EP, NB, len(active)), np.float32)
+    for k, (b, c) in enumerate(eps):
+        np.add.at(X[k], (b, pos[c]), 1.0)
     return X
 
 
@@ -168,7 +176,6 @@ def main():
     from sim.cns import brain_mask
     OUT.mkdir(parents=True, exist_ok=True)
     logp = OUT / 'log.txt'
-    logp.write_text('')
 
     def logf(m):
         print(m, flush=True)
@@ -195,17 +202,24 @@ def main():
             raise RuntimeError(f'{cfg}: {n} of {N_EP} episodes in index.csv')
     rows, res = [], {}
     Xw, vocab = word_inputs(specs)
-    runs = [('calib', 'brain', False), ('shuffle', 'brain', False), ('calib', 'brain', True),
+    runs = [('calib', 'brain', False), ('calib', 'brain', True), ('shuffle', 'brain', False),
             ('words', 'words', False)]
     Xc = {}
     for cfg, inp, perm in runs:
         name = f'{cfg}_{inp}' + ('_permuted' if perm else '')
         logf(f'[{name}]')
+        cache = OUT / f'row_{name}.json'
+        if cache.exists() and (OUT / f'pred_{name}.npz').exists():      # resume after a restart
+            c = json.loads(cache.read_text())
+            res[name], rows = c['res'], rows + [c['row']]
+            logf(f'  cached: pooled balanced accuracy {res[name]["bacc"]:.3f}')
+            continue
         if inp == 'brain':
             if cfg not in Xc:
+                Xc.clear()
                 t0 = time.time()
                 Xc[cfg] = brain_inputs(cfg, inp_idx, mask, len(meta))
-                logf(f'  loaded {cfg} in {time.time() - t0:.0f} s')
+                logf(f'  loaded {cfg} in {time.time() - t0:.0f} s: {Xc[cfg].shape[2]:,} input neurons spike at least once')
             X = Xc[cfg]
         else:
             X = Xw
@@ -222,6 +236,8 @@ def main():
                          bacc=res[name]['bacc'], fold_mean=np.mean(res[name]['bacc_folds']),
                          fold_sd=np.std(res[name]['bacc_folds'], ddof=1),
                          **{f'recall_{s}': v for s, v in rec.items()}))
+        cache.write_text(json.dumps(dict(res=res[name], row={k: (float(v) if isinstance(v, (float, np.floating)) else v)
+                                                              for k, v in rows[-1].items()})))
         logf(f'  pooled balanced accuracy {res[name]["bacc"]:.3f}; recall ' +
              ', '.join(f'{s} {v:.2f}' for s, v in rec.items()))
     tab = pd.DataFrame(rows)
