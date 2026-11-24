@@ -2,6 +2,8 @@
 
 **Question:** for each known stimulus → behaviour pair, does the full-CNS model (`cns_model('cns', 'calib', **W4_CALIB)`) put the expected output neurons near the top of all motor outputs, and more than shuffled wiring does? Nothing is trained or tuned. Brief: T5a (Orchestrator). Model: main c49cbb7.
 
+> **Shuffle-control fix (2026-11-24, [day2_shuffle_fix.md](day2_shuffle_fix.md)).** The "Finding" below (shuffled W with 46.7–47.4M nonzeros) is fixed in PR #14: the JO mirror now runs before the shuffle, and shuffle nnz is 24.44M (calib 24.52M). The 10 shuffles were re-run. The old outputs are in `results/w5/panel/pre_shufflefix/`. Old → new: real 4/9 and every p-value unchanged. Shuffle hits 1/9 in each of 10 → 1/9 in 9, 2/9 in shuf7 (P6 passes via a single GF/TTMn spike; P5 AUROC 0.729). Shuffle AUROC range for P5 0.479–0.486 → 0.471–0.729, X1 0.492–0.520 → 0.489–0.550. The tables below are the pre-fix ones. `results/figures/w5_behaviour_panel.png` now shows the fixed shuffles; the old figure is in `pre_shufflefix/`.
+
 All numbers come from `results/w5/panel/` (`scorecard.csv`, `summary.json`, `trials_<net>.csv`, `rates_<net>.csv`, `shuffle_verify.json`, `run.log`, `score.log`), written by `scripts/w5_behaviour_panel.py`.
 
 ## Built

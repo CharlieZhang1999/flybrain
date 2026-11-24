@@ -4,6 +4,8 @@
 
 **Where it stands:** the full-CNS model runs, is calibrated against the known VNC circuits we could test, and has produced a 420-run regression dataset. A first ridge baseline is in: the real connectome is predictable from brain activity well above the shuffled one, but a large part of that comes from looming episodes. The decoder work proper is Week 5.
 
+> **Shuffle-control fix (2026-11-24, [week5/day2_shuffle_fix.md](../week5/day2_shuffle_fix.md)).** The shuffle control here gave the right Johnston's organ (JO) about 22M extra weak outputs (nnz 46.8M vs 24.5M calib), because the JO mirror ran after the shuffle. It is fixed (mirror, then shuffle; PR #14). The shuffle half of the dataset and the shuffle ridge fit were re-run. Calib is unchanged. Old → new, shuffle: pools > 1 Hz² 30 → 28 (no looming 24 → 24); summed variance 372 → 534 Hz²; ridge median R² 0.017 → 0.024 (R² > 0.1: 5 → 3). Paired with calib on the calib floor pools: 39 → 49 pools, 0.119 vs 0.003 → 0.110 vs 0.002, shuffle ≥ calib in 1 → 8 pools (all with calib R² ≤ 0.09). The real-vs-shuffle gap holds. The numbers below are the pre-fix ones.
+
 Every number below comes from the day report linked next to it, or from the results file it names.
 
 ## 1. What was built
@@ -33,6 +35,8 @@ The DN validation panel (`results/w4/sci/w4d3_panel_summary.md`) passes for GF, 
 - **Known artifacts.** AL relaxation bursts (52 eligible events in calib mixtures), and post-wind loop tails up to 0.51 s (ep155). Neither tripped a stop condition.
 
 ## 3. Ridge baseline (`results/w4/regression/ridge/summary.md` and `log.txt`, on the shared mount)
+
+> **Shuffle-control fix (2026-11-24):** the shuffle rows of this table were re-fitted on the fixed shuffle. all brain, all 200: 30 pools, 0.017 → 28 pools, 0.024, R² > 0.1 5 → 3. No looming: 24 pools, 0.009 → 24, 0.014. DNs only: 0.013 → 0.014. Paired: shuffle ≥ calib in 1/39 → 8/49 pools. Calib rows are unchanged (identical predictions). The old outputs are in `ridge/pre_shufflefix/`. The figure copy `results/figures/w4_ridge_r2_calib_vs_shuffle.png` now shows the fixed shuffle. Details: [week5/day2_shuffle_fix.md](../week5/day2_shuffle_fix.md).
 **Setup.** Brain inputs (brain_mask neurons with ≥ 20 spikes in the training episodes, z-scored, 200 principal components fitted on the training episodes only) at lags 0–100 ms in 10 ms bins (11 lags, 2,200 features) → the 349 pool rates and 42 group × side rates at t + 100 ms. First 100 ms of each episode discarded. 5-fold cross-validation by episode, stratified by looming and wind; ridge α per target from an inner 4-fold CV on the training episodes. R² on held-out bins pooled over folds, reported for pools above the Day 5 floor of each cfg. Controls: time-shuffled targets (circular shift ≥ 300 ms per episode) and the training-fold mean. Reproducible: re-running fold 0 (`--check`, `log_check.txt`) gives predictions identical to the saved ones, and two full runs gave a byte-identical `r2_per_pool.csv`.
 
 | cfg | inputs | episodes | pools above floor | median R² | IQR | R² > 0.1 | coarse: groups, median R² |
