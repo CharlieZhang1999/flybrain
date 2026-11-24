@@ -85,3 +85,56 @@ Brief: [tasks/T5a_brief.md](tasks/T5a_brief.md). Branch `perf/w4-t5a-syncfree`. 
 - Local: `pytest -q tests/` 41 passed in ~22 s; new tests ~17 s.
 - Gaps for T5b (unverified here): block windows are Python branches on the step number, so a CUDA graph is per set of active drives; no GPU sync check was possible (the dispatch counter cannot see syncs inside C++/CUDA kernels; use `torch.cuda.set_sync_debug_mode` there); hidden H2D from Python scalars in `where` / index assignments on CUDA unverified; graph-safe RNG for `t_gen` not set up; record buffer is steps x spike_cap x 8 bytes.
 - No other file under `sim/` changed.
+
+## T5b: CUDA graph + GPU timing of the sync-free step (Day 6 part 2, 2026-11-22)
+
+Brief: [tasks/T5b_brief.md](tasks/T5b_brief.md). Branch `perf/w4-t5b-graph`. Report: [perf/week04_day6.md](../../perf/week04_day6.md). PC (WSL, RTX 5060 Ti, torch 2.11.0+cu128).
+
+**Built**
+- `bench/w4_caps.py`: reference on the bundle (looming, rng='torch', float64, 10,000 steps, seeds 0-2); max spikes/step and max gathered synapses/step for W and Wp. Caps = ceil(1.5 x max): `spike_cap = 60`, `syn_cap = 44,483` (Wp needs 3,677).
+- `bench/w4_graph.py`: `graph_trial(sim)` (3 eager warm-up steps of the trial on a side stream, one `torch.cuda.graph` capture of `_Sim.step` per active-drive combination, the sim's generator registered with `CUDAGraph.register_generator_state`, one replay per step); timing rows (reference / fast eager / fast graph on cuda float64, float32 and deterministic variants, fast at default caps, fast and reference on cpu), 5 runs, per-step CUDA events rescaled to the host clock plus a second trial without events, peak GPU memory; sync check under `torch.cuda.set_sync_debug_mode('error')` with a positive control and ops per step; full-trial parity (seeds 0-2).
+- `bench/w4_graph_plot.py`: bar chart (840 px) and the HTML table the site embeds.
+- `tests/test_fast_cuda.py` (skipped without CUDA): sync-debug steady loop + positive control; graph == eager (counts, records, bins, v, g) for all options (2 graphs) and overlapping blocks (3 graphs).
+- No change under `sim/` was needed.
+
+**Findings**
+- GPU single trial beats the CPU: graph 0.49 [0.43-0.60] ms steady, 0.45 [0.42-0.63] ms all steps, vs CPU 0.64 ms (T1) and 0.55 [0.52-0.59] ms measured in the same session. Reference GPU 1.73 [1.57-1.85], fast eager GPU 1.75 [1.48-1.93], fast eager CPU 1.77 [1.64-1.82] ms.
+- Sync check passed (200 steady steps, nothing raised; the reference raises). Capture itself forbids syncs and succeeded. Fast step: 173 aten ops, 150 GPU ops per step (reference ~117/106), which is why eager is not faster than the reference.
+- Overflow 0 at the caps in every trial. Default caps: 7.7 ms/step, +166 MB.
+- Parity, float64: graph == eager (0 neurons differ, 3 full trials + 5 timed trials), fast == reference on GPU (correlation 1.0, 0 neurons differ, 3 seeds). States differ bitwise (<= 1.7e-16) run to run, eager too (float atomics in `index_add_`), so count identity is observed, not guaranteed. Float32: counts not reproducible run to run; graph vs eager differ in 2 of 3 full trials; identical under `torch.use_deterministic_algorithms(True)`, which costs ~9 ms/step.
+- CUDA event times on this WSL box read 4-6% high against the host clock; spans are rescaled per trial.
+- Week 5 targets: fusion of the gather/scatter and decay/threshold chain (<= 0.25 ms/step), batching B trials in one graph (8 trials < 1 ms/step).
+
+## T4: compute roofline on the 5060 Ti (Day 5a, 2026-11-22)
+
+Brief: [tasks/T4_brief.md](tasks/T4_brief.md). Branch `perf/w4-t4-roofline`. Report: [perf/week04_day5.md](../../perf/week04_day5.md). PC (WSL, RTX 5060 Ti, torch 2.11.0+cu128, driver 610.88).
+
+**Built**
+- `bench/w4_roofline.py`: `torch.matmul` peaks for fp64 / fp32 (TF32 off) / tf32 / bf16 / fp16 at n = 1,024-8,192, 100 timed calls per size with one CUDA event pair each, median + p90 per size, peak = best size's median, `--runs 5`; same-session copy bandwidth (Day 2 method); TF32 flag check; LIF decay FLOP and byte count of `sim/lif_torch._decay` via `TorchDispatchMode` (eager) plus the fused lower bound; derived vendor spec with sources; nvidia-smi clocks/power after each size; host-clock diagnostics. Exit code 5 if a peak is > 10% over spec.
+- `bench/w4_roofline_plot.py`: log-log roofline (`perf/results/w4/roofline.png`, 840 px) and the HTML peak table the site embeds.
+- No change under `sim/`; no Triton kernel.
+
+**Findings**
+- Peaks, median [min-max] of 5 runs, TFLOP/s: fp16 47.67 [47.67-48.08], bf16 48.29 [48.24-48.64], tf32 24.05 [24.05-24.24], fp32 16.88 [16.87-17.27], fp64 0.347 [0.347-0.347]. % of the derived spec: 100.6 / 102.0 / 101.5 / 71.3 / 93.8. No OOM, no errors, nothing > 10% over spec.
+- NVIDIA publishes no per-dtype TFLOP/s for the 5060 Ti. Spec derived from the RTX Blackwell whitepaper (RTX 5070 per-SM rates, FP64 = FP32/64) x 36 SMs x 2.57 GHz; consistent with the published 759 AI TOPS. The card runs at 2.62-2.73 GHz under load, hence ~101% on the tensor dtypes; fp32 SIMT is power-limited at 180 W.
+- fp32 / fp64 = 48.6 (1/64 by spec). Ridge points at 382 GB/s: fp64 0.91, fp32 44, tf32 63, fp16 125, bf16 126 FLOP/byte.
+- LIF decay: 8 FLOP per neuron; fused 49 B (float64, 0.163 FLOP/B) / 33 B (float32, 0.242); eager 244 B / 140 B (14 aten ops). 5.6x below even the fp64 ridge: bandwidth/launch bound. Week 5 decay kernels: judge against 382 GB/s with fused byte counts.
+- Copy bandwidth re-measured: 385.9 [385.7-386.1] GB/s (Day 2: 382; NVIDIA: 448).
+- Clock: the raw CUDA event times repeat within 1%, while host wall / event sum moves between 0.90 and 1.09 across sessions and the idle-sleep ratio between 1.00 and 1.11. TFLOP/s use events unscaled (unlike T5b's host rescale). A first full run with the idle-sleep correction was discarded.
+- > 2x across runs: bf16 and fp16 at n = 1,024 only (bimodal, 15 vs 38-40 TFLOP/s); peaks vary <= 1.02x.
+
+## T6: Week 4 perf write-up (Day 7, 2026-11-22)
+
+Brief: [tasks/T6_brief.md](tasks/T6_brief.md). Branch `perf/w4-t6-writeup`. Report: [perf/week04.md](../../perf/week04.md). No new experiment.
+
+**Built**
+- `perf/week04.md`: five-line summary, device table, one section and chart per day (Day 3-6, existing PNGs), what held / what didn't, Week 5 targets with numbers and sources, open issues, gaps in the brief.
+- `bench/w4_summary_table.py` (stdlib only): formats the device table from `DESKTOP-4C13T5V_20261122-1053_graph.json` (Day 6) and `DESKTOP-4C13T5V_20261116-2309.json` (Day 2) into `perf/results/w4/week04_device_table.{md,html}`; the site embeds the HTML verbatim.
+- Day 2 bench results committed unchanged from `~/flybench/flybrain/results/w4/bench/`: `DESKTOP-4C13T5V_20261116-2308.{json,md}` (382 GB/s copy), `..._2309.{json,md}` and `..._2311.{json,md}` (eager vs torch.compile, source of the compile row). The two profiler traces of 2309 (26 / 24 MB) are not committed.
+- `bench/w4_roofline_plot.py`: log-axis ticks as plain decimals (0.01 ... 1000) instead of mathtext 10^k, whose superscripts rendered ~7 px at 390 px. `perf/results/w4/roofline.png` re-rendered from the committed roofline JSON (matplotlib 3.11.2, `~/flybench/t1-plot`); a second render is byte-identical; the table HTML is byte-identical to the committed one.
+
+**Findings**
+- 44 vs 47 tests: `tests/test_fast_cuda.py` has 3 tests skipped without CUDA (`reason='needs CUDA'`). CI (main, run 45075378257): "44 passed, 3 skipped". WSL venv with the 5060 Ti: 47 passed; with `CUDA_VISIBLE_DEVICES=""`: 44 passed, 3 skipped. Expected behaviour, nothing fixed.
+- No two reports disagree beyond their stated ranges on the same measurement. Closest: Day 2 copy 382.0 GB/s (p90 374.1) vs Day 5 385.9 [385.7-386.1], two sessions, 1% apart; CPU "0.64 ms (T1)" in the Day 6 report vs T1's medians 0.60 / 0.62 with ranges up to 0.65.
+- Brief gaps: `perf/week04_plan.md` does not exist and `docs/plan.md` has no §3b; `bench/w4_bench.py` (Day 2 code) is still only on the PC.
+- No file under `sim/` changed.

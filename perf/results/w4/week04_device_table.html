@@ -1,0 +1,14 @@
+<table class="w4sum">
+<thead><tr><th>device and mode</th><th>dtype</th><th class="n">steady ms/step</th><th class="n">all steps ms/step</th><th class="n">bio-s per wall-s</th><th>source</th></tr></thead>
+<tbody>
+<tr><td>PC CPU (6 threads), reference</td><td>f64</td><td class="n">0.55 <span class="rg">[0.52–0.59]</span></td><td class="n">0.55 <span class="rg">[0.52–0.59]</span></td><td class="n">0.181 <span class="rg">[0.169–0.191]</span></td><td>Day 6</td></tr>
+<tr><td>5060 Ti, reference eager</td><td>f64</td><td class="n">1.73 <span class="rg">[1.57–1.85]</span></td><td class="n">1.79 <span class="rg">[1.74–1.98]</span></td><td class="n">0.058 <span class="rg">[0.054–0.064]</span></td><td>Day 6</td></tr>
+<tr><td>5060 Ti, reference eager + torch.compile</td><td>f64</td><td class="n">-</td><td class="n">2.07 (worst 2.17)</td><td class="n">0.048 (all steps)</td><td>Day 2</td></tr>
+<tr><td>5060 Ti, sync-free eager</td><td>f64</td><td class="n">1.75 <span class="rg">[1.48–1.93]</span></td><td class="n">1.84 <span class="rg">[1.27–1.93]</span></td><td class="n">0.057 <span class="rg">[0.052–0.068]</span></td><td>Day 6</td></tr>
+<tr><td>5060 Ti, sync-free CUDA graph</td><td>f64</td><td class="n">0.49 <span class="rg">[0.43–0.60]</span></td><td class="n">0.45 <span class="rg">[0.42–0.63]</span></td><td class="n">0.205 <span class="rg">[0.168–0.234]</span></td><td>Day 6</td></tr>
+<tr><td>5060 Ti, sync-free CUDA graph</td><td>f32</td><td class="n">0.44 <span class="rg">[0.43–0.56]</span></td><td class="n">0.44 <span class="rg">[0.43–0.45]</span></td><td class="n">0.225 <span class="rg">[0.177–0.235]</span></td><td>Day 6</td></tr>
+<tr><td>Mac CPU</td><td>-</td><td class="n">not run</td><td class="n">not run</td><td class="n">not run</td><td>-</td></tr>
+<tr><td>Mac MPS</td><td>-</td><td class="n">not run</td><td class="n">not run</td><td class="n">not run</td><td>-</td></tr>
+</tbody>
+</table>
+<p class="note">Day 6 rows: one looming trial per run, 2,000 steps after 1,000 warm-up steps, 5 runs, median [min–max] across runs; steady = mean of the steps ≤ 5 ms, all steps = wall time / steps with stalls. Day 2 row: 0.2 bio-s from t = 0 with setup and warm-up included, median of 3 repeats and the worst repeat; it is not comparable with the steady column. bio-s per wall-s = 0.1 ms / ms per step. The Mac rows were not measured in Week 4. Files: flybrain <code>perf/results/w4/DESKTOP-4C13T5V_20261122-1053_graph.json</code> and <code>perf/results/w4/DESKTOP-4C13T5V_20261116-2309.json</code>.</p>

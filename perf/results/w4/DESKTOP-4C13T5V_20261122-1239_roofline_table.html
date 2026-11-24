@@ -1,0 +1,11 @@
+<table class="roofline">
+<thead><tr><th>dtype</th><th class="n">peak TFLOP/s</th><th class="n">spec TFLOP/s</th><th class="n">% of spec</th><th class="n">ridge FLOP/byte</th></tr></thead>
+<tbody>
+<tr><td>fp16</td><td class="n">47.7 <span class="rg">[47.7–48.1]</span></td><td class="n">47.4</td><td class="n">101%</td><td class="n">125</td></tr>
+<tr><td>bf16</td><td class="n">48.3 <span class="rg">[48.2–48.6]</span></td><td class="n">47.4</td><td class="n">102%</td><td class="n">126</td></tr>
+<tr><td>tf32</td><td class="n">24.1 <span class="rg">[24.1–24.2]</span></td><td class="n">23.7</td><td class="n">102%</td><td class="n">63</td></tr>
+<tr><td>fp32 (no TF32)</td><td class="n">16.9 <span class="rg">[16.9–17.3]</span></td><td class="n">23.7</td><td class="n">71%</td><td class="n">44.2</td></tr>
+<tr><td>fp64</td><td class="n">0.347 <span class="rg">[0.347–0.347]</span></td><td class="n">0.370</td><td class="n">94%</td><td class="n">0.908</td></tr>
+</tbody>
+</table>
+<p class="note">torch.matmul on square matrices of n = 1,024 to 8,192, 100 timed repeats per size, 5 runs. Peak: the best size’s median in each run; median across 5 runs, [min–max] across runs. Spec: NVIDIA publishes no TFLOP/s per type for the 5060 Ti; these are scaled from the RTX 5070 in NVIDIA’s RTX Blackwell whitepaper (per SM and clock, 36 SMs, 2.57 GHz boost), fp16/bf16 with 32-bit accumulate, fp64 = fp32 / 64. Ridge: peak / 382 GB/s copy bandwidth (Day 2). LIF decay per neuron: 8 FLOPs; 49 bytes in float64 and 33 in float32 if fused (each array read or written once), 244 and 140 as run today, one kernel per operation.</p>

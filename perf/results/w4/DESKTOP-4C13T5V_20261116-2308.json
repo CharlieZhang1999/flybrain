@@ -1,0 +1,57 @@
+{
+ "env": {
+  "host": "DESKTOP-4C13T5V",
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "torch": "2.11.0+cu128",
+  "cpu_threads": 6,
+  "devices": [
+   "cpu",
+   "cuda"
+  ],
+  "gpu": "NVIDIA GeForce RTX 5060 Ti",
+  "cc": "sm_120",
+  "sms": 36,
+  "vram_gb": 15.9,
+  "cuda": "12.8",
+  "arch_list": [
+   "sm_75",
+   "sm_80",
+   "sm_86",
+   "sm_90",
+   "sm_100",
+   "sm_120"
+  ],
+  "l2_mb": 32.0,
+  "torch_has_this_arch": true,
+  "triton": "3.6.0"
+ },
+ "args": {
+  "bundle": "/root/flybench/flybrain/results/w4/cns_bundle_calib.npz",
+  "devices": "cpu,cuda",
+  "only": "env,bandwidth",
+  "bio": 0.2,
+  "repeats": 3,
+  "stim": "looming",
+  "no_compile": false,
+  "profile_steps": 300,
+  "bw_mb": 512
+ },
+ "bandwidth": {
+  "cpu/torch_copy": {
+   "GBps": 16.8,
+   "p90_GBps": 16.4,
+   "mb": 512
+  },
+  "cuda/torch_copy": {
+   "GBps": 382.0,
+   "p90_GBps": 374.1,
+   "mb": 512
+  },
+  "cuda/triton_copy": {
+   "GBps": 376.0,
+   "p90_GBps": 371.6,
+   "mb": 512
+  }
+ }
+}
