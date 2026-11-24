@@ -4,6 +4,8 @@
 
 **Model:** main eb24389 (PR #8), so `W4_CALIB` includes `LOOP_GAIN`. All numbers come from `results/w4/regression/day5/summary.md` (written by `scripts/w4d5_dataset_summary.py`) and from `run_log.txt` there.
 
+> **Shuffle-control fix (2026-11-24, [week5/day2_shuffle_fix.md](../week5/day2_shuffle_fix.md)).** The 210 shuffle episodes were re-generated with the fixed shuffle (JO mirror before the shuffle; the old control gave the right JO about 22M extra weak outputs). Same specs and seeds. The old files are in `pre_shufflefix/`. Calib is unchanged. Old → new, shuffle: pools > 1 Hz² 30 → 28 (no looming 24 → 24, background-only 1 → 5); summed variance 372 → 534 Hz² (background-only 5.8 → 305 Hz², from a tonically firing left TTMn in this shuffle draw). Only 1 of the 28 varying pools was among the old 30, because the fix makes a new random draw. Stop conditions: none. The shuffle numbers below are the pre-fix ones.
+
 ## Built
 - **`scripts/w4d5_dataset.py`** (PR #8, unchanged). Run as `0 210 calib` and `0 210 shuffle`, in resumable chunks, one process at a time.
   - **Calib:** k 0–99, then k 100–209.

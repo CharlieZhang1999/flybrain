@@ -14,6 +14,8 @@ Pipeline (identical to scripts/w3d1_common.presyn_model, minus the VNC mask):
   -> presynaptic modulation of all sensory terminals (K = 0.05), which also
      removes every central -> sensory row (brain and VNC sensory neurons alike)
   -> optional right-JO mirror
+(For the shuffle control the right-JO mirror is applied before the shuffle,
+see SHUFFLE_ORDER below and presyn_mirror_shuffle.)
 
 Motor pools (`motor_pools`): VNC motor neurons grouped by side x nerve-cord
 subclass x functional type, e.g. 'L|fl|Ti flexor MN'. Leg subclasses fl/ml/hl
@@ -59,6 +61,18 @@ CLIQUE_GAIN = ({'DNg33', 'IN19B040'}, 0.3)
 # in 3/3 wind episodes, non-wind ep000/ep019 spike-identical (T2c gain scan,
 # progress/week4/day5_burst_diagnosis.md; verification day5_loop_gain.md).
 LOOP_GAIN = ({'DNge027', 'GNG423', 'DNg21', 'DNg62', 'DNge044'}, 0.3)
+# Week 5 day 2 (T5b): shuffle-control / JO-mirror order. Until this fix the
+# shuffle config ran shuffle -> build_presyn -> mirror_jo, so the right-JO mirror
+# copied the mean output of the SHUFFLED left JO columns, whose ~24k entries point
+# at random targets: the mirrored template becomes dense and weak, and the right
+# JO gained ~22M weak outputs (cns_model('cns', 'shuffle', **W4_CALIB), seed 12345:
+# nnz 46,833,061 with the mirror vs 24,335,309 without; calib 24,519,583 with /
+# 24,410,275 without; T5a, PR #13). Every shuffle control since the mirror was
+# added (Week 4 day 4 on: Day 5 dataset, ridge baseline, Week 5 behaviour panel)
+# had this, mostly affecting wind and sound. Fixed order: mirror the real W (as
+# calib does), then shuffle, so the shuffle permutes the mirrored real network
+# (presyn_mirror_shuffle). 'legacy' rebuilds the old shuffle W exactly.
+SHUFFLE_ORDER = 'fixed'
 W4_CALIB = dict(gf_gap=GF_GAP_MV, mn_glu=True, sign_fix=SIGN_FIX, clique_gain=CLIQUE_GAIN,
                 loop_gain=LOOP_GAIN)
 
@@ -132,8 +146,49 @@ def scale_set_edges(W, types_of, types, g):
     return sparse.csc_matrix((d, (C.row, C.col)), shape=W.shape)
 
 
+def presyn_mirror_shuffle(W, sens, K, mirror_fn=None, shuffle_fn=None, order=SHUFFLE_ORDER):
+    """The last pipeline steps: [shuffle] -> build_presyn -> [mirror], in the right order.
+
+    W: full post x pre W (sensory rows included). sens: bool sensory mask.
+    mirror_fn: None or f(W_main) -> (W_main', info), applied to the W that
+    build_presyn returns (sensory rows removed), as in calib.
+    shuffle_fn: None (calib) or f(W) -> W (scripts.w2d4_word_trials.shuffle_W).
+    order (shuffle only): 'fixed' mirrors the real W first: mirror_fn on
+      build_presyn(W)[0] (exactly the W calib mirrors), the unmirrored sensory
+      rows of W put back (the mirror only rewrites right-JO columns of non-
+      sensory rows), then shuffle the full matrix, then build_presyn on the
+      shuffled matrix as before, so the presyn rows (ps) still come from the
+      shuffled W and the shuffle keeps every row's entry count (incl. sensory
+      rows). 'legacy' = shuffle -> build_presyn -> mirror (pre-T5b, inflated).
+    calib (shuffle_fn None) runs build_presyn -> mirror, unchanged.
+    Returns (W_main, presyn, presyn_info, mirror_info or None, extra info dict)."""
+    from scipy import sparse
+    from sim.presyn import build_presyn
+    if order not in ('fixed', 'legacy'):
+        raise ValueError(f'shuffle_order {order!r}')
+    minfo, extra = None, {}
+    if shuffle_fn is not None:
+        extra['shuffle_order'] = order
+        if mirror_fn is not None and order == 'fixed':
+            sens = np.asarray(sens, bool)
+            Wm, minfo = mirror_fn(build_presyn(W, sens, K)[0])
+            S = sparse.diags(sens.astype(np.float64))
+            extra['mirror_sensory_row_entries'] = int((S @ Wm).count_nonzero())   # expected 0
+            W = (Wm + (S @ W.tocsr()).tocsc()).tocsc()
+            W.eliminate_zeros()
+            extra['nnz_shuffle_input'] = int(W.nnz)
+            mirror_fn = None
+        W = shuffle_fn(W)
+    W, ps, pinfo = build_presyn(W, sens, K)
+    extra['nnz_presyn'] = int(W.nnz)
+    if mirror_fn is not None:
+        W, minfo = mirror_fn(W)
+    return W, ps, pinfo, minfo, extra
+
+
 def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True, gf_gap=None,
-              mn_glu=False, sign_fix=None, clique_gain=None, loop_gain=None):
+              mn_glu=False, sign_fix=None, clique_gain=None, loop_gain=None,
+              shuffle_order=SHUFFLE_ORDER):
     """Return dict(meta, W, gap, presyn, apl, vnc, info).
 
     scope : 'cns' (brain + VNC, Week 4) or 'brain' (Week 3 model, VNC masked).
@@ -153,11 +208,15 @@ def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True
             neurons both belong to the listed types (same or different type)
             are scaled by g (Week 4 day 5: LOOP_GAIN). Like clique_gain it acts
             before the shuffle, so the shuffle control permutes the scaled W.
+    shuffle_order: 'fixed' (default since Week 5 day 2: the right-JO mirror is
+            applied to the real W before the shuffle) or 'legacy' (shuffle
+            first, mirror after: reproduces every pre-fix shuffle W exactly).
+            Only used with config='shuffle' and mirror=True; see SHUFFLE_ORDER.
     """
     from scripts.w2d3_gap_malecns import cut_ln_pn
     from scripts.w2d4_word_trials import shuffle_W, GAP_KW
     from scripts.ckpt5_stageA import ACH_LN, PN
-    from sim.presyn import build_presyn, sensory_mask_malecns
+    from sim.presyn import sensory_mask_malecns
     from sim.malecns import load        # needs pyarrow: imported here so CI can import sim.cns
 
     meta, W1 = load(w_syn=1.0, monoamine='removed')
@@ -205,15 +264,20 @@ def cns_model(scope='cns', config='calib', K=K_PRESYN, mirror=True, verbose=True
         gg, gginfo = build_gf_gap(meta, gf_gap, v_spike=0.002)
         gap = merge_gap(gap, gg)
         ginfo = dict(ginfo, gf=gginfo)
-    if config == 'shuffle':
-        W = shuffle_W(W)
-    elif config != 'calib':
+    if config not in ('calib', 'shuffle'):
         raise ValueError(config)
-    W, ps, pinfo = build_presyn(W, sensory_mask_malecns(meta), K)
-    info = dict(scope=scope, config=config, nnz=int(W.nnz), presyn=pinfo, gap=ginfo)
+    mirror_fn = None
     if mirror:
         from sim.jo_mirror import mirror_jo
-        W, minfo = mirror_jo(W, meta)
+        mirror_fn = lambda X: mirror_jo(X, meta)      # noqa: E731
+    W, ps, pinfo, minfo, extra = presyn_mirror_shuffle(
+        W, sensory_mask_malecns(meta), K, mirror_fn=mirror_fn,
+        shuffle_fn=shuffle_W if config == 'shuffle' else None, order=shuffle_order)
+    # 'nnz' = W right after build_presyn (as before: before the mirror in calib and
+    # legacy shuffle; with the 'fixed' shuffle the mirror is already in)
+    info = dict(scope=scope, config=config, nnz=extra.pop('nnz_presyn'), presyn=pinfo,
+                gap=ginfo, **extra)
+    if minfo is not None:
         info['mirror'] = {k: v for k, v in minfo.items() if k != 'templates'}
     if verbose:
         print(f'[cns_model] scope={scope} config={config} n={W.shape[0]:,} nnz={W.nnz:,}', flush=True)
