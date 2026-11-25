@@ -1,0 +1,5630 @@
+{
+ "tag": "DESKTOP-4C13T5V_20261125-1020",
+ "env": {
+  "host": "DESKTOP-4C13T5V",
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "torch": "2.11.0+cu128",
+  "numpy": "2.5.5",
+  "cpu_threads": 6,
+  "kernel": "6.18.58.1-microsoft-standard-WSL2",
+  "gpu": "NVIDIA GeForce RTX 5060 Ti",
+  "cc": "sm_120",
+  "cuda_runtime": "12.8",
+  "cudnn": 91900,
+  "driver": "610.88",
+  "wsl": true,
+  "wsl_version": "WSL version: 3.0.5.0\r\nKernel version: 6.18.58.1-1\r\nWSLg version: 1.0.79\r\nMSRDC version: 1.2.7391\r\nDirect3D version: 1.611.1-81528511\r\nDXCore version: 10.0.26100.1-240331-1435.ge-release\r\nWindows version: 10.0.26200.9974",
+  "triton": "3.6.0"
+ },
+ "args": {
+  "bundle": "/root/flybench/flybrain/results/w4/cns_bundle_calib.npz",
+  "runs": 5,
+  "warm": 1000,
+  "steps": 2000,
+  "stim": "looming",
+  "bs": [
+   1,
+   2,
+   4,
+   8,
+   16,
+   32
+  ],
+  "bs_f32": [
+   1,
+   2,
+   4,
+   8,
+   16,
+   32
+  ],
+  "only": null,
+  "phase_steps": 30,
+  "gate_ms": 1.0,
+  "busy_poll": 120.0,
+  "no_checks": false,
+  "checks_only": false,
+  "resume": null,
+  "out": "/root/flybench/dev-p1/flybrain/perf/results/w5"
+ },
+ "caps": {
+  "spike_cap": 60,
+  "syn_cap": 44483
+ },
+ "warmup_eager_steps": 3,
+ "torch_threads": 6,
+ "runs": [
+  {
+   "rows": {
+    "batch graph cuda f64 B=1": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5306,
+     "steady_median_ms": 0.5276,
+     "window_ms_per_step": 0.5306,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.5276,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 0.923,
+     "trial_wall_s": 1.861,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 53023,
+     "peak_mem_mb": 413.4,
+     "window_ms_per_step_no_events": 0.53,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:25:37",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:25:41",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=2": {
+     "steps": 2000,
+     "steady_mean_ms": 0.7856,
+     "steady_median_ms": 0.786,
+     "window_ms_per_step": 0.7856,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.786,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 0.923,
+     "trial_wall_s": 2.644,
+     "overflow": [
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 106960,
+     "peak_mem_mb": 427.1,
+     "window_ms_per_step_no_events": 0.785,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:25:41",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:25:48",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=4": {
+     "steps": 2000,
+     "steady_mean_ms": 1.1191,
+     "steady_median_ms": 1.1193,
+     "window_ms_per_step": 1.1191,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.1193,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 0.9999,
+     "trial_wall_s": 3.687,
+     "overflow": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 211081,
+     "peak_mem_mb": 455.3,
+     "window_ms_per_step_no_events": 1.0707,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:25:49",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:25:56",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=8": {
+     "steps": 2000,
+     "steady_mean_ms": 1.9668,
+     "steady_median_ms": 1.9656,
+     "window_ms_per_step": 1.9668,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.9656,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0909,
+     "trial_wall_s": 6.167,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 419795,
+     "peak_mem_mb": 512.1,
+     "window_ms_per_step_no_events": 1.9578,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:25:56",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:26:09",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=16": {
+     "steps": 2000,
+     "steady_mean_ms": 4.0857,
+     "steady_median_ms": 4.0839,
+     "window_ms_per_step": 4.0857,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 4.0839,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0352,
+     "trial_wall_s": 12.332,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 834248,
+     "peak_mem_mb": 621.5,
+     "window_ms_per_step_no_events": 3.8696,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:26:09",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:26:36",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=32": {
+     "steps": 2000,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 8.5872,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 8.58,
+     "median_ms_all_steps": 8.5796,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0254,
+     "trial_wall_s": 25.499,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 1670835,
+     "peak_mem_mb": 840.6,
+     "window_ms_per_step_no_events": 8.2222,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:26:36",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:27:30",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=1": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4586,
+     "steady_median_ms": 0.4571,
+     "window_ms_per_step": 0.4586,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4571,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.018,
+     "trial_wall_s": 1.697,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 51927,
+     "peak_mem_mb": 309.9,
+     "window_ms_per_step_no_events": 0.4583,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:27:31",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:27:34",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=2": {
+     "steps": 2000,
+     "steady_mean_ms": 0.6338,
+     "steady_median_ms": 0.6342,
+     "window_ms_per_step": 0.6338,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.6342,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0198,
+     "trial_wall_s": 2.197,
+     "overflow": [
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 105469,
+     "peak_mem_mb": 319.4,
+     "window_ms_per_step_no_events": 0.5906,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:27:34",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:27:39",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=4": {
+     "steps": 2000,
+     "steady_mean_ms": 0.9516,
+     "steady_median_ms": 0.9519,
+     "window_ms_per_step": 0.9516,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.9519,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0908,
+     "trial_wall_s": 3.109,
+     "overflow": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 209054,
+     "peak_mem_mb": 340.3,
+     "window_ms_per_step_no_events": 0.9507,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:27:39",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:27:46",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=8": {
+     "steps": 2000,
+     "steady_mean_ms": 1.4678,
+     "steady_median_ms": 1.4677,
+     "window_ms_per_step": 1.4678,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.4677,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0908,
+     "trial_wall_s": 4.663,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 416743,
+     "peak_mem_mb": 375.8,
+     "window_ms_per_step_no_events": 1.4694,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:27:46",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:27:56",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=16": {
+     "steps": 2000,
+     "steady_mean_ms": 2.6514,
+     "steady_median_ms": 2.6501,
+     "window_ms_per_step": 2.6514,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 2.6501,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0089,
+     "trial_wall_s": 8.156,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 832147,
+     "peak_mem_mb": 447.6,
+     "window_ms_per_step_no_events": 2.5304,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:27:56",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:28:14",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=32": {
+     "steps": 2000,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 5.2597,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 5.257,
+     "median_ms_all_steps": 5.2566,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0909,
+     "trial_wall_s": 16.016,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 1670757,
+     "peak_mem_mb": 590.8,
+     "window_ms_per_step_no_events": 5.4527,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:28:14",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:28:50",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "fast graph cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4248,
+     "steady_median_ms": 0.4253,
+     "window_ms_per_step": 0.4248,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4253,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0908,
+     "trial_wall_s": 1.507,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": null,
+     "spikes": 53023,
+     "peak_mem_mb": 406.3,
+     "window_ms_per_step_no_events": 0.4231,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:28:50",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:28:53",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "ref eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5864,
+     "steady_median_ms": 0.5594,
+     "window_ms_per_step": 0.5864,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.5594,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 1.745,
+     "overflow": null,
+     "graphs": null,
+     "replays": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "window_ms_per_step_no_events": 0.5864,
+     "busy_check_before": {
+      "time": "2026-11-25 10:28:53",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:28:55",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    }
+   },
+   "time": "2026-11-25 10:28:55"
+  },
+  {
+   "rows": {
+    "batch graph cuda f64 B=1": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4744,
+     "steady_median_ms": 0.4431,
+     "window_ms_per_step": 0.4744,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4431,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0907,
+     "trial_wall_s": 1.567,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 53023,
+     "peak_mem_mb": 405.3,
+     "window_ms_per_step_no_events": 0.4651,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:28:55",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:28:59",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=2": {
+     "steps": 2000,
+     "steady_mean_ms": 0.6723,
+     "steady_median_ms": 0.6726,
+     "window_ms_per_step": 0.6723,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.6726,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0673,
+     "trial_wall_s": 2.127,
+     "overflow": [
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 106960,
+     "peak_mem_mb": 419.0,
+     "window_ms_per_step_no_events": 0.6839,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:28:59",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:29:04",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=4": {
+     "steps": 2000,
+     "steady_mean_ms": 1.0756,
+     "steady_median_ms": 1.0757,
+     "window_ms_per_step": 1.0756,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.0757,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0348,
+     "trial_wall_s": 3.512,
+     "overflow": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 211081,
+     "peak_mem_mb": 447.1,
+     "window_ms_per_step_no_events": 1.0645,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:29:04",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:29:13",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=8": {
+     "steps": 2000,
+     "steady_mean_ms": 2.0895,
+     "steady_median_ms": 2.088,
+     "window_ms_per_step": 2.0895,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 2.088,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0328,
+     "trial_wall_s": 6.502,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 419795,
+     "peak_mem_mb": 503.9,
+     "window_ms_per_step_no_events": 1.9738,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:29:14",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:29:27",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=16": {
+     "steps": 2000,
+     "steady_mean_ms": 3.9396,
+     "steady_median_ms": 3.9372,
+     "window_ms_per_step": 3.9396,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 3.9372,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0723,
+     "trial_wall_s": 12.039,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 834248,
+     "peak_mem_mb": 613.4,
+     "window_ms_per_step_no_events": 4.1046,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:29:27",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:29:54",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=32": {
+     "steps": 2000,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 8.277,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 8.271,
+     "median_ms_all_steps": 8.2708,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.058,
+     "trial_wall_s": 24.836,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 1670835,
+     "peak_mem_mb": 832.4,
+     "window_ms_per_step_no_events": 8.0278,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:29:54",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:30:46",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=1": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4263,
+     "steady_median_ms": 0.4262,
+     "window_ms_per_step": 0.4263,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4262,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0908,
+     "trial_wall_s": 1.523,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 51927,
+     "peak_mem_mb": 301.8,
+     "window_ms_per_step_no_events": 0.4695,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:30:46",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:30:49",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=2": {
+     "steps": 2000,
+     "steady_mean_ms": 0.6203,
+     "steady_median_ms": 0.6197,
+     "window_ms_per_step": 0.6203,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.6197,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.041,
+     "trial_wall_s": 2.253,
+     "overflow": [
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 105391,
+     "peak_mem_mb": 311.4,
+     "window_ms_per_step_no_events": 0.6174,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:30:49",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:30:56",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=4": {
+     "steps": 2000,
+     "steady_mean_ms": 1.0377,
+     "steady_median_ms": 1.0383,
+     "window_ms_per_step": 1.0377,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.0383,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 0.9999,
+     "trial_wall_s": 3.404,
+     "overflow": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 209566,
+     "peak_mem_mb": 332.1,
+     "window_ms_per_step_no_events": 0.9506,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:30:56",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:31:03",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=8": {
+     "steps": 2000,
+     "steady_mean_ms": 1.463,
+     "steady_median_ms": 1.4612,
+     "window_ms_per_step": 1.463,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.4612,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0909,
+     "trial_wall_s": 4.649,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 416796,
+     "peak_mem_mb": 367.1,
+     "window_ms_per_step_no_events": 1.4616,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:31:04",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:31:13",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=16": {
+     "steps": 2000,
+     "steady_mean_ms": 2.4973,
+     "steady_median_ms": 2.4956,
+     "window_ms_per_step": 2.4973,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 2.4956,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0804,
+     "trial_wall_s": 7.723,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 832174,
+     "peak_mem_mb": 438.4,
+     "window_ms_per_step_no_events": 2.6597,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:31:13",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:31:32",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=32": {
+     "steps": 2000,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 5.3796,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 5.375,
+     "median_ms_all_steps": 5.3749,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0667,
+     "trial_wall_s": 16.456,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 1669448,
+     "peak_mem_mb": 582.0,
+     "window_ms_per_step_no_events": 5.4896,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:31:32",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:32:07",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "fast graph cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4377,
+     "steady_median_ms": 0.4381,
+     "window_ms_per_step": 0.4377,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4381,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0588,
+     "trial_wall_s": 1.61,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": null,
+     "spikes": 53023,
+     "peak_mem_mb": 406.8,
+     "window_ms_per_step_no_events": 0.5484,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:32:07",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:32:11",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "ref eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5963,
+     "steady_median_ms": 0.5683,
+     "window_ms_per_step": 0.5963,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.5683,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 1.814,
+     "overflow": null,
+     "graphs": null,
+     "replays": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "window_ms_per_step_no_events": 0.5963,
+     "busy_check_before": {
+      "time": "2026-11-25 10:32:11",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:32:13",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    }
+   },
+   "time": "2026-11-25 10:32:13"
+  },
+  {
+   "rows": {
+    "batch graph cuda f64 B=1": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5167,
+     "steady_median_ms": 0.4596,
+     "window_ms_per_step": 0.5167,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4596,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0518,
+     "trial_wall_s": 1.726,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 53023,
+     "peak_mem_mb": 405.4,
+     "window_ms_per_step_no_events": 0.461,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:32:13",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:32:17",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=2": {
+     "steps": 2000,
+     "steady_mean_ms": 0.6723,
+     "steady_median_ms": 0.6725,
+     "window_ms_per_step": 0.6723,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.6725,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0674,
+     "trial_wall_s": 2.277,
+     "overflow": [
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 106960,
+     "peak_mem_mb": 419.0,
+     "window_ms_per_step_no_events": 0.671,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:32:17",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:32:22",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=4": {
+     "steps": 2000,
+     "steady_mean_ms": 1.0642,
+     "steady_median_ms": 1.0642,
+     "window_ms_per_step": 1.0642,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.0642,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.046,
+     "trial_wall_s": 3.481,
+     "overflow": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 211081,
+     "peak_mem_mb": 447.1,
+     "window_ms_per_step_no_events": 1.0452,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:32:22",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:32:30",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=8": {
+     "steps": 2000,
+     "steady_mean_ms": 2.0377,
+     "steady_median_ms": 2.0362,
+     "window_ms_per_step": 2.0377,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 2.0362,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0576,
+     "trial_wall_s": 6.415,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 419795,
+     "peak_mem_mb": 503.9,
+     "window_ms_per_step_no_events": 2.0728,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:32:30",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:32:45",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=16": {
+     "steps": 2000,
+     "steady_mean_ms": 3.9882,
+     "steady_median_ms": 3.9862,
+     "window_ms_per_step": 3.9882,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 3.9862,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0599,
+     "trial_wall_s": 12.175,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 834248,
+     "peak_mem_mb": 613.4,
+     "window_ms_per_step_no_events": 4.0023,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:32:45",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:33:12",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=32": {
+     "steps": 2000,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 8.2761,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 8.272,
+     "median_ms_all_steps": 8.2717,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0598,
+     "trial_wall_s": 25.159,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 1670835,
+     "peak_mem_mb": 832.4,
+     "window_ms_per_step_no_events": 8.2852,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:33:12",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:34:04",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=1": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5773,
+     "steady_median_ms": 0.4406,
+     "window_ms_per_step": 0.5773,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4406,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0643,
+     "trial_wall_s": 1.841,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 51927,
+     "peak_mem_mb": 301.8,
+     "window_ms_per_step_no_events": 0.4442,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:34:04",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:34:08",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=2": {
+     "steps": 2000,
+     "steady_mean_ms": 0.6681,
+     "steady_median_ms": 0.621,
+     "window_ms_per_step": 0.6681,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.621,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0446,
+     "trial_wall_s": 2.256,
+     "overflow": [
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 105445,
+     "peak_mem_mb": 311.8,
+     "window_ms_per_step_no_events": 0.6182,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:34:08",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:34:13",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=4": {
+     "steps": 2000,
+     "steady_mean_ms": 0.9757,
+     "steady_median_ms": 0.9756,
+     "window_ms_per_step": 0.9757,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.9756,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0637,
+     "trial_wall_s": 3.18,
+     "overflow": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 209060,
+     "peak_mem_mb": 332.1,
+     "window_ms_per_step_no_events": 0.972,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:34:13",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:34:22",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=8": {
+     "steps": 2000,
+     "steady_mean_ms": 1.5266,
+     "steady_median_ms": 1.5261,
+     "window_ms_per_step": 1.5266,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.5261,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0474,
+     "trial_wall_s": 4.871,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 416810,
+     "peak_mem_mb": 367.5,
+     "window_ms_per_step_no_events": 1.5156,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:34:22",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:34:32",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=16": {
+     "steps": 2000,
+     "steady_mean_ms": 2.5222,
+     "steady_median_ms": 2.5203,
+     "window_ms_per_step": 2.5222,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 2.5203,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.073,
+     "trial_wall_s": 7.844,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 832327,
+     "peak_mem_mb": 439.2,
+     "window_ms_per_step_no_events": 2.577,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:34:32",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:34:48",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=32": {
+     "steps": 2000,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 5.4671,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 5.462,
+     "median_ms_all_steps": 5.4624,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0493,
+     "trial_wall_s": 16.597,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 1669934,
+     "peak_mem_mb": 582.7,
+     "window_ms_per_step_no_events": 5.4652,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:34:48",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:35:24",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "fast graph cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4402,
+     "steady_median_ms": 0.4368,
+     "window_ms_per_step": 0.4402,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4368,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0624,
+     "trial_wall_s": 1.563,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": null,
+     "spikes": 53023,
+     "peak_mem_mb": 406.2,
+     "window_ms_per_step_no_events": 0.4378,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:35:24",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:35:29",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "ref eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.6321,
+     "steady_median_ms": 0.6251,
+     "window_ms_per_step": 0.6346,
+     "stall_fraction": 0.0005,
+     "stall_median_ms": 5.619,
+     "median_ms_all_steps": 0.6253,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 1.953,
+     "overflow": null,
+     "graphs": null,
+     "replays": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "window_ms_per_step_no_events": 0.6346,
+     "busy_check_before": {
+      "time": "2026-11-25 10:35:29",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:35:32",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    }
+   },
+   "time": "2026-11-25 10:35:32"
+  },
+  {
+   "rows": {
+    "batch graph cuda f64 B=1": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4634,
+     "steady_median_ms": 0.4639,
+     "window_ms_per_step": 0.4634,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4639,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.042,
+     "trial_wall_s": 1.66,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 53023,
+     "peak_mem_mb": 405.3,
+     "window_ms_per_step_no_events": 0.4625,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:35:32",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:35:35",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=2": {
+     "steps": 2000,
+     "steady_mean_ms": 0.6897,
+     "steady_median_ms": 0.6899,
+     "window_ms_per_step": 0.6897,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.6899,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.042,
+     "trial_wall_s": 2.28,
+     "overflow": [
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 106960,
+     "peak_mem_mb": 419.0,
+     "window_ms_per_step_no_events": 0.6722,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:35:36",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:35:40",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=4": {
+     "steps": 2000,
+     "steady_mean_ms": 1.0339,
+     "steady_median_ms": 1.0342,
+     "window_ms_per_step": 1.0339,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.0342,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0762,
+     "trial_wall_s": 3.412,
+     "overflow": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 211081,
+     "peak_mem_mb": 447.7,
+     "window_ms_per_step_no_events": 1.0342,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:35:41",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:35:48",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=8": {
+     "steps": 2000,
+     "steady_mean_ms": 2.0674,
+     "steady_median_ms": 2.0666,
+     "window_ms_per_step": 2.0674,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 2.0666,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0469,
+     "trial_wall_s": 6.469,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 419795,
+     "peak_mem_mb": 503.9,
+     "window_ms_per_step_no_events": 2.0326,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:35:48",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:36:03",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=16": {
+     "steps": 2000,
+     "steady_mean_ms": 4.0202,
+     "steady_median_ms": 4.0193,
+     "window_ms_per_step": 4.0202,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 4.0193,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.052,
+     "trial_wall_s": 12.325,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 834248,
+     "peak_mem_mb": 613.4,
+     "window_ms_per_step_no_events": 4.0101,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:36:03",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:36:28",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=32": {
+     "steps": 2000,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 8.2835,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 8.279,
+     "median_ms_all_steps": 8.2794,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0592,
+     "trial_wall_s": 25.098,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 1670835,
+     "peak_mem_mb": 832.4,
+     "window_ms_per_step_no_events": 8.318,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:36:28",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:37:23",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=1": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4325,
+     "steady_median_ms": 0.4326,
+     "window_ms_per_step": 0.4325,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4326,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0746,
+     "trial_wall_s": 1.556,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 51879,
+     "peak_mem_mb": 301.8,
+     "window_ms_per_step_no_events": 0.4326,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:37:23",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:37:26",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=2": {
+     "steps": 2000,
+     "steady_mean_ms": 0.6197,
+     "steady_median_ms": 0.6023,
+     "window_ms_per_step": 0.6197,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.6023,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0746,
+     "trial_wall_s": 2.107,
+     "overflow": [
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 105439,
+     "peak_mem_mb": 311.4,
+     "window_ms_per_step_no_events": 0.6126,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:37:26",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:37:31",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=4": {
+     "steps": 2000,
+     "steady_mean_ms": 0.9884,
+     "steady_median_ms": 0.9886,
+     "window_ms_per_step": 0.9884,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.9886,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.05,
+     "trial_wall_s": 3.229,
+     "overflow": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 209006,
+     "peak_mem_mb": 330.9,
+     "window_ms_per_step_no_events": 0.9824,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:37:31",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:37:38",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=8": {
+     "steps": 2000,
+     "steady_mean_ms": 1.5045,
+     "steady_median_ms": 1.5034,
+     "window_ms_per_step": 1.5045,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.5034,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0603,
+     "trial_wall_s": 4.788,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 416797,
+     "peak_mem_mb": 368.4,
+     "window_ms_per_step_no_events": 1.5198,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:37:38",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:37:50",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=16": {
+     "steps": 2000,
+     "steady_mean_ms": 2.5247,
+     "steady_median_ms": 2.5212,
+     "window_ms_per_step": 2.5247,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 2.5212,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0698,
+     "trial_wall_s": 7.924,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 832372,
+     "peak_mem_mb": 438.4,
+     "window_ms_per_step_no_events": 2.59,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:37:50",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:38:06",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=32": {
+     "steps": 2000,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 5.4919,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 5.486,
+     "median_ms_all_steps": 5.4856,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.047,
+     "trial_wall_s": 16.916,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 1670273,
+     "peak_mem_mb": 582.7,
+     "window_ms_per_step_no_events": 5.4423,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:38:06",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:38:42",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "fast graph cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4582,
+     "steady_median_ms": 0.4584,
+     "window_ms_per_step": 0.4582,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4584,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0109,
+     "trial_wall_s": 1.635,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": null,
+     "spikes": 53023,
+     "peak_mem_mb": 406.3,
+     "window_ms_per_step_no_events": 0.4275,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:38:42",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:38:45",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "ref eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.5654,
+     "steady_median_ms": 0.544,
+     "window_ms_per_step": 0.5654,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.544,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 1.783,
+     "overflow": null,
+     "graphs": null,
+     "replays": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "window_ms_per_step_no_events": 0.5654,
+     "busy_check_before": {
+      "time": "2026-11-25 10:38:45",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:38:47",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    }
+   },
+   "time": "2026-11-25 10:38:47"
+  },
+  {
+   "rows": {
+    "batch graph cuda f64 B=1": {
+     "steps": 2000,
+     "steady_mean_ms": 0.443,
+     "steady_median_ms": 0.4431,
+     "window_ms_per_step": 0.443,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4431,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0908,
+     "trial_wall_s": 1.509,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 53023,
+     "peak_mem_mb": 405.4,
+     "window_ms_per_step_no_events": 0.4475,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:38:48",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:38:53",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=2": {
+     "steps": 2000,
+     "steady_mean_ms": 0.7022,
+     "steady_median_ms": 0.6624,
+     "window_ms_per_step": 0.7022,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.6624,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0921,
+     "trial_wall_s": 2.379,
+     "overflow": [
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 106960,
+     "peak_mem_mb": 419.0,
+     "window_ms_per_step_no_events": 0.6552,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:38:53",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:38:58",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=4": {
+     "steps": 2000,
+     "steady_mean_ms": 1.0194,
+     "steady_median_ms": 1.0192,
+     "window_ms_per_step": 1.0194,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.0192,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0922,
+     "trial_wall_s": 3.285,
+     "overflow": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 211081,
+     "peak_mem_mb": 447.1,
+     "window_ms_per_step_no_events": 1.0,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:38:58",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:39:05",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=8": {
+     "steps": 2000,
+     "steady_mean_ms": 1.9687,
+     "steady_median_ms": 1.9673,
+     "window_ms_per_step": 1.9687,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.9673,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0951,
+     "trial_wall_s": 6.159,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 419795,
+     "peak_mem_mb": 503.9,
+     "window_ms_per_step_no_events": 2.0272,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:39:05",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:39:18",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=16": {
+     "steps": 2000,
+     "steady_mean_ms": 3.994,
+     "steady_median_ms": 3.9923,
+     "window_ms_per_step": 3.994,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 3.9923,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0583,
+     "trial_wall_s": 12.234,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 834248,
+     "peak_mem_mb": 613.4,
+     "window_ms_per_step_no_events": 3.9899,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:39:18",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:39:46",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f64 B=32": {
+     "steps": 2000,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 8.2734,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 8.268,
+     "median_ms_all_steps": 8.2679,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0591,
+     "trial_wall_s": 25.098,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 1670835,
+     "peak_mem_mb": 832.4,
+     "window_ms_per_step_no_events": 8.3785,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:39:46",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:40:40",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=1": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4484,
+     "steady_median_ms": 0.4393,
+     "window_ms_per_step": 0.4484,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4393,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0591,
+     "trial_wall_s": 1.611,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 51951,
+     "peak_mem_mb": 301.8,
+     "window_ms_per_step_no_events": 0.4378,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:40:41",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:40:44",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=2": {
+     "steps": 2000,
+     "steady_mean_ms": 0.6028,
+     "steady_median_ms": 0.6029,
+     "window_ms_per_step": 0.6056,
+     "stall_fraction": 0.0005,
+     "stall_median_ms": 6.244,
+     "median_ms_all_steps": 0.6029,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.07,
+     "trial_wall_s": 2.048,
+     "overflow": [
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 105469,
+     "peak_mem_mb": 311.4,
+     "window_ms_per_step_no_events": 0.6011,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:40:44",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:40:49",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=4": {
+     "steps": 2000,
+     "steady_mean_ms": 0.9713,
+     "steady_median_ms": 0.9704,
+     "window_ms_per_step": 0.9713,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.9704,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.07,
+     "trial_wall_s": 3.158,
+     "overflow": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 209054,
+     "peak_mem_mb": 330.9,
+     "window_ms_per_step_no_events": 0.9734,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:40:49",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:40:56",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=8": {
+     "steps": 2000,
+     "steady_mean_ms": 1.4967,
+     "steady_median_ms": 1.4962,
+     "window_ms_per_step": 1.4967,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 1.4962,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.065,
+     "trial_wall_s": 4.741,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 416797,
+     "peak_mem_mb": 368.4,
+     "window_ms_per_step_no_events": 1.5059,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:40:56",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:41:06",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=16": {
+     "steps": 2000,
+     "steady_mean_ms": 2.5454,
+     "steady_median_ms": 2.5434,
+     "window_ms_per_step": 2.5454,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 2.5434,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0588,
+     "trial_wall_s": 7.934,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 832174,
+     "peak_mem_mb": 439.2,
+     "window_ms_per_step_no_events": 2.5434,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:41:06",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:41:24",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "batch graph cuda f32 B=32": {
+     "steps": 2000,
+     "steady_mean_ms": null,
+     "steady_median_ms": null,
+     "window_ms_per_step": 5.4085,
+     "stall_fraction": 1.0,
+     "stall_median_ms": 5.404,
+     "median_ms_all_steps": 5.404,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0606,
+     "trial_wall_s": 16.471,
+     "overflow": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "graphs": 1,
+     "replays": 2997,
+     "spikes": 1670862,
+     "peak_mem_mb": 582.0,
+     "window_ms_per_step_no_events": 5.3846,
+     "same_counts_both_trials": false,
+     "busy_check_before": {
+      "time": "2026-11-25 10:41:24",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:42:00",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "fast graph cuda f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.4366,
+     "steady_median_ms": 0.4343,
+     "window_ms_per_step": 0.4366,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.4343,
+     "timer": "cuda events rescaled to host clock",
+     "event_over_host_clock": 1.0681,
+     "trial_wall_s": 1.564,
+     "overflow": [
+      0
+     ],
+     "graphs": 1,
+     "replays": null,
+     "spikes": 53023,
+     "peak_mem_mb": 406.2,
+     "window_ms_per_step_no_events": 0.4325,
+     "same_counts_both_trials": true,
+     "busy_check_before": {
+      "time": "2026-11-25 10:42:00",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:42:03",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    },
+    "ref eager cpu f64": {
+     "steps": 2000,
+     "steady_mean_ms": 0.6151,
+     "steady_median_ms": 0.5844,
+     "window_ms_per_step": 0.6151,
+     "stall_fraction": 0.0,
+     "stall_median_ms": null,
+     "median_ms_all_steps": 0.5844,
+     "timer": "host perf_counter",
+     "event_over_host_clock": null,
+     "trial_wall_s": 1.897,
+     "overflow": null,
+     "graphs": null,
+     "replays": null,
+     "spikes": 50686,
+     "peak_mem_mb": null,
+     "window_ms_per_step_no_events": 0.6151,
+     "busy_check_before": {
+      "time": "2026-11-25 10:42:03",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     },
+     "busy_waits_before": 0,
+     "busy_check_after": {
+      "time": "2026-11-25 10:42:06",
+      "wsl_python": [],
+      "windows_python": [],
+      "windows_check_ok": true,
+      "busy": false
+     }
+    }
+   },
+   "time": "2026-11-25 10:42:06"
+  }
+ ],
+ "busy_log": [],
+ "row_B": {
+  "batch graph cuda f64 B=1": 1,
+  "batch graph cuda f64 B=2": 2,
+  "batch graph cuda f64 B=4": 4,
+  "batch graph cuda f64 B=8": 8,
+  "batch graph cuda f64 B=16": 16,
+  "batch graph cuda f64 B=32": 32,
+  "batch graph cuda f32 B=1": 1,
+  "batch graph cuda f32 B=2": 2,
+  "batch graph cuda f32 B=4": 4,
+  "batch graph cuda f32 B=8": 8,
+  "batch graph cuda f32 B=16": 16,
+  "batch graph cuda f32 B=32": 32,
+  "fast graph cuda f64": 1,
+  "ref eager cpu f64": 1
+ },
+ "ops_per_step": {
+  "B=1": {
+   "aten_ops": 230.0,
+   "kernel_ops": 173.0
+  },
+  "B=2": {
+   "aten_ops": 228.0,
+   "kernel_ops": 174.0
+  },
+  "B=4": {
+   "aten_ops": 232.0,
+   "kernel_ops": 176.0
+  },
+  "B=8": {
+   "aten_ops": 240.0,
+   "kernel_ops": 180.0
+  },
+  "B=16": {
+   "aten_ops": 256.0,
+   "kernel_ops": 188.0
+  },
+  "B=32": {
+   "aten_ops": 288.0,
+   "kernel_ops": 204.0
+  }
+ },
+ "phases": {
+  "busy_check_before": {
+   "time": "2026-11-25 10:21:01",
+   "wsl_python": [],
+   "windows_python": [],
+   "windows_check_ok": true,
+   "busy": false
+  },
+  "busy_waits": 0,
+  "per_B": [
+   {
+    "B": 1,
+    "steps": 30,
+    "gate_ms": 1.005,
+    "clock": "raw CUDA events",
+    "median_ms": {
+     "decay": 0.0862,
+     "gap": 0.064,
+     "threshold+lists": 0.2071,
+     "presyn": 0.2351,
+     "synaptic": 0.2206,
+     "drive": 0.0717,
+     "spikelets": 0.2423,
+     "apl": 0.0655,
+     "reset+record+ring": 0.1025,
+     "total": 1.258
+    }
+   },
+   {
+    "B": 2,
+    "steps": 30,
+    "gate_ms": 1.002,
+    "clock": "raw CUDA events",
+    "median_ms": {
+     "decay": 0.1056,
+     "gap": 0.055,
+     "threshold+lists": 0.2144,
+     "presyn": 0.3009,
+     "synaptic": 0.2527,
+     "drive": 0.0868,
+     "spikelets": 0.2748,
+     "apl": 0.0733,
+     "reset+record+ring": 0.1021,
+     "total": 1.4753
+    }
+   },
+   {
+    "B": 4,
+    "steps": 30,
+    "gate_ms": 0.997,
+    "clock": "raw CUDA events",
+    "median_ms": {
+     "decay": 0.1501,
+     "gap": 0.0694,
+     "threshold+lists": 0.2546,
+     "presyn": 0.4068,
+     "synaptic": 0.3449,
+     "drive": 0.1081,
+     "spikelets": 0.3849,
+     "apl": 0.0809,
+     "reset+record+ring": 0.1435,
+     "total": 1.9777
+    }
+   },
+   {
+    "B": 8,
+    "steps": 30,
+    "gate_ms": 0.992,
+    "clock": "raw CUDA events",
+    "median_ms": {
+     "decay": 0.3349,
+     "gap": 0.0954,
+     "threshold+lists": 0.2721,
+     "presyn": 0.5531,
+     "synaptic": 0.4876,
+     "drive": 0.1361,
+     "spikelets": 0.5124,
+     "apl": 0.0811,
+     "reset+record+ring": 0.2411,
+     "total": 2.6927
+    }
+   },
+   {
+    "B": 16,
+    "steps": 30,
+    "gate_ms": 0.999,
+    "clock": "raw CUDA events",
+    "median_ms": {
+     "decay": 1.2217,
+     "gap": 0.1446,
+     "threshold+lists": 0.3637,
+     "presyn": 0.6234,
+     "synaptic": 0.9094,
+     "drive": 0.1625,
+     "spikelets": 0.533,
+     "apl": 0.0793,
+     "reset+record+ring": 0.5297,
+     "total": 4.5672
+    }
+   },
+   {
+    "B": 32,
+    "steps": 30,
+    "gate_ms": 1.012,
+    "clock": "raw CUDA events",
+    "median_ms": {
+     "decay": 3.0403,
+     "gap": 0.249,
+     "threshold+lists": 0.7135,
+     "presyn": 0.9004,
+     "synaptic": 1.8115,
+     "drive": 0.2732,
+     "spikelets": 0.8543,
+     "apl": 0.0898,
+     "reset+record+ring": 1.0442,
+     "total": 8.9803
+    }
+   }
+  ],
+  "busy_check_after": {
+   "time": "2026-11-25 10:21:25",
+   "wsl_python": [],
+   "windows_python": [],
+   "windows_check_ok": true,
+   "busy": false
+  }
+ },
+ "parity": {
+  "steps": 10000,
+  "A2": {
+   "per_seed": [
+    {
+     "seed": 0,
+     "slots_in_B8": [
+      0,
+      7
+     ],
+     "neurons_differing_B1_vs_B8_slot": [
+      0,
+      0
+     ],
+     "spikes": 186882,
+     "overflow": [
+      0
+     ]
+    },
+    {
+     "seed": 3,
+     "slots_in_B8": [
+      3,
+      4
+     ],
+     "neurons_differing_B1_vs_B8_slot": [
+      0,
+      0
+     ],
+     "spikes": 184253,
+     "overflow": [
+      0
+     ]
+    },
+    {
+     "seed": 7,
+     "slots_in_B8": [
+      7,
+      0
+     ],
+     "neurons_differing_B1_vs_B8_slot": [
+      0,
+      0
+     ],
+     "spikes": 185100,
+     "overflow": [
+      0
+     ]
+    }
+   ],
+   "fwd_vs_rev_neurons_differing": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "overflow": {
+    "fwd": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "rev": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "passed": true
+  },
+  "A3": {
+   "per_trial": [
+    {
+     "active": 3865,
+     "rate_corr": 1.0,
+     "neurons_differing": 0,
+     "share_differing_of_active": 0.0,
+     "spikes": [
+      186882,
+      186882
+     ],
+     "seed": 0
+    },
+    {
+     "active": 3887,
+     "rate_corr": 1.0,
+     "neurons_differing": 0,
+     "share_differing_of_active": 0.0,
+     "spikes": [
+      185731,
+      185731
+     ],
+     "seed": 1
+    },
+    {
+     "active": 3870,
+     "rate_corr": 1.0,
+     "neurons_differing": 0,
+     "share_differing_of_active": 0.0,
+     "spikes": [
+      187225,
+      187225
+     ],
+     "seed": 2
+    },
+    {
+     "active": 3881,
+     "rate_corr": 1.0,
+     "neurons_differing": 0,
+     "share_differing_of_active": 0.0,
+     "spikes": [
+      184253,
+      184253
+     ],
+     "seed": 3
+    },
+    {
+     "active": 3911,
+     "rate_corr": 1.0,
+     "neurons_differing": 0,
+     "share_differing_of_active": 0.0,
+     "spikes": [
+      188733,
+      188733
+     ],
+     "seed": 4
+    },
+    {
+     "active": 3870,
+     "rate_corr": 1.0,
+     "neurons_differing": 0,
+     "share_differing_of_active": 0.0,
+     "spikes": [
+      184719,
+      184719
+     ],
+     "seed": 5
+    },
+    {
+     "active": 3859,
+     "rate_corr": 1.0,
+     "neurons_differing": 0,
+     "share_differing_of_active": 0.0,
+     "spikes": [
+      181759,
+      181759
+     ],
+     "seed": 6
+    },
+    {
+     "active": 3896,
+     "rate_corr": 1.0,
+     "neurons_differing": 0,
+     "share_differing_of_active": 0.0,
+     "spikes": [
+      185100,
+      185100
+     ],
+     "seed": 7
+    }
+   ],
+   "min_rate_corr": 1.0,
+   "max_share_differing": 0.0,
+   "passed": true
+  },
+  "graphs": {
+   "fwd": 1,
+   "rev": 1
+  }
+ },
+ "a4": {
+  "graph_active": {
+   "steps": 10000,
+   "eager_warmup_steps": 3,
+   "graphs": 11,
+   "replays": 9997,
+   "replays_per_graph_step": 1.0,
+   "distinct_keys": 11,
+   "overflow": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "spikes_per_trial": [
+    186578,
+    138390,
+    12945,
+    68114,
+    133427,
+    71047,
+    125082,
+    111964
+   ]
+  },
+  "graph_always": {
+   "steps": 10000,
+   "eager_warmup_steps": 3,
+   "graphs": 1,
+   "replays": 9997,
+   "replays_per_graph_step": 1.0,
+   "distinct_keys": 1,
+   "overflow": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "spikes_per_trial": [
+    186578,
+    137984,
+    14049,
+    66584,
+    132000,
+    70372,
+    124770,
+    111964
+   ]
+  },
+  "sync_eager": {
+   "steps": 200,
+   "raised": null,
+   "passed": true,
+   "overflow": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "sync_graph": {
+   "steps": 200,
+   "raised": null,
+   "passed": true,
+   "graphs_before_window": 2,
+   "graphs_after_window": 3,
+   "overflow": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "positive_control_reference": {
+   "raised": "RuntimeError: called a synchronizing CUDA operation",
+   "passed": true
+  },
+  "passed": true
+ },
+ "agg": {
+  "rows": {
+   "batch graph cuda f64 B=1": {
+    "steady_mean_ms": {
+     "median": 0.4744,
+     "min": 0.443,
+     "max": 0.5306,
+     "max_over_min": 1.2,
+     "runs": [
+      0.5306,
+      0.4744,
+      0.5167,
+      0.4634,
+      0.443
+     ]
+    },
+    "median_ms_all_steps": {
+     "median": 0.4596,
+     "min": 0.4431,
+     "max": 0.5276,
+     "max_over_min": 1.19,
+     "runs": [
+      0.5276,
+      0.4431,
+      0.4596,
+      0.4639,
+      0.4431
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 0.4744,
+     "min": 0.443,
+     "max": 0.5306,
+     "max_over_min": 1.2,
+     "runs": [
+      0.5306,
+      0.4744,
+      0.5167,
+      0.4634,
+      0.443
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 0.4625,
+     "min": 0.4475,
+     "max": 0.53,
+     "max_over_min": 1.18,
+     "runs": [
+      0.53,
+      0.4651,
+      0.461,
+      0.4625,
+      0.4475
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 405.4,
+     "min": 405.3,
+     "max": 413.4,
+     "max_over_min": 1.02,
+     "runs": [
+      413.4,
+      405.3,
+      405.4,
+      405.3,
+      405.4
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0518,
+     "min": 0.923,
+     "max": 1.0908,
+     "max_over_min": 1.18,
+     "runs": [
+      0.923,
+      1.0907,
+      1.0518,
+      1.042,
+      1.0908
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.2162,
+     "min": 0.1887,
+     "max": 0.2235,
+     "max_over_min": 1.18,
+     "runs": [
+      0.18867924528301888,
+      0.21500752526338424,
+      0.21691973969631234,
+      0.21621621621621623,
+      0.223463687150838
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.2162,
+     "min": 0.1887,
+     "max": 0.2235,
+     "max_over_min": 1.18,
+     "runs": [
+      0.18867924528301888,
+      0.21500752526338424,
+      0.21691973969631237,
+      0.21621621621621623,
+      0.223463687150838
+     ]
+    },
+    "trials_per_s_steady": {
+     "median": 0.2108,
+     "min": 0.1885,
+     "max": 0.2257,
+     "max_over_min": 1.2,
+     "runs": [
+      0.18846588767433095,
+      0.21079258010118046,
+      0.1935359009096187,
+      0.21579628830384115,
+      0.22573363431151244
+     ]
+    },
+    "bio_s_per_wall_s_steady": {
+     "median": 0.2108,
+     "min": 0.1885,
+     "max": 0.2257,
+     "max_over_min": 1.2,
+     "runs": [
+      0.18846588767433098,
+      0.21079258010118046,
+      0.19353590090961872,
+      0.2157962883038412,
+      0.22573363431151242
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 1
+   },
+   "batch graph cuda f64 B=2": {
+    "steady_mean_ms": {
+     "median": 0.6897,
+     "min": 0.6723,
+     "max": 0.7856,
+     "max_over_min": 1.17,
+     "runs": [
+      0.7856,
+      0.6723,
+      0.6723,
+      0.6897,
+      0.7022
+     ]
+    },
+    "median_ms_all_steps": {
+     "median": 0.6726,
+     "min": 0.6624,
+     "max": 0.786,
+     "max_over_min": 1.19,
+     "runs": [
+      0.786,
+      0.6726,
+      0.6725,
+      0.6899,
+      0.6624
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 0.6897,
+     "min": 0.6723,
+     "max": 0.7856,
+     "max_over_min": 1.17,
+     "runs": [
+      0.7856,
+      0.6723,
+      0.6723,
+      0.6897,
+      0.7022
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 0.6722,
+     "min": 0.6552,
+     "max": 0.785,
+     "max_over_min": 1.2,
+     "runs": [
+      0.785,
+      0.6839,
+      0.671,
+      0.6722,
+      0.6552
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 419.0,
+     "min": 419.0,
+     "max": 427.1,
+     "max_over_min": 1.02,
+     "runs": [
+      427.1,
+      419.0,
+      419.0,
+      419.0,
+      419.0
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0673,
+     "min": 0.923,
+     "max": 1.0921,
+     "max_over_min": 1.18,
+     "runs": [
+      0.923,
+      1.0673,
+      1.0674,
+      1.042,
+      1.0921
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.2975,
+     "min": 0.2548,
+     "max": 0.3053,
+     "max_over_min": 1.2,
+     "runs": [
+      0.25477707006369427,
+      0.2924404152653897,
+      0.29806259314456035,
+      0.29753049687592975,
+      0.3052503052503053
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.2975,
+     "min": 0.2548,
+     "max": 0.3053,
+     "max_over_min": 1.2,
+     "runs": [
+      0.25477707006369427,
+      0.2924404152653897,
+      0.29806259314456035,
+      0.2975304968759298,
+      0.3052503052503053
+     ]
+    },
+    "trials_per_s_steady": {
+     "median": 0.29,
+     "min": 0.2546,
+     "max": 0.2975,
+     "max_over_min": 1.17,
+     "runs": [
+      0.2545824847250509,
+      0.29748624126134166,
+      0.29748624126134166,
+      0.2899811512251704,
+      0.2848191398461976
+     ]
+    },
+    "bio_s_per_wall_s_steady": {
+     "median": 0.29,
+     "min": 0.2546,
+     "max": 0.2975,
+     "max_over_min": 1.17,
+     "runs": [
+      0.25458248472505096,
+      0.29748624126134166,
+      0.29748624126134166,
+      0.2899811512251704,
+      0.28481913984619767
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 2
+   },
+   "batch graph cuda f64 B=4": {
+    "steady_mean_ms": {
+     "median": 1.0642,
+     "min": 1.0194,
+     "max": 1.1191,
+     "max_over_min": 1.1,
+     "runs": [
+      1.1191,
+      1.0756,
+      1.0642,
+      1.0339,
+      1.0194
+     ]
+    },
+    "median_ms_all_steps": {
+     "median": 1.0642,
+     "min": 1.0192,
+     "max": 1.1193,
+     "max_over_min": 1.1,
+     "runs": [
+      1.1193,
+      1.0757,
+      1.0642,
+      1.0342,
+      1.0192
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 1.0642,
+     "min": 1.0194,
+     "max": 1.1191,
+     "max_over_min": 1.1,
+     "runs": [
+      1.1191,
+      1.0756,
+      1.0642,
+      1.0339,
+      1.0194
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 1.0452,
+     "min": 1.0,
+     "max": 1.0707,
+     "max_over_min": 1.07,
+     "runs": [
+      1.0707,
+      1.0645,
+      1.0452,
+      1.0342,
+      1.0
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 447.1,
+     "min": 447.1,
+     "max": 455.3,
+     "max_over_min": 1.02,
+     "runs": [
+      455.3,
+      447.1,
+      447.1,
+      447.7,
+      447.1
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.046,
+     "min": 0.9999,
+     "max": 1.0922,
+     "max_over_min": 1.09,
+     "runs": [
+      0.9999,
+      1.0348,
+      1.046,
+      1.0762,
+      1.0922
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.3827,
+     "min": 0.3736,
+     "max": 0.4,
+     "max_over_min": 1.07,
+     "runs": [
+      0.37358737274680115,
+      0.37576326914044156,
+      0.38270187523918875,
+      0.3867723844517501,
+      0.4
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.3827,
+     "min": 0.3736,
+     "max": 0.4,
+     "max_over_min": 1.07,
+     "runs": [
+      0.3735873727468012,
+      0.37576326914044156,
+      0.38270187523918875,
+      0.38677238445175016,
+      0.4
+     ]
+    },
+    "trials_per_s_steady": {
+     "median": 0.3759,
+     "min": 0.3574,
+     "max": 0.3924,
+     "max_over_min": 1.1,
+     "runs": [
+      0.3574300777410419,
+      0.3718854592785423,
+      0.37586919751926334,
+      0.386884611664571,
+      0.39238767902687854
+     ]
+    },
+    "bio_s_per_wall_s_steady": {
+     "median": 0.3759,
+     "min": 0.3574,
+     "max": 0.3924,
+     "max_over_min": 1.1,
+     "runs": [
+      0.3574300777410419,
+      0.3718854592785423,
+      0.3758691975192633,
+      0.38688461166457105,
+      0.39238767902687854
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 4
+   },
+   "batch graph cuda f64 B=8": {
+    "steady_mean_ms": {
+     "median": 2.0377,
+     "min": 1.9668,
+     "max": 2.0895,
+     "max_over_min": 1.06,
+     "runs": [
+      1.9668,
+      2.0895,
+      2.0377,
+      2.0674,
+      1.9687
+     ]
+    },
+    "median_ms_all_steps": {
+     "median": 2.0362,
+     "min": 1.9656,
+     "max": 2.088,
+     "max_over_min": 1.06,
+     "runs": [
+      1.9656,
+      2.088,
+      2.0362,
+      2.0666,
+      1.9673
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 2.0377,
+     "min": 1.9668,
+     "max": 2.0895,
+     "max_over_min": 1.06,
+     "runs": [
+      1.9668,
+      2.0895,
+      2.0377,
+      2.0674,
+      1.9687
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 2.0272,
+     "min": 1.9578,
+     "max": 2.0728,
+     "max_over_min": 1.06,
+     "runs": [
+      1.9578,
+      1.9738,
+      2.0728,
+      2.0326,
+      2.0272
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 503.9,
+     "min": 503.9,
+     "max": 512.1,
+     "max_over_min": 1.02,
+     "runs": [
+      512.1,
+      503.9,
+      503.9,
+      503.9,
+      503.9
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0576,
+     "min": 1.0328,
+     "max": 1.0951,
+     "max_over_min": 1.06,
+     "runs": [
+      1.0909,
+      1.0328,
+      1.0576,
+      1.0469,
+      1.0951
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.3946,
+     "min": 0.386,
+     "max": 0.4086,
+     "max_over_min": 1.06,
+     "runs": [
+      0.4086219225661457,
+      0.4053095551727632,
+      0.3859513701273639,
+      0.3935845714847978,
+      0.3946329913180742
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.3946,
+     "min": 0.386,
+     "max": 0.4086,
+     "max_over_min": 1.06,
+     "runs": [
+      0.4086219225661457,
+      0.40530955517276324,
+      0.38595137012736397,
+      0.3935845714847978,
+      0.39463299131807417
+     ]
+    },
+    "trials_per_s_steady": {
+     "median": 0.3926,
+     "min": 0.3829,
+     "max": 0.4068,
+     "max_over_min": 1.06,
+     "runs": [
+      0.40675208460443363,
+      0.382866714525006,
+      0.39259949943563827,
+      0.38695946599593695,
+      0.4063595265911515
+     ]
+    },
+    "bio_s_per_wall_s_steady": {
+     "median": 0.3926,
+     "min": 0.3829,
+     "max": 0.4068,
+     "max_over_min": 1.06,
+     "runs": [
+      0.4067520846044336,
+      0.382866714525006,
+      0.3925994994356382,
+      0.38695946599593695,
+      0.40635952659115154
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 8
+   },
+   "batch graph cuda f64 B=16": {
+    "steady_mean_ms": {
+     "median": 3.994,
+     "min": 3.9396,
+     "max": 4.0857,
+     "max_over_min": 1.04,
+     "runs": [
+      4.0857,
+      3.9396,
+      3.9882,
+      4.0202,
+      3.994
+     ]
+    },
+    "median_ms_all_steps": {
+     "median": 3.9923,
+     "min": 3.9372,
+     "max": 4.0839,
+     "max_over_min": 1.04,
+     "runs": [
+      4.0839,
+      3.9372,
+      3.9862,
+      4.0193,
+      3.9923
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 3.994,
+     "min": 3.9396,
+     "max": 4.0857,
+     "max_over_min": 1.04,
+     "runs": [
+      4.0857,
+      3.9396,
+      3.9882,
+      4.0202,
+      3.994
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 4.0023,
+     "min": 3.8696,
+     "max": 4.1046,
+     "max_over_min": 1.06,
+     "runs": [
+      3.8696,
+      4.1046,
+      4.0023,
+      4.0101,
+      3.9899
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 613.4,
+     "min": 613.4,
+     "max": 621.5,
+     "max_over_min": 1.01,
+     "runs": [
+      621.5,
+      613.4,
+      613.4,
+      613.4,
+      613.4
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0583,
+     "min": 1.0352,
+     "max": 1.0723,
+     "max_over_min": 1.04,
+     "runs": [
+      1.0352,
+      1.0723,
+      1.0599,
+      1.052,
+      1.0583
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.3998,
+     "min": 0.3898,
+     "max": 0.4135,
+     "max_over_min": 1.06,
+     "runs": [
+      0.41347942939838744,
+      0.38980655849534673,
+      0.3997701321739999,
+      0.3989925438268372,
+      0.4010125567056818
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.3998,
+     "min": 0.3898,
+     "max": 0.4135,
+     "max_over_min": 1.06,
+     "runs": [
+      0.41347942939838744,
+      0.38980655849534673,
+      0.399770132174,
+      0.3989925438268372,
+      0.40101255670568187
+     ]
+    },
+    "trials_per_s_steady": {
+     "median": 0.4006,
+     "min": 0.3916,
+     "max": 0.4061,
+     "max_over_min": 1.04,
+     "runs": [
+      0.39160976087328975,
+      0.4061326022946492,
+      0.40118349129933306,
+      0.3979901497437939,
+      0.4006009013520281
+     ]
+    },
+    "bio_s_per_wall_s_steady": {
+     "median": 0.4006,
+     "min": 0.3916,
+     "max": 0.4061,
+     "max_over_min": 1.04,
+     "runs": [
+      0.3916097608732898,
+      0.4061326022946492,
+      0.40118349129933306,
+      0.3979901497437939,
+      0.400600901352028
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 16
+   },
+   "batch graph cuda f64 B=32": {
+    "steady_mean_ms": null,
+    "median_ms_all_steps": {
+     "median": 8.2717,
+     "min": 8.2679,
+     "max": 8.5796,
+     "max_over_min": 1.04,
+     "runs": [
+      8.5796,
+      8.2708,
+      8.2717,
+      8.2794,
+      8.2679
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 8.277,
+     "min": 8.2734,
+     "max": 8.5872,
+     "max_over_min": 1.04,
+     "runs": [
+      8.5872,
+      8.277,
+      8.2761,
+      8.2835,
+      8.2734
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 8.2852,
+     "min": 8.0278,
+     "max": 8.3785,
+     "max_over_min": 1.04,
+     "runs": [
+      8.2222,
+      8.0278,
+      8.2852,
+      8.318,
+      8.3785
+     ]
+    },
+    "stall_fraction": {
+     "median": 1.0,
+     "min": 1.0,
+     "max": 1.0,
+     "max_over_min": 1.0,
+     "runs": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 832.4,
+     "min": 832.4,
+     "max": 840.6,
+     "max_over_min": 1.01,
+     "runs": [
+      840.6,
+      832.4,
+      832.4,
+      832.4,
+      832.4
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0591,
+     "min": 1.0254,
+     "max": 1.0598,
+     "max_over_min": 1.03,
+     "runs": [
+      1.0254,
+      1.058,
+      1.0598,
+      1.0592,
+      1.0591
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.3862,
+     "min": 0.3819,
+     "max": 0.3986,
+     "max_over_min": 1.04,
+     "runs": [
+      0.3891902410547055,
+      0.3986148135230076,
+      0.38623086950224494,
+      0.3847078624669391,
+      0.3819299397266814
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.3862,
+     "min": 0.3819,
+     "max": 0.3986,
+     "max_over_min": 1.04,
+     "runs": [
+      0.3891902410547055,
+      0.3986148135230076,
+      0.386230869502245,
+      0.3847078624669392,
+      0.3819299397266814
+     ]
+    },
+    "trials_per_s_steady": null,
+    "bio_s_per_wall_s_steady": null,
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 32
+   },
+   "batch graph cuda f32 B=1": {
+    "steady_mean_ms": {
+     "median": 0.4484,
+     "min": 0.4263,
+     "max": 0.5773,
+     "max_over_min": 1.35,
+     "runs": [
+      0.4586,
+      0.4263,
+      0.5773,
+      0.4325,
+      0.4484
+     ]
+    },
+    "median_ms_all_steps": {
+     "median": 0.4393,
+     "min": 0.4262,
+     "max": 0.4571,
+     "max_over_min": 1.07,
+     "runs": [
+      0.4571,
+      0.4262,
+      0.4406,
+      0.4326,
+      0.4393
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 0.4484,
+     "min": 0.4263,
+     "max": 0.5773,
+     "max_over_min": 1.35,
+     "runs": [
+      0.4586,
+      0.4263,
+      0.5773,
+      0.4325,
+      0.4484
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 0.4442,
+     "min": 0.4326,
+     "max": 0.4695,
+     "max_over_min": 1.09,
+     "runs": [
+      0.4583,
+      0.4695,
+      0.4442,
+      0.4326,
+      0.4378
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 301.8,
+     "min": 301.8,
+     "max": 309.9,
+     "max_over_min": 1.03,
+     "runs": [
+      309.9,
+      301.8,
+      301.8,
+      301.8,
+      301.8
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0643,
+     "min": 1.018,
+     "max": 1.0908,
+     "max_over_min": 1.07,
+     "runs": [
+      1.018,
+      1.0908,
+      1.0643,
+      1.0746,
+      1.0591
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.2251,
+     "min": 0.213,
+     "max": 0.2312,
+     "max_over_min": 1.09,
+     "runs": [
+      0.21819768710451667,
+      0.21299254526091585,
+      0.22512381809995496,
+      0.23116042533518263,
+      0.2284148012791229
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.2251,
+     "min": 0.213,
+     "max": 0.2312,
+     "max_over_min": 1.09,
+     "runs": [
+      0.2181976871045167,
+      0.2129925452609159,
+      0.225123818099955,
+      0.23116042533518263,
+      0.2284148012791229
+     ]
+    },
+    "trials_per_s_steady": {
+     "median": 0.223,
+     "min": 0.1732,
+     "max": 0.2346,
+     "max_over_min": 1.35,
+     "runs": [
+      0.2180549498473615,
+      0.23457658925639222,
+      0.17322016282695307,
+      0.23121387283236994,
+      0.22301516503122212
+     ]
+    },
+    "bio_s_per_wall_s_steady": {
+     "median": 0.223,
+     "min": 0.1732,
+     "max": 0.2346,
+     "max_over_min": 1.35,
+     "runs": [
+      0.21805494984736154,
+      0.23457658925639222,
+      0.17322016282695304,
+      0.23121387283236997,
+      0.22301516503122212
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": false,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 1
+   },
+   "batch graph cuda f32 B=2": {
+    "steady_mean_ms": {
+     "median": 0.6203,
+     "min": 0.6028,
+     "max": 0.6681,
+     "max_over_min": 1.11,
+     "runs": [
+      0.6338,
+      0.6203,
+      0.6681,
+      0.6197,
+      0.6028
+     ]
+    },
+    "median_ms_all_steps": {
+     "median": 0.6197,
+     "min": 0.6023,
+     "max": 0.6342,
+     "max_over_min": 1.05,
+     "runs": [
+      0.6342,
+      0.6197,
+      0.621,
+      0.6023,
+      0.6029
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 0.6203,
+     "min": 0.6056,
+     "max": 0.6681,
+     "max_over_min": 1.1,
+     "runs": [
+      0.6338,
+      0.6203,
+      0.6681,
+      0.6197,
+      0.6056
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 0.6126,
+     "min": 0.5906,
+     "max": 0.6182,
+     "max_over_min": 1.05,
+     "runs": [
+      0.5906,
+      0.6174,
+      0.6182,
+      0.6126,
+      0.6011
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0005,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0005
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 311.4,
+     "min": 311.4,
+     "max": 319.4,
+     "max_over_min": 1.03,
+     "runs": [
+      319.4,
+      311.4,
+      311.8,
+      311.4,
+      311.4
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0446,
+     "min": 1.0198,
+     "max": 1.0746,
+     "max_over_min": 1.05,
+     "runs": [
+      1.0198,
+      1.041,
+      1.0446,
+      1.0746,
+      1.07
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.3265,
+     "min": 0.3235,
+     "max": 0.3386,
+     "max_over_min": 1.05,
+     "runs": [
+      0.3386386725364037,
+      0.32393909944930355,
+      0.3235198964736331,
+      0.326477309826967,
+      0.33272334054233904
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.3265,
+     "min": 0.3235,
+     "max": 0.3386,
+     "max_over_min": 1.05,
+     "runs": [
+      0.3386386725364037,
+      0.3239390994493036,
+      0.32351989647363316,
+      0.32647730982696704,
+      0.3327233405423391
+     ]
+    },
+    "trials_per_s_steady": {
+     "median": 0.3224,
+     "min": 0.2994,
+     "max": 0.3318,
+     "max_over_min": 1.11,
+     "runs": [
+      0.3155569580309246,
+      0.3224246332419797,
+      0.299356383774884,
+      0.32273680813296757,
+      0.33178500331785005
+     ]
+    },
+    "bio_s_per_wall_s_steady": {
+     "median": 0.3224,
+     "min": 0.2994,
+     "max": 0.3318,
+     "max_over_min": 1.11,
+     "runs": [
+      0.3155569580309246,
+      0.32242463324197973,
+      0.299356383774884,
+      0.32273680813296757,
+      0.33178500331785005
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": false,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 2
+   },
+   "batch graph cuda f32 B=4": {
+    "steady_mean_ms": {
+     "median": 0.9757,
+     "min": 0.9516,
+     "max": 1.0377,
+     "max_over_min": 1.09,
+     "runs": [
+      0.9516,
+      1.0377,
+      0.9757,
+      0.9884,
+      0.9713
+     ]
+    },
+    "median_ms_all_steps": {
+     "median": 0.9756,
+     "min": 0.9519,
+     "max": 1.0383,
+     "max_over_min": 1.09,
+     "runs": [
+      0.9519,
+      1.0383,
+      0.9756,
+      0.9886,
+      0.9704
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 0.9757,
+     "min": 0.9516,
+     "max": 1.0377,
+     "max_over_min": 1.09,
+     "runs": [
+      0.9516,
+      1.0377,
+      0.9757,
+      0.9884,
+      0.9713
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 0.972,
+     "min": 0.9506,
+     "max": 0.9824,
+     "max_over_min": 1.03,
+     "runs": [
+      0.9507,
+      0.9506,
+      0.972,
+      0.9824,
+      0.9734
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 332.1,
+     "min": 330.9,
+     "max": 340.3,
+     "max_over_min": 1.03,
+     "runs": [
+      340.3,
+      332.1,
+      332.1,
+      330.9,
+      330.9
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0637,
+     "min": 0.9999,
+     "max": 1.0908,
+     "max_over_min": 1.09,
+     "runs": [
+      1.0908,
+      0.9999,
+      1.0637,
+      1.05,
+      1.07
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.4115,
+     "min": 0.4072,
+     "max": 0.4208,
+     "max_over_min": 1.03,
+     "runs": [
+      0.4207426107078995,
+      0.42078687144961074,
+      0.4115226337448559,
+      0.40716612377850164,
+      0.41093075816724883
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.4115,
+     "min": 0.4072,
+     "max": 0.4208,
+     "max_over_min": 1.03,
+     "runs": [
+      0.4207426107078995,
+      0.4207868714496108,
+      0.411522633744856,
+      0.40716612377850164,
+      0.41093075816724883
+     ]
+    },
+    "trials_per_s_steady": {
+     "median": 0.41,
+     "min": 0.3855,
+     "max": 0.4203,
+     "max_over_min": 1.09,
+     "runs": [
+      0.4203446826397646,
+      0.38546786161703767,
+      0.409962078507738,
+      0.4046944556859571,
+      0.41181921136621025
+     ]
+    },
+    "bio_s_per_wall_s_steady": {
+     "median": 0.41,
+     "min": 0.3855,
+     "max": 0.4203,
+     "max_over_min": 1.09,
+     "runs": [
+      0.42034468263976466,
+      0.38546786161703767,
+      0.409962078507738,
+      0.40469445568595713,
+      0.41181921136621025
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": false,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 4
+   },
+   "batch graph cuda f32 B=8": {
+    "steady_mean_ms": {
+     "median": 1.4967,
+     "min": 1.463,
+     "max": 1.5266,
+     "max_over_min": 1.04,
+     "runs": [
+      1.4678,
+      1.463,
+      1.5266,
+      1.5045,
+      1.4967
+     ]
+    },
+    "median_ms_all_steps": {
+     "median": 1.4962,
+     "min": 1.4612,
+     "max": 1.5261,
+     "max_over_min": 1.04,
+     "runs": [
+      1.4677,
+      1.4612,
+      1.5261,
+      1.5034,
+      1.4962
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 1.4967,
+     "min": 1.463,
+     "max": 1.5266,
+     "max_over_min": 1.04,
+     "runs": [
+      1.4678,
+      1.463,
+      1.5266,
+      1.5045,
+      1.4967
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 1.5059,
+     "min": 1.4616,
+     "max": 1.5198,
+     "max_over_min": 1.04,
+     "runs": [
+      1.4694,
+      1.4616,
+      1.5156,
+      1.5198,
+      1.5059
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 368.4,
+     "min": 367.1,
+     "max": 375.8,
+     "max_over_min": 1.02,
+     "runs": [
+      375.8,
+      367.1,
+      367.5,
+      368.4,
+      368.4
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.065,
+     "min": 1.0474,
+     "max": 1.0909,
+     "max_over_min": 1.04,
+     "runs": [
+      1.0908,
+      1.0909,
+      1.0474,
+      1.0603,
+      1.065
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.5312,
+     "min": 0.5264,
+     "max": 0.5473,
+     "max_over_min": 1.04,
+     "runs": [
+      0.5444399074452158,
+      0.5473453749315819,
+      0.5278437582475587,
+      0.5263850506645611,
+      0.5312437744870178
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.5312,
+     "min": 0.5264,
+     "max": 0.5473,
+     "max_over_min": 1.04,
+     "runs": [
+      0.5444399074452158,
+      0.5473453749315819,
+      0.5278437582475587,
+      0.5263850506645611,
+      0.5312437744870178
+     ]
+    },
+    "trials_per_s_steady": {
+     "median": 0.5345,
+     "min": 0.524,
+     "max": 0.5468,
+     "max_over_min": 1.04,
+     "runs": [
+      0.5450333832947267,
+      0.5468215994531783,
+      0.5240403511070353,
+      0.5317381189764041,
+      0.5345092536914545
+     ]
+    },
+    "bio_s_per_wall_s_steady": {
+     "median": 0.5345,
+     "min": 0.524,
+     "max": 0.5468,
+     "max_over_min": 1.04,
+     "runs": [
+      0.5450333832947268,
+      0.5468215994531784,
+      0.5240403511070353,
+      0.5317381189764042,
+      0.5345092536914546
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": false,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 8
+   },
+   "batch graph cuda f32 B=16": {
+    "steady_mean_ms": {
+     "median": 2.5247,
+     "min": 2.4973,
+     "max": 2.6514,
+     "max_over_min": 1.06,
+     "runs": [
+      2.6514,
+      2.4973,
+      2.5222,
+      2.5247,
+      2.5454
+     ]
+    },
+    "median_ms_all_steps": {
+     "median": 2.5212,
+     "min": 2.4956,
+     "max": 2.6501,
+     "max_over_min": 1.06,
+     "runs": [
+      2.6501,
+      2.4956,
+      2.5203,
+      2.5212,
+      2.5434
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 2.5247,
+     "min": 2.4973,
+     "max": 2.6514,
+     "max_over_min": 1.06,
+     "runs": [
+      2.6514,
+      2.4973,
+      2.5222,
+      2.5247,
+      2.5454
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 2.577,
+     "min": 2.5304,
+     "max": 2.6597,
+     "max_over_min": 1.05,
+     "runs": [
+      2.5304,
+      2.6597,
+      2.577,
+      2.59,
+      2.5434
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 439.2,
+     "min": 438.4,
+     "max": 447.6,
+     "max_over_min": 1.02,
+     "runs": [
+      447.6,
+      438.4,
+      439.2,
+      438.4,
+      439.2
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0698,
+     "min": 1.0089,
+     "max": 1.0804,
+     "max_over_min": 1.07,
+     "runs": [
+      1.0089,
+      1.0804,
+      1.073,
+      1.0698,
+      1.0588
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.6209,
+     "min": 0.6016,
+     "max": 0.6323,
+     "max_over_min": 1.05,
+     "runs": [
+      0.6323110970597533,
+      0.6015716058202053,
+      0.6208769887466046,
+      0.6177606177606177,
+      0.629079185342455
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.6209,
+     "min": 0.6016,
+     "max": 0.6323,
+     "max_over_min": 1.05,
+     "runs": [
+      0.6323110970597534,
+      0.6015716058202053,
+      0.6208769887466046,
+      0.6177606177606179,
+      0.629079185342455
+     ]
+    },
+    "trials_per_s_steady": {
+     "median": 0.6337,
+     "min": 0.6035,
+     "max": 0.6407,
+     "max_over_min": 1.06,
+     "runs": [
+      0.603454778607528,
+      0.6406919473030873,
+      0.6343668226151771,
+      0.6337386620192498,
+      0.6285848982478196
+     ]
+    },
+    "bio_s_per_wall_s_steady": {
+     "median": 0.6337,
+     "min": 0.6035,
+     "max": 0.6407,
+     "max_over_min": 1.06,
+     "runs": [
+      0.603454778607528,
+      0.6406919473030873,
+      0.6343668226151772,
+      0.6337386620192498,
+      0.6285848982478197
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": false,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 16
+   },
+   "batch graph cuda f32 B=32": {
+    "steady_mean_ms": null,
+    "median_ms_all_steps": {
+     "median": 5.404,
+     "min": 5.2566,
+     "max": 5.4856,
+     "max_over_min": 1.04,
+     "runs": [
+      5.2566,
+      5.3749,
+      5.4624,
+      5.4856,
+      5.404
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 5.4085,
+     "min": 5.2597,
+     "max": 5.4919,
+     "max_over_min": 1.04,
+     "runs": [
+      5.2597,
+      5.3796,
+      5.4671,
+      5.4919,
+      5.4085
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 5.4527,
+     "min": 5.3846,
+     "max": 5.4896,
+     "max_over_min": 1.02,
+     "runs": [
+      5.4527,
+      5.4896,
+      5.4652,
+      5.4423,
+      5.3846
+     ]
+    },
+    "stall_fraction": {
+     "median": 1.0,
+     "min": 1.0,
+     "max": 1.0,
+     "max_over_min": 1.0,
+     "runs": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 582.7,
+     "min": 582.0,
+     "max": 590.8,
+     "max_over_min": 1.02,
+     "runs": [
+      590.8,
+      582.0,
+      582.7,
+      582.7,
+      582.0
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0606,
+     "min": 1.047,
+     "max": 1.0909,
+     "max_over_min": 1.04,
+     "runs": [
+      1.0909,
+      1.0667,
+      1.0493,
+      1.047,
+      1.0606
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.5869,
+     "min": 0.5829,
+     "max": 0.5943,
+     "max_over_min": 1.02,
+     "runs": [
+      0.5868652227336916,
+      0.5829204313611192,
+      0.5855229451804143,
+      0.5879866968009848,
+      0.5942874122497493
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.5869,
+     "min": 0.5829,
+     "max": 0.5943,
+     "max_over_min": 1.02,
+     "runs": [
+      0.5868652227336916,
+      0.5829204313611193,
+      0.5855229451804143,
+      0.5879866968009849,
+      0.5942874122497493
+     ]
+    },
+    "trials_per_s_steady": null,
+    "bio_s_per_wall_s_steady": null,
+    "overflow_total": 0,
+    "same_counts_both_trials": false,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 32
+   },
+   "fast graph cuda f64": {
+    "steady_mean_ms": {
+     "median": 0.4377,
+     "min": 0.4248,
+     "max": 0.4582,
+     "max_over_min": 1.08,
+     "runs": [
+      0.4248,
+      0.4377,
+      0.4402,
+      0.4582,
+      0.4366
+     ]
+    },
+    "median_ms_all_steps": {
+     "median": 0.4368,
+     "min": 0.4253,
+     "max": 0.4584,
+     "max_over_min": 1.08,
+     "runs": [
+      0.4253,
+      0.4381,
+      0.4368,
+      0.4584,
+      0.4343
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 0.4377,
+     "min": 0.4248,
+     "max": 0.4582,
+     "max_over_min": 1.08,
+     "runs": [
+      0.4248,
+      0.4377,
+      0.4402,
+      0.4582,
+      0.4366
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 0.4325,
+     "min": 0.4231,
+     "max": 0.5484,
+     "max_over_min": 1.3,
+     "runs": [
+      0.4231,
+      0.5484,
+      0.4378,
+      0.4275,
+      0.4325
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": {
+     "median": 406.3,
+     "min": 406.2,
+     "max": 406.8,
+     "max_over_min": 1.0,
+     "runs": [
+      406.3,
+      406.8,
+      406.2,
+      406.3,
+      406.2
+     ]
+    },
+    "event_over_host_clock": {
+     "median": 1.0624,
+     "min": 1.0109,
+     "max": 1.0908,
+     "max_over_min": 1.08,
+     "runs": [
+      1.0908,
+      1.0588,
+      1.0624,
+      1.0109,
+      1.0681
+     ]
+    },
+    "trials_per_s_all_steps": {
+     "median": 0.2312,
+     "min": 0.1823,
+     "max": 0.2364,
+     "max_over_min": 1.3,
+     "runs": [
+      0.2363507445048452,
+      0.18234865061998543,
+      0.2284148012791229,
+      0.23391812865497075,
+      0.23121387283236994
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.2312,
+     "min": 0.1823,
+     "max": 0.2364,
+     "max_over_min": 1.3,
+     "runs": [
+      0.23635074450484522,
+      0.18234865061998543,
+      0.2284148012791229,
+      0.23391812865497078,
+      0.23121387283236997
+     ]
+    },
+    "trials_per_s_steady": {
+     "median": 0.2285,
+     "min": 0.2182,
+     "max": 0.2354,
+     "max_over_min": 1.08,
+     "runs": [
+      0.23540489642184556,
+      0.2284669865204478,
+      0.22716946842344388,
+      0.2182453077258839,
+      0.22904260192395787
+     ]
+    },
+    "bio_s_per_wall_s_steady": {
+     "median": 0.2285,
+     "min": 0.2182,
+     "max": 0.2354,
+     "max_over_min": 1.08,
+     "runs": [
+      0.2354048964218456,
+      0.2284669865204478,
+      0.2271694684234439,
+      0.2182453077258839,
+      0.22904260192395787
+     ]
+    },
+    "overflow_total": 0,
+    "same_counts_both_trials": true,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": 1,
+    "B": 1
+   },
+   "ref eager cpu f64": {
+    "steady_mean_ms": {
+     "median": 0.5963,
+     "min": 0.5654,
+     "max": 0.6321,
+     "max_over_min": 1.12,
+     "runs": [
+      0.5864,
+      0.5963,
+      0.6321,
+      0.5654,
+      0.6151
+     ]
+    },
+    "median_ms_all_steps": {
+     "median": 0.5683,
+     "min": 0.544,
+     "max": 0.6253,
+     "max_over_min": 1.15,
+     "runs": [
+      0.5594,
+      0.5683,
+      0.6253,
+      0.544,
+      0.5844
+     ]
+    },
+    "window_ms_per_step": {
+     "median": 0.5963,
+     "min": 0.5654,
+     "max": 0.6346,
+     "max_over_min": 1.12,
+     "runs": [
+      0.5864,
+      0.5963,
+      0.6346,
+      0.5654,
+      0.6151
+     ]
+    },
+    "window_ms_per_step_no_events": {
+     "median": 0.5963,
+     "min": 0.5654,
+     "max": 0.6346,
+     "max_over_min": 1.12,
+     "runs": [
+      0.5864,
+      0.5963,
+      0.6346,
+      0.5654,
+      0.6151
+     ]
+    },
+    "stall_fraction": {
+     "median": 0.0,
+     "min": 0.0,
+     "max": 0.0005,
+     "max_over_min": null,
+     "runs": [
+      0.0,
+      0.0,
+      0.0005,
+      0.0,
+      0.0
+     ]
+    },
+    "peak_mem_mb": null,
+    "event_over_host_clock": null,
+    "trials_per_s_all_steps": {
+     "median": 0.1677,
+     "min": 0.1576,
+     "max": 0.1769,
+     "max_over_min": 1.12,
+     "runs": [
+      0.17053206002728513,
+      0.16770082173402648,
+      0.15757957768673178,
+      0.17686593562079944,
+      0.16257519102584947
+     ]
+    },
+    "bio_s_per_wall_s_all_steps": {
+     "median": 0.1677,
+     "min": 0.1576,
+     "max": 0.1769,
+     "max_over_min": 1.12,
+     "runs": [
+      0.17053206002728513,
+      0.16770082173402648,
+      0.1575795776867318,
+      0.17686593562079944,
+      0.16257519102584947
+     ]
+    },
+    "trials_per_s_steady": {
+     "median": 0.1677,
+     "min": 0.1582,
+     "max": 0.1769,
+     "max_over_min": 1.12,
+     "runs": [
+      0.17053206002728513,
+      0.16770082173402648,
+      0.15820281601012498,
+      0.17686593562079944,
+      0.16257519102584947
+     ]
+    },
+    "bio_s_per_wall_s_steady": {
+     "median": 0.1677,
+     "min": 0.1582,
+     "max": 0.1769,
+     "max_over_min": 1.12,
+     "runs": [
+      0.17053206002728513,
+      0.16770082173402648,
+      0.15820281601012498,
+      0.17686593562079944,
+      0.16257519102584947
+     ]
+    },
+    "overflow_total": null,
+    "same_counts_both_trials": true,
+    "busy_before_any": false,
+    "busy_after_any": false,
+    "graphs": null,
+    "B": 1
+   }
+  }
+ }
+}
