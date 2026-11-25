@@ -1,0 +1,74 @@
+{
+ "env": {
+  "host": "DESKTOP-4C13T5V",
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "torch": "2.11.0+cu128",
+  "numpy": "2.5.5",
+  "cpu_threads": 6,
+  "kernel": "6.18.58.1-microsoft-standard-WSL2",
+  "gpu": "NVIDIA GeForce RTX 5060 Ti",
+  "cc": "sm_120",
+  "cuda_runtime": "12.8",
+  "cudnn": 91900,
+  "driver": "610.88",
+  "wsl": true,
+  "wsl_version": "WSL version: 3.0.5.0\r\nKernel version: 6.18.58.1-1\r\nWSLg version: 1.0.79\r\nMSRDC version: 1.2.7391\r\nDirect3D version: 1.611.1-81528511\r\nDXCore version: 10.0.26100.1-240331-1435.ge-release\r\nWindows version: 10.0.26200.9974",
+  "triton": "3.6.0"
+ },
+ "what": "reference, CUDA float64 rng=torch, looming, 1 s; different seeds",
+ "pairs": {
+  "0_vs_1000": {
+   "active": 4020,
+   "rate_corr": 0.996391,
+   "neurons_differing": 3120,
+   "share_differing_of_active": 0.7761,
+   "spikes": [
+    186882,
+    185341
+   ]
+  },
+  "1_vs_1001": {
+   "active": 4064,
+   "rate_corr": 0.994335,
+   "neurons_differing": 3196,
+   "share_differing_of_active": 0.7864,
+   "spikes": [
+    185731,
+    183560
+   ]
+  },
+  "2_vs_1002": {
+   "active": 3978,
+   "rate_corr": 0.985717,
+   "neurons_differing": 3174,
+   "share_differing_of_active": 0.7979,
+   "spikes": [
+    187225,
+    178583
+   ]
+  },
+  "0_vs_1": {
+   "active": 4003,
+   "rate_corr": 0.995348,
+   "neurons_differing": 3121,
+   "share_differing_of_active": 0.7797,
+   "spikes": [
+    186882,
+    185731
+   ]
+  },
+  "1_vs_2": {
+   "active": 4026,
+   "rate_corr": 0.994283,
+   "neurons_differing": 3159,
+   "share_differing_of_active": 0.7846,
+   "spikes": [
+    185731,
+    187225
+   ]
+  }
+ },
+ "min_rate_corr": 0.985717,
+ "max_rate_corr": 0.996391
+}

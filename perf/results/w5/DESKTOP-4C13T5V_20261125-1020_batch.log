@@ -1,0 +1,592 @@
+{"host": "DESKTOP-4C13T5V", "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.39", "python": "3.12.3", "torch": "2.11.0+cu128", "numpy": "2.5.5", "cpu_threads": 6, "kernel": "6.18.58.1-microsoft-standard-WSL2", "gpu": "NVIDIA GeForce RTX 5060 Ti", "cc": "sm_120", "cuda_runtime": "12.8", "cudnn": 91900, "driver": "610.88", "wsl": true, "wsl_version": "WSL version: 3.0.5.0\r\nKernel version: 6.18.58.1-1\r\nWSLg version: 1.0.79\r\nMSRDC version: 1.2.7391\r\nDirect3D version: 1.611.1-81528511\r\nDXCore version: 10.0.26100.1-240331-1435.ge-release\r\nWindows version: 10.0.26200.9974", "triton": "3.6.0"}
+  ops {"B=1": {"aten_ops": 230.0, "kernel_ops": 173.0}, "B=2": {"aten_ops": 228.0, "kernel_ops": 174.0}, "B=4": {"aten_ops": 232.0, "kernel_ops": 176.0}, "B=8": {"aten_ops": 240.0, "kernel_ops": 180.0}, "B=16": {"aten_ops": 256.0, "kernel_ops": 188.0}, "B=32": {"aten_ops": 288.0, "kernel_ops": 204.0}}
+  phases [{"B": 1, "steps": 30, "gate_ms": 1.005, "clock": "raw CUDA events", "median_ms": {"decay": 0.0862, "gap": 0.064, "threshold+lists": 0.2071, "presyn": 0.2351, "synaptic": 0.2206, "drive": 0.0717, "spikelets": 0.2423, "apl": 0.0655, "reset+record+ring": 0.1025, "total": 1.258}}, {"B": 2, "steps": 30, "gate_ms": 1.002, "clock": "raw CUDA events", "median_ms": {"decay": 0.1056, "gap": 0.055, "threshold+lists": 0.2144, "presyn": 0.3009, "synaptic": 0.2527, "drive": 0.0868, "spikelets": 0.2748, "apl": 0.0733, "reset+record+ring": 0.1021, "total": 1.4753}}, {"B": 4, "steps": 30, "gate_ms": 0.997, "clock": "raw CUDA events", "median_ms": {"decay": 0.1501, "gap": 0.0694, "threshold+lists": 0.2546, "presyn": 0.4068, "synaptic": 0.3449, "drive": 0.1081, "spikelets": 0.3849, "apl": 0.0809, "reset+record+ring": 0.1435, "total": 1.9777}}, {"B": 8, "steps": 30, "gate_ms": 0.992, "clock": "raw CUDA events", "median_ms": {"decay": 0.3349, "gap": 0.0954, "threshold+lists": 0.2721, "presyn": 0.5531, "synaptic": 0.4876, "drive": 0.1361, "spikelets": 0.5124, "apl": 0.0811, "reset+record+ring": 0.2411, "total": 2.6927}}, {"B": 16, "steps": 30, "gate_ms": 0.999, "clock": "raw CUDA events", "median_ms": {"decay": 1.2217, "gap": 0.1446, "threshold+lists": 0.3637, "presyn": 0.6234, "synaptic": 0.9094, "drive": 0.1625, "spikelets": 0.533, "apl": 0.0793, "reset+record+ring": 0.5297, "total": 4.5672}}, {"B": 32, "steps": 30, "gate_ms": 1.012, "clock": "raw CUDA events", "median_ms": {"decay": 3.0403, "gap": 0.249, "threshold+lists": 0.7135, "presyn": 0.9004, "synaptic": 1.8115, "drive": 0.2732, "spikelets": 0.8543, "apl": 0.0898, "reset+record+ring": 1.0442, "total": 8.9803}}]
+  A3 {"active": 3865, "rate_corr": 1.0, "neurons_differing": 0, "share_differing_of_active": 0.0, "spikes": [186882, 186882], "seed": 0}
+  A3 {"active": 3887, "rate_corr": 1.0, "neurons_differing": 0, "share_differing_of_active": 0.0, "spikes": [185731, 185731], "seed": 1}
+  A3 {"active": 3870, "rate_corr": 1.0, "neurons_differing": 0, "share_differing_of_active": 0.0, "spikes": [187225, 187225], "seed": 2}
+  A3 {"active": 3881, "rate_corr": 1.0, "neurons_differing": 0, "share_differing_of_active": 0.0, "spikes": [184253, 184253], "seed": 3}
+  A3 {"active": 3911, "rate_corr": 1.0, "neurons_differing": 0, "share_differing_of_active": 0.0, "spikes": [188733, 188733], "seed": 4}
+  A3 {"active": 3870, "rate_corr": 1.0, "neurons_differing": 0, "share_differing_of_active": 0.0, "spikes": [184719, 184719], "seed": 5}
+  A3 {"active": 3859, "rate_corr": 1.0, "neurons_differing": 0, "share_differing_of_active": 0.0, "spikes": [181759, 181759], "seed": 6}
+  A3 {"active": 3896, "rate_corr": 1.0, "neurons_differing": 0, "share_differing_of_active": 0.0, "spikes": [185100, 185100], "seed": 7}
+  A2 {"per_seed": [{"seed": 0, "slots_in_B8": [0, 7], "neurons_differing_B1_vs_B8_slot": [0, 0], "spikes": 186882, "overflow": [0]}, {"seed": 3, "slots_in_B8": [3, 4], "neurons_differing_B1_vs_B8_slot": [0, 0], "spikes": 184253, "overflow": [0]}, {"seed": 7, "slots_in_B8": [7, 0], "neurons_differing_B1_vs_B8_slot": [0, 0], "spikes": 185100, "overflow": [0]}], "fwd_vs_rev_neurons_differing": [0, 0, 0, 0, 0, 0, 0, 0], "overflow": {"fwd": [0, 0, 0, 0, 0, 0, 0, 0], "rev": [0, 0, 0, 0, 0, 0, 0, 0]}, "passed": true}
+/root/flybench/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:1270: UserWarning: Synchronization debug mode is a prototype feature and does not yet detect all synchronizing operations (Triggered internally at /pytorch/torch/csrc/cuda/Module.cpp:1003.)
+  torch._C._cuda_set_sync_debug_mode(debug_mode)
+  A4 {"graph_active": {"steps": 10000, "eager_warmup_steps": 3, "graphs": 11, "replays": 9997, "replays_per_graph_step": 1.0, "distinct_keys": 11, "overflow": [0, 0, 0, 0, 0, 0, 0, 0], "spikes_per_trial": [186578, 138390, 12945, 68114, 133427, 71047, 125082, 111964]}, "graph_always": {"steps": 10000, "eager_warmup_steps": 3, "graphs": 1, "replays": 9997, "replays_per_graph_step": 1.0, "distinct_keys": 1, "overflow": [0, 0, 0, 0, 0, 0, 0, 0], "spikes_per_trial": [186578, 137984, 14049, 66584, 132000, 70372, 124770, 111964]}, "sync_eager": {"steps": 200, "raised": null, "passed": true, "overflow": [0, 0, 0, 0, 0, 0, 0, 0]}, "sync_graph": {"steps": 200, "raised": null, "passed": true, "graphs_before_window": 2, "graphs_after_window": 3, "overflow": [0, 0, 0, 0, 0, 0, 0, 0]}, "positive_control_reference": {"raised": "RuntimeError: called a synchronizing CUDA operation", "passed": true}, "passed": true}
+=== run 1/5
+  batch graph cuda f64 B=1     steady 0.5306 ms  all-steps 0.53 ms  stall 0.0  peak 413.4 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=2     steady 0.7856 ms  all-steps 0.785 ms  stall 0.0  peak 427.1 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=4     steady 1.1191 ms  all-steps 1.0707 ms  stall 0.0  peak 455.3 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=8     steady 1.9668 ms  all-steps 1.9578 ms  stall 0.0  peak 512.1 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=16    steady 4.0857 ms  all-steps 3.8696 ms  stall 0.0  peak 621.5 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=32    steady None ms  all-steps 8.2222 ms  stall 1.0  peak 840.6 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=1     steady 0.4586 ms  all-steps 0.4583 ms  stall 0.0  peak 309.9 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=2     steady 0.6338 ms  all-steps 0.5906 ms  stall 0.0  peak 319.4 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=4     steady 0.9516 ms  all-steps 0.9507 ms  stall 0.0  peak 340.3 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=8     steady 1.4678 ms  all-steps 1.4694 ms  stall 0.0  peak 375.8 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=16    steady 2.6514 ms  all-steps 2.5304 ms  stall 0.0  peak 447.6 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=32    steady None ms  all-steps 5.4527 ms  stall 1.0  peak 590.8 MB  ovf 0  busy False/False
+  fast graph cuda f64          steady 0.4248 ms  all-steps 0.4231 ms  stall 0.0  peak 406.3 MB  ovf 0  busy False/False
+/root/flybench/dev-p1/flybrain/sim/lif_torch.py:144: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  g_C = torch.sparse_csr_tensor(torch.as_tensor(C.indptr.astype(np.int64)),
+/root/flybench/dev-p1/flybrain/sim/lif_torch.py:144: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  g_C = torch.sparse_csr_tensor(torch.as_tensor(C.indptr.astype(np.int64)),
+  ref eager cpu f64            steady 0.5864 ms  all-steps 0.5864 ms  stall 0.0  peak None MB  ovf 0  busy False/False
+=== run 2/5
+  batch graph cuda f64 B=1     steady 0.4744 ms  all-steps 0.4651 ms  stall 0.0  peak 405.3 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=2     steady 0.6723 ms  all-steps 0.6839 ms  stall 0.0  peak 419.0 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=4     steady 1.0756 ms  all-steps 1.0645 ms  stall 0.0  peak 447.1 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=8     steady 2.0895 ms  all-steps 1.9738 ms  stall 0.0  peak 503.9 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=16    steady 3.9396 ms  all-steps 4.1046 ms  stall 0.0  peak 613.4 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=32    steady None ms  all-steps 8.0278 ms  stall 1.0  peak 832.4 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=1     steady 0.4263 ms  all-steps 0.4695 ms  stall 0.0  peak 301.8 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=2     steady 0.6203 ms  all-steps 0.6174 ms  stall 0.0  peak 311.4 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=4     steady 1.0377 ms  all-steps 0.9506 ms  stall 0.0  peak 332.1 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=8     steady 1.463 ms  all-steps 1.4616 ms  stall 0.0  peak 367.1 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=16    steady 2.4973 ms  all-steps 2.6597 ms  stall 0.0  peak 438.4 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=32    steady None ms  all-steps 5.4896 ms  stall 1.0  peak 582.0 MB  ovf 0  busy False/False
+  fast graph cuda f64          steady 0.4377 ms  all-steps 0.5484 ms  stall 0.0  peak 406.8 MB  ovf 0  busy False/False
+  ref eager cpu f64            steady 0.5963 ms  all-steps 0.5963 ms  stall 0.0  peak None MB  ovf 0  busy False/False
+=== run 3/5
+  batch graph cuda f64 B=1     steady 0.5167 ms  all-steps 0.461 ms  stall 0.0  peak 405.4 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=2     steady 0.6723 ms  all-steps 0.671 ms  stall 0.0  peak 419.0 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=4     steady 1.0642 ms  all-steps 1.0452 ms  stall 0.0  peak 447.1 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=8     steady 2.0377 ms  all-steps 2.0728 ms  stall 0.0  peak 503.9 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=16    steady 3.9882 ms  all-steps 4.0023 ms  stall 0.0  peak 613.4 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=32    steady None ms  all-steps 8.2852 ms  stall 1.0  peak 832.4 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=1     steady 0.5773 ms  all-steps 0.4442 ms  stall 0.0  peak 301.8 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=2     steady 0.6681 ms  all-steps 0.6182 ms  stall 0.0  peak 311.8 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=4     steady 0.9757 ms  all-steps 0.972 ms  stall 0.0  peak 332.1 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=8     steady 1.5266 ms  all-steps 1.5156 ms  stall 0.0  peak 367.5 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=16    steady 2.5222 ms  all-steps 2.577 ms  stall 0.0  peak 439.2 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=32    steady None ms  all-steps 5.4652 ms  stall 1.0  peak 582.7 MB  ovf 0  busy False/False
+  fast graph cuda f64          steady 0.4402 ms  all-steps 0.4378 ms  stall 0.0  peak 406.2 MB  ovf 0  busy False/False
+  ref eager cpu f64            steady 0.6321 ms  all-steps 0.6346 ms  stall 0.0005  peak None MB  ovf 0  busy False/False
+=== run 4/5
+  batch graph cuda f64 B=1     steady 0.4634 ms  all-steps 0.4625 ms  stall 0.0  peak 405.3 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=2     steady 0.6897 ms  all-steps 0.6722 ms  stall 0.0  peak 419.0 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=4     steady 1.0339 ms  all-steps 1.0342 ms  stall 0.0  peak 447.7 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=8     steady 2.0674 ms  all-steps 2.0326 ms  stall 0.0  peak 503.9 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=16    steady 4.0202 ms  all-steps 4.0101 ms  stall 0.0  peak 613.4 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=32    steady None ms  all-steps 8.318 ms  stall 1.0  peak 832.4 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=1     steady 0.4325 ms  all-steps 0.4326 ms  stall 0.0  peak 301.8 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=2     steady 0.6197 ms  all-steps 0.6126 ms  stall 0.0  peak 311.4 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=4     steady 0.9884 ms  all-steps 0.9824 ms  stall 0.0  peak 330.9 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=8     steady 1.5045 ms  all-steps 1.5198 ms  stall 0.0  peak 368.4 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=16    steady 2.5247 ms  all-steps 2.59 ms  stall 0.0  peak 438.4 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=32    steady None ms  all-steps 5.4423 ms  stall 1.0  peak 582.7 MB  ovf 0  busy False/False
+  fast graph cuda f64          steady 0.4582 ms  all-steps 0.4275 ms  stall 0.0  peak 406.3 MB  ovf 0  busy False/False
+  ref eager cpu f64            steady 0.5654 ms  all-steps 0.5654 ms  stall 0.0  peak None MB  ovf 0  busy False/False
+=== run 5/5
+  batch graph cuda f64 B=1     steady 0.443 ms  all-steps 0.4475 ms  stall 0.0  peak 405.4 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=2     steady 0.7022 ms  all-steps 0.6552 ms  stall 0.0  peak 419.0 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=4     steady 1.0194 ms  all-steps 1.0 ms  stall 0.0  peak 447.1 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=8     steady 1.9687 ms  all-steps 2.0272 ms  stall 0.0  peak 503.9 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=16    steady 3.994 ms  all-steps 3.9899 ms  stall 0.0  peak 613.4 MB  ovf 0  busy False/False
+  batch graph cuda f64 B=32    steady None ms  all-steps 8.3785 ms  stall 1.0  peak 832.4 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=1     steady 0.4484 ms  all-steps 0.4378 ms  stall 0.0  peak 301.8 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=2     steady 0.6028 ms  all-steps 0.6011 ms  stall 0.0005  peak 311.4 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=4     steady 0.9713 ms  all-steps 0.9734 ms  stall 0.0  peak 330.9 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=8     steady 1.4967 ms  all-steps 1.5059 ms  stall 0.0  peak 368.4 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=16    steady 2.5454 ms  all-steps 2.5434 ms  stall 0.0  peak 439.2 MB  ovf 0  busy False/False
+  batch graph cuda f32 B=32    steady None ms  all-steps 5.3846 ms  stall 1.0  peak 582.0 MB  ovf 0  busy False/False
+  fast graph cuda f64          steady 0.4366 ms  all-steps 0.4325 ms  stall 0.0  peak 406.2 MB  ovf 0  busy False/False
+  ref eager cpu f64            steady 0.6151 ms  all-steps 0.6151 ms  stall 0.0  peak None MB  ovf 0  busy False/False
+# Week 5 P1: B trials in one CUDA graph: DESKTOP-4C13T5V_20261125-1020 (5 runs)
+
+Looming bundle, gap + APL + presyn, rng='torch', seeds 0..B-1. Window: 2000 steps after 1000 warm steps, one trial per row per run. Caps per trial: spike_cap=60, syn_cap=44483. Every value: median across runs [min-max across runs]. Clock: CUDA events rescaled to the host clock (cuda rows), host clock (cpu).
+
+steady ms/step: mean of the steps <= 5 ms (Day 6 rule; none when every step is slower). median ms/step: median of all window steps, no threshold (events, rescaled). all-steps ms/step: synchronized wall / steps of a second trial without per-step events.
+
+| row | B | steady ms/step | stall share | median ms/step | all-steps ms/step | trials/s (all steps) | bio-s/wall-s (all steps) | trials/s (steady) | peak GPU MB | overflow | busy (before/after) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| batch graph cuda f64 B=1 | 1 | 0.474 [0.443-0.531] | 0.0000 [0.0000-0.0000] | 0.460 [0.443-0.528] | 0.463 [0.448-0.530] | 0.216 [0.189-0.224] | 0.216 [0.189-0.224] | 0.211 [0.189-0.226] | 405 [405-413] | 0 | False/False |
+| batch graph cuda f64 B=2 | 2 | 0.690 [0.672-0.786] | 0.0000 [0.0000-0.0000] | 0.673 [0.662-0.786] | 0.672 [0.655-0.785] | 0.297 [0.255-0.305] | 0.297 [0.255-0.305] | 0.290 [0.255-0.297] | 419 [419-427] | 0 | False/False |
+| batch graph cuda f64 B=4 | 4 | 1.064 [1.019-1.119] | 0.0000 [0.0000-0.0000] | 1.064 [1.019-1.119] | 1.045 [1.000-1.071] | 0.383 [0.374-0.400] | 0.383 [0.374-0.400] | 0.376 [0.357-0.392] | 447 [447-455] | 0 | False/False |
+| batch graph cuda f64 B=8 | 8 | 2.038 [1.967-2.090] | 0.0000 [0.0000-0.0000] | 2.036 [1.966-2.088] | 2.027 [1.958-2.073] | 0.395 [0.386-0.409] | 0.395 [0.386-0.409] | 0.393 [0.383-0.407] | 504 [504-512] | 0 | False/False |
+| batch graph cuda f64 B=16 | 16 | 3.994 [3.940-4.086] | 0.0000 [0.0000-0.0000] | 3.992 [3.937-4.084] | 4.002 [3.870-4.105] | 0.400 [0.390-0.413] | 0.400 [0.390-0.413] | 0.401 [0.392-0.406] | 613 [613-622] | 0 | False/False |
+| batch graph cuda f64 B=32 | 32 | - | 1.0000 [1.0000-1.0000] | 8.272 [8.268-8.580] | 8.285 [8.028-8.379] | 0.386 [0.382-0.399] | 0.386 [0.382-0.399] | - | 832 [832-841] | 0 | False/False |
+| batch graph cuda f32 B=1 | 1 | 0.448 [0.426-0.577] | 0.0000 [0.0000-0.0000] | 0.439 [0.426-0.457] | 0.444 [0.433-0.469] | 0.225 [0.213-0.231] | 0.225 [0.213-0.231] | 0.223 [0.173-0.235] | 302 [302-310] | 0 | False/False |
+| batch graph cuda f32 B=2 | 2 | 0.620 [0.603-0.668] | 0.0000 [0.0000-0.0005] | 0.620 [0.602-0.634] | 0.613 [0.591-0.618] | 0.327 [0.324-0.339] | 0.327 [0.324-0.339] | 0.322 [0.299-0.332] | 311 [311-319] | 0 | False/False |
+| batch graph cuda f32 B=4 | 4 | 0.976 [0.952-1.038] | 0.0000 [0.0000-0.0000] | 0.976 [0.952-1.038] | 0.972 [0.951-0.982] | 0.411 [0.407-0.421] | 0.411 [0.407-0.421] | 0.410 [0.386-0.420] | 332 [331-340] | 0 | False/False |
+| batch graph cuda f32 B=8 | 8 | 1.497 [1.463-1.527] | 0.0000 [0.0000-0.0000] | 1.496 [1.461-1.526] | 1.506 [1.462-1.520] | 0.531 [0.526-0.547] | 0.531 [0.526-0.547] | 0.534 [0.524-0.547] | 368 [367-376] | 0 | False/False |
+| batch graph cuda f32 B=16 | 16 | 2.525 [2.497-2.651] | 0.0000 [0.0000-0.0000] | 2.521 [2.496-2.650] | 2.577 [2.530-2.660] | 0.621 [0.602-0.632] | 0.621 [0.602-0.632] | 0.634 [0.604-0.641] | 439 [438-448] | 0 | False/False |
+| batch graph cuda f32 B=32 | 32 | - | 1.0000 [1.0000-1.0000] | 5.404 [5.257-5.486] | 5.453 [5.385-5.490] | 0.587 [0.583-0.594] | 0.587 [0.583-0.594] | - | 583 [582-591] | 0 | False/False |
+| fast graph cuda f64 | 1 | 0.438 [0.425-0.458] | 0.0000 [0.0000-0.0000] | 0.437 [0.425-0.458] | 0.432 [0.423-0.548] | 0.231 [0.182-0.236] | 0.231 [0.182-0.236] | 0.229 [0.218-0.235] | 406 [406-407] | 0 | False/False |
+| ref eager cpu f64 | 1 | 0.596 [0.565-0.632] | 0.0000 [0.0000-0.0005] | 0.568 [0.544-0.625] | 0.596 [0.565-0.635] | 0.168 [0.158-0.177] | 0.168 [0.158-0.177] | 0.168 [0.158-0.177] | - | None | False/False |
+
+## ops_per_step
+
+```
+{
+ "B=1": {
+  "aten_ops": 230.0,
+  "kernel_ops": 173.0
+ },
+ "B=2": {
+  "aten_ops": 228.0,
+  "kernel_ops": 174.0
+ },
+ "B=4": {
+  "aten_ops": 232.0,
+  "kernel_ops": 176.0
+ },
+ "B=8": {
+  "aten_ops": 240.0,
+  "kernel_ops": 180.0
+ },
+ "B=16": {
+  "aten_ops": 256.0,
+  "kernel_ops": 188.0
+ },
+ "B=32": {
+  "aten_ops": 288.0,
+  "kernel_ops": 204.0
+ }
+}
+```
+
+## phases
+
+```
+{
+ "busy_check_before": {
+  "time": "2026-11-25 10:21:01",
+  "wsl_python": [],
+  "windows_python": [],
+  "windows_check_ok": true,
+  "busy": false
+ },
+ "busy_waits": 0,
+ "per_B": [
+  {
+   "B": 1,
+   "steps": 30,
+   "gate_ms": 1.005,
+   "clock": "raw CUDA events",
+   "median_ms": {
+    "decay": 0.0862,
+    "gap": 0.064,
+    "threshold+lists": 0.2071,
+    "presyn": 0.2351,
+    "synaptic": 0.2206,
+    "drive": 0.0717,
+    "spikelets": 0.2423,
+    "apl": 0.0655,
+    "reset+record+ring": 0.1025,
+    "total": 1.258
+   }
+  },
+  {
+   "B": 2,
+   "steps": 30,
+   "gate_ms": 1.002,
+   "clock": "raw CUDA events",
+   "median_ms": {
+    "decay": 0.1056,
+    "gap": 0.055,
+    "threshold+lists": 0.2144,
+    "presyn": 0.3009,
+    "synaptic": 0.2527,
+    "drive": 0.0868,
+    "spikelets": 0.2748,
+    "apl": 0.0733,
+    "reset+record+ring": 0.1021,
+    "total": 1.4753
+   }
+  },
+  {
+   "B": 4,
+   "steps": 30,
+   "gate_ms": 0.997,
+   "clock": "raw CUDA events",
+   "median_ms": {
+    "decay": 0.1501,
+    "gap": 0.0694,
+    "threshold+lists": 0.2546,
+    "presyn": 0.4068,
+    "synaptic": 0.3449,
+    "drive": 0.1081,
+    "spikelets": 0.3849,
+    "apl": 0.0809,
+    "reset+record+ring": 0.1435,
+    "total": 1.9777
+   }
+  },
+  {
+   "B": 8,
+   "steps": 30,
+   "gate_ms": 0.992,
+   "clock": "raw CUDA events",
+   "median_ms": {
+    "decay": 0.3349,
+    "gap": 0.0954,
+    "threshold+lists": 0.2721,
+    "presyn": 0.5531,
+    "synaptic": 0.4876,
+    "drive": 0.1361,
+    "spikelets": 0.5124,
+    "apl": 0.0811,
+    "reset+record+ring": 0.2411,
+    "total": 2.6927
+   }
+  },
+  {
+   "B": 16,
+   "steps": 30,
+   "gate_ms": 0.999,
+   "clock": "raw CUDA events",
+   "median_ms": {
+    "decay": 1.2217,
+    "gap": 0.1446,
+    "threshold+lists": 0.3637,
+    "presyn": 0.6234,
+    "synaptic": 0.9094,
+    "drive": 0.1625,
+    "spikelets": 0.533,
+    "apl": 0.0793,
+    "reset+record+ring": 0.5297,
+    "total": 4.5672
+   }
+  },
+  {
+   "B": 32,
+   "steps": 30,
+   "gate_ms": 1.012,
+   "clock": "raw CUDA events",
+   "median_ms": {
+    "decay": 3.0403,
+    "gap": 0.249,
+    "threshold+lists": 0.7135,
+    "presyn": 0.9004,
+    "synaptic": 1.8115,
+    "drive": 0.2732,
+    "spikelets": 0.8543,
+    "apl": 0.0898,
+    "reset+record+ring": 1.0442,
+    "total": 8.9803
+   }
+  }
+ ],
+ "busy_check_after": {
+  "time": "2026-11-25 10:21:25",
+  "wsl_python": [],
+  "windows_python": [],
+  "windows_check_ok": true,
+  "busy": false
+ }
+}
+```
+
+## parity
+
+```
+{
+ "steps": 10000,
+ "A2": {
+  "per_seed": [
+   {
+    "seed": 0,
+    "slots_in_B8": [
+     0,
+     7
+    ],
+    "neurons_differing_B1_vs_B8_slot": [
+     0,
+     0
+    ],
+    "spikes": 186882,
+    "overflow": [
+     0
+    ]
+   },
+   {
+    "seed": 3,
+    "slots_in_B8": [
+     3,
+     4
+    ],
+    "neurons_differing_B1_vs_B8_slot": [
+     0,
+     0
+    ],
+    "spikes": 184253,
+    "overflow": [
+     0
+    ]
+   },
+   {
+    "seed": 7,
+    "slots_in_B8": [
+     7,
+     0
+    ],
+    "neurons_differing_B1_vs_B8_slot": [
+     0,
+     0
+    ],
+    "spikes": 185100,
+    "overflow": [
+     0
+    ]
+   }
+  ],
+  "fwd_vs_rev_neurons_differing": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "overflow": {
+   "fwd": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "rev": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "passed": true
+ },
+ "A3": {
+  "per_trial": [
+   {
+    "active": 3865,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     186882,
+     186882
+    ],
+    "seed": 0
+   },
+   {
+    "active": 3887,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     185731,
+     185731
+    ],
+    "seed": 1
+   },
+   {
+    "active": 3870,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     187225,
+     187225
+    ],
+    "seed": 2
+   },
+   {
+    "active": 3881,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     184253,
+     184253
+    ],
+    "seed": 3
+   },
+   {
+    "active": 3911,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     188733,
+     188733
+    ],
+    "seed": 4
+   },
+   {
+    "active": 3870,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     184719,
+     184719
+    ],
+    "seed": 5
+   },
+   {
+    "active": 3859,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     181759,
+     181759
+    ],
+    "seed": 6
+   },
+   {
+    "active": 3896,
+    "rate_corr": 1.0,
+    "neurons_differing": 0,
+    "share_differing_of_active": 0.0,
+    "spikes": [
+     185100,
+     185100
+    ],
+    "seed": 7
+   }
+  ],
+  "min_rate_corr": 1.0,
+  "max_share_differing": 0.0,
+  "passed": true
+ },
+ "graphs": {
+  "fwd": 1,
+  "rev": 1
+ }
+}
+```
+
+## a4
+
+```
+{
+ "graph_active": {
+  "steps": 10000,
+  "eager_warmup_steps": 3,
+  "graphs": 11,
+  "replays": 9997,
+  "replays_per_graph_step": 1.0,
+  "distinct_keys": 11,
+  "overflow": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "spikes_per_trial": [
+   186578,
+   138390,
+   12945,
+   68114,
+   133427,
+   71047,
+   125082,
+   111964
+  ]
+ },
+ "graph_always": {
+  "steps": 10000,
+  "eager_warmup_steps": 3,
+  "graphs": 1,
+  "replays": 9997,
+  "replays_per_graph_step": 1.0,
+  "distinct_keys": 1,
+  "overflow": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "spikes_per_trial": [
+   186578,
+   137984,
+   14049,
+   66584,
+   132000,
+   70372,
+   124770,
+   111964
+  ]
+ },
+ "sync_eager": {
+  "steps": 200,
+  "raised": null,
+  "passed": true,
+  "overflow": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "sync_graph": {
+  "steps": 200,
+  "raised": null,
+  "passed": true,
+  "graphs_before_window": 2,
+  "graphs_after_window": 3,
+  "overflow": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "positive_control_reference": {
+  "raised": "RuntimeError: called a synchronizing CUDA operation",
+  "passed": true
+ },
+ "passed": true
+}
+```
+
+## Environment
+
+```
+{
+ "host": "DESKTOP-4C13T5V",
+ "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+ "python": "3.12.3",
+ "torch": "2.11.0+cu128",
+ "numpy": "2.5.5",
+ "cpu_threads": 6,
+ "kernel": "6.18.58.1-microsoft-standard-WSL2",
+ "gpu": "NVIDIA GeForce RTX 5060 Ti",
+ "cc": "sm_120",
+ "cuda_runtime": "12.8",
+ "cudnn": 91900,
+ "driver": "610.88",
+ "wsl": true,
+ "wsl_version": "WSL version: 3.0.5.0\r\nKernel version: 6.18.58.1-1\r\nWSLg version: 1.0.79\r\nMSRDC version: 1.2.7391\r\nDirect3D version: 1.611.1-81528511\r\nDXCore version: 10.0.26100.1-240331-1435.ge-release\r\nWindows version: 10.0.26200.9974",
+ "triton": "3.6.0"
+}
+```
+
+saved /root/flybench/dev-p1/flybrain/perf/results/w5/DESKTOP-4C13T5V_20261125-1020_batch.json and .md
