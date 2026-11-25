@@ -23,11 +23,15 @@ Stages (each caches to disk; a re-run skips what is done)
          E a learned neuron embedding, phi a piecewise-linear count embedding (learned vectors
          at x = 0, 1, ..., X_MAX, linear interpolation; differentiable in x). N_LAT learned
          latent queries cross-attend over the neuron tokens of each bin (N_HEAD heads, softmax
-         over neurons), the N_LAT x d latent outputs are flattened and projected to d, a
+         over neurons, learned logit scale per latent initialised at LOGIT_SCALE), the
+         N_LAT x d latent outputs are flattened, layer-normed and projected to d, a
          bidirectional GRU runs over the 80 bins, a linear layer gives the per-bin state.
+         Token dropout TOK_DROP during training (tokens masked out of the softmax).
          Training: the fold's training episodes are split by the PR #20 validation split
          (folds(tr, 4, SEED + 10 + f)[0]); AdamW, early stopping on the validation balanced
-         accuracy, the best-epoch weights are kept (no refit). Test episodes are used only for
+         accuracy, the best-epoch weights are kept (no refit on all training episodes). A run
+         whose best validation bacc stays < STUCK_VAL (never left chance) is restarted with a
+         new seed, up to N_TRY times (the attempt is recorded). Test episodes are used only for
          the held-out predictions and the attributions below. -> train/<cfg>_f<k>.pt, .json
   attr   On the held-out episodes of each fold, with that fold's model:
          a) attention: cross-attention weight per neuron, mean over heads and latents, mean over
@@ -72,6 +76,7 @@ UNREACH = 10 ** 6
 # attention decoder
 D, N_LAT, N_HEAD, X_MAX = 32, 16, 1, 8
 LR, WD, BATCH, MAX_EP, PATIENCE = 3e-3, 1e-2, 8, 150, 20
+N_TRY, STUCK_VAL = 4, 0.35     # a run whose best validation bacc stays < STUCK_VAL is restarted
 DROP, TOK_KEEP, TOK_DROP, LOGIT_SCALE = 0.3, 1.0, 0.2, 4.0   # TOK_KEEP < 1: random token subset per batch (off)
 
 
@@ -345,40 +350,44 @@ def stage_train(cfgs, fold_list):
             t0 = time.time()
             tr, itr, iva, te = fold_split(f)
             keep, x = fold_inputs(X, f)
-            seed = bl.SEED + 1000 + f
-            net = build_net(len(keep), seed)
-            rng = np.random.default_rng(seed)
-            opt = torch.optim.AdamW(net.parameters(), lr=LR, weight_decay=WD)
-            lossf = torch.nn.CrossEntropyLoss()
-            Xt, Yt = torch.from_numpy(x[itr]), torch.from_numpy(y[itr])
-            best, best_ep, bad, state, hist = -1.0, 0, 0, None, []
-            for ep in range(1, MAX_EP + 1):
-                net.train()
-                tl = 0.0
-                for b in np.array_split(rng.permutation(len(itr)), max(1, len(itr) // BATCH)):
-                    opt.zero_grad()
-                    if TOK_KEEP < 1:
-                        ids = torch.from_numpy(np.sort(rng.permutation(len(keep))[:int(TOK_KEEP * len(keep))]))
-                        o = net(Xt[b][:, :, ids], ids)
+            for attempt in range(N_TRY):     # restart (new seed) if training never left chance
+                seed = bl.SEED + 1000 + f + 100 * attempt
+                net = build_net(len(keep), seed)
+                rng = np.random.default_rng(seed)
+                opt = torch.optim.AdamW(net.parameters(), lr=LR, weight_decay=WD)
+                lossf = torch.nn.CrossEntropyLoss()
+                Xt, Yt = torch.from_numpy(x[itr]), torch.from_numpy(y[itr])
+                best, best_ep, bad, state, hist = -1.0, 0, 0, None, []
+                for ep in range(1, MAX_EP + 1):
+                    net.train()
+                    tl = 0.0
+                    for b in np.array_split(rng.permutation(len(itr)), max(1, len(itr) // BATCH)):
+                        opt.zero_grad()
+                        if TOK_KEEP < 1:
+                            ids = torch.from_numpy(np.sort(rng.permutation(len(keep))[:int(TOK_KEEP * len(keep))]))
+                            o = net(Xt[b][:, :, ids], ids)
+                        else:
+                            o = net(Xt[b], drop_mask=torch.rand(len(b), bl.NB, len(keep)) < TOK_DROP)
+                        loss = lossf(o.reshape(-1, 4), Yt[b].reshape(-1))
+                        loss.backward()
+                        opt.step()
+                        tl += float(loss.detach()) * len(b)
+                    ba = bl.bacc(y[iva].ravel(), predict(net, x[iva]).argmax(-1).ravel())
+                    btr = bl.bacc(y[itr[:16]].ravel(), predict(net, x[itr[:16]]).argmax(-1).ravel())
+                    hist.append((ep, tl / len(itr), ba))
+                    if ba > best + 1e-4:
+                        best, best_ep, bad = ba, ep, 0
+                        state = {k: v.clone() for k, v in net.state_dict().items()}
                     else:
-                        o = net(Xt[b], drop_mask=torch.rand(len(b), bl.NB, len(keep)) < TOK_DROP)
-                    loss = lossf(o.reshape(-1, 4), Yt[b].reshape(-1))
-                    loss.backward()
-                    opt.step()
-                    tl += float(loss.detach()) * len(b)
-                ba = bl.bacc(y[iva].ravel(), predict(net, x[iva]).argmax(-1).ravel())
-                btr = bl.bacc(y[itr[:16]].ravel(), predict(net, x[itr[:16]]).argmax(-1).ravel())
-                hist.append((ep, tl / len(itr), ba))
-                if ba > best + 1e-4:
-                    best, best_ep, bad = ba, ep, 0
-                    state = {k: v.clone() for k, v in net.state_dict().items()}
-                else:
-                    bad += 1
-                if ep % 5 == 0 or bad == 0:
-                    logf(f'  [{cfg} f{f}] ep {ep}: loss {tl / len(itr):.3f}, val bacc {ba:.3f} '
-                         f'(train-eval {btr:.3f}; best {best:.3f} @ {best_ep}, {time.time() - t0:.0f} s)')
-                if bad >= PATIENCE:
+                        bad += 1
+                    if ep % 5 == 0 or bad == 0:
+                        logf(f'  [{cfg} f{f}] ep {ep}: loss {tl / len(itr):.3f}, val bacc {ba:.3f} '
+                             f'(train-eval {btr:.3f}; best {best:.3f} @ {best_ep}, {time.time() - t0:.0f} s)')
+                    if bad >= PATIENCE:
+                        break
+                if best >= STUCK_VAL:
                     break
+                logf(f'  [{cfg} f{f}] attempt {attempt}: val bacc {best:.3f} < {STUCK_VAL} (stuck at chance), restarting with a new seed')
             net.load_state_dict(state)
             prob = predict(net, x[te])
             tb = bl.bacc(y[te].ravel(), prob.argmax(-1).ravel())
@@ -386,8 +395,8 @@ def stage_train(cfgs, fold_list):
             np.savez_compressed(OUT / 'train' / f'{cfg}_f{f}_pred.npz', prob=prob, te=te, keep_idx=idx[keep])
             info = dict(cfg=cfg, fold=f, test_bacc=tb, val_bacc=best, best_epoch=best_ep, n_inputs=len(keep),
                         te=te.tolist(), train=itr.tolist(), val=iva.tolist(), wall_s=time.time() - t0,
-                        hp=dict(D=D, N_LAT=N_LAT, N_HEAD=N_HEAD, X_MAX=X_MAX, LR=LR, WD=WD, BATCH=BATCH,
-                                DROP=DROP, TOK_KEEP=TOK_KEEP, TOK_DROP=TOK_DROP, LOGIT_SCALE=LOGIT_SCALE, PATIENCE=PATIENCE), history=hist)
+                        hp=dict(N_TRY=N_TRY, STUCK_VAL=STUCK_VAL, D=D, N_LAT=N_LAT, N_HEAD=N_HEAD, X_MAX=X_MAX, LR=LR, WD=WD, BATCH=BATCH,
+                                DROP=DROP, TOK_KEEP=TOK_KEEP, TOK_DROP=TOK_DROP, LOGIT_SCALE=LOGIT_SCALE, PATIENCE=PATIENCE), history=hist, attempt=attempt)
             cp.write_text(json.dumps(info, default=float))
             logf(f'[train {cfg} f{f}] test bacc {tb:.3f} (val {best:.3f} @ ep {best_ep}, '
                  f'{len(keep)} inputs, {time.time() - t0:.0f} s)')
