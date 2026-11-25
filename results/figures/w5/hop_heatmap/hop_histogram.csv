@@ -1,0 +1,13 @@
+cfg,edges,state,n_inputs,n_driven,hop 1,hop 2,hop 3,hop 4,hop >=5,hop unreachable,max_hop
+calib,any,hunger,7552,4,82,2863,4593,14,0,0,4
+calib,any,thirst,7552,2,33,1388,6016,115,0,0,4
+calib,any,arousal,7552,126,1181,5806,565,0,0,0,3
+calib,strong,hunger,7552,4,21,530,3393,3314,278,16,6
+calib,strong,thirst,7552,2,23,36,550,3427,3500,16,6
+calib,strong,arousal,7552,126,476,2332,4161,565,2,16,5
+shuffle,any,hunger,7324,4,142,6193,989,0,0,0,3
+shuffle,any,thirst,7324,2,72,5524,1728,0,0,0,3
+shuffle,any,arousal,7324,126,2989,4335,0,0,0,0,2
+shuffle,strong,hunger,7324,4,56,1410,5408,437,1,12,5
+shuffle,strong,thirst,7324,2,17,297,4234,2740,24,12,6
+shuffle,strong,arousal,7324,126,736,5195,1375,6,0,12,4

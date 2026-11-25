@@ -1,0 +1,11 @@
+cfg,state,neuron_idx,bodyId,type,hop,path_bodyIds,path_edges_in_W,min_hop_of_presyn_partners,source_in_driven,check_pass
+calib,hunger,126526,515785,DNg76,2,131216>11475>515785,True,1,True,True
+calib,thirst,30489,44147,lLN15,3,15012>521194>10378>44147,True,2,True,True
+calib,arousal,7433,18142,aSP10A_a,1,17867>18142,True,0,True,True
+calib,hunger,13800,25267,LPLC2,4,131216>10967>10052>10051>25267,True,3,True,True
+calib,thirst,3600,13860,LAL154,2,15012>529517>13860,True,1,True,True
+shuffle,hunger,721,10778,CL286,2,179881>10271>10778,True,1,True,True
+shuffle,thirst,15684,27380,AVLP003,3,15309>10060>10096>27380,True,2,True,True
+shuffle,arousal,107,10121,MeVPLp1,1,20597>10121,True,0,True,True
+shuffle,hunger,6951,17605,LPT31,2,131216>10157>17605,True,1,True,True
+shuffle,thirst,101334,138964,T5c,2,15309>78967>138964,True,1,True,True
